@@ -59,6 +59,17 @@ function createSymmetryEngine({ cols, rows }) {
 		};
 	};
 
+	const rotate45Point = (point) => {
+		const dx = point.x - centerX;
+		const dy = point.y - centerY;
+		const cos45 = Math.SQRT2 / 2;
+		const sin45 = Math.SQRT2 / 2;
+		return {
+			x: Math.round(centerX + (dx * cos45 - dy * sin45)),
+			y: Math.round(centerY + (dx * sin45 + dy * cos45))
+		};
+	};
+
 	const unique = (points) => {
 		const seen = new Set();
 		return points.filter((point) => {
@@ -98,20 +109,11 @@ function createSymmetryEngine({ cols, rows }) {
 			}
 			case "8-Way Radial": {
 				const origin = { x, y };
-				const firstRotation = rotatePoint(origin);
-				const secondRotation = rotatePoint(firstRotation);
-				const thirdRotation = rotatePoint(secondRotation);
-				points.push(firstRotation, secondRotation, thirdRotation);
-				const radialPoints = [
-					origin,
-					firstRotation,
-					secondRotation,
-					thirdRotation
-				];
-				radialPoints.forEach((point) => {
-					const mirrored = { x: cols - 1 - point.x, y: rows - 1 - point.y };
-					points.push(mirrored);
-				});
+				let current = origin;
+				for (let i = 0; i < 8; i += 1) {
+					points.push(current);
+					current = rotate45Point(current);
+				}
 				break;
 			}
 			case "Diagonal ↘":
