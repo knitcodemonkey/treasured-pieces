@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Treasured Pieces • Version 5.1.0 Alpha 2c</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+<header>
+<h1>Treasured Pieces</h1>
+<div class="tagline">Beautiful treasures deserve to become beautiful works.</div>
+<div class="version">Version 5.1.0 Alpha 2c</div>
+<div class="divider">──────────── ✦ ────────────</div>
+</header>
+
+<div class="toolbar">
+<label><input id="gridToggle" type="checkbox" checked> Grid</label>
+<label>Symmetry:
+<select id="mirror">
+<option>None</option>
+<option>Horizontal</option>
+<option>Vertical</option>
+<option>Quad</option>
+<option>Diagonal ↘</option>
+<option>Diagonal ↗</option>
+</select>
+</label>
+<button id="clearBtn" type="button">🗑 Clear</button>
+</div>
+
+<div id="palette"></div>
+<canvas id="canvas" width="570" height="450"></canvas>
+
+<script src="js/app.js"></script>
+</div>
+</body>
+</html>
