@@ -11,6 +11,12 @@ Development workflow
 
 Every approved build becomes the new baseline.
 
+Testing
+
+- Feature tests are co-located with feature code.
+- Run current core tests with `npm run test:core`.
+- Run studio user-flow E2E tests with `npm run test:e2e`.
+
 Release workflow
 
 - Follow `docs/release-process.md` for tagging and release publishing.

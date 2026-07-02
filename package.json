@@ -1,0 +1,32 @@
+{
+	"name": "treasuredpieces",
+	"version": "6.0.0",
+	"description": "> _I know you've been saving something beautiful. Let's find what it wants to become._",
+	"main": "index.js",
+	"directories": {
+		"doc": "docs",
+		"test": "tests"
+	},
+	"scripts": {
+		"test": "npm run test:core && npm run test:e2e",
+		"test:core": "node features/project-core/project-core.test.js",
+		"test:e2e": "bash features/studio-e2e/run-e2e.sh",
+		"test:a11y:aa": "node scripts/a11y-check.cjs http://127.0.0.1:4173/index.html wcag22aa",
+		"test:a11y:aaa": "node scripts/a11y-check.cjs http://127.0.0.1:4173/index.html wcag22aaa"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/knitcodemonkey/treasured-pieces.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/knitcodemonkey/treasured-pieces/issues"
+	},
+	"homepage": "https://github.com/knitcodemonkey/treasured-pieces#readme",
+	"devDependencies": {
+		"@axe-core/playwright": "^4.10.2",
+		"playwright": "^1.54.2"
+	}
+}

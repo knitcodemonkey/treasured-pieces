@@ -22,7 +22,7 @@ Our philosophy is simple:
 
 Treasured Pieces is currently in active development.
 
-**Current baseline:** `v5.4.3`
+**Current baseline:** `v6.0.0`
 
 Recent improvements include:
 
@@ -86,6 +86,17 @@ Additional documentation is available in the `docs` directory.
 ---
 
 ## Development
+
+The codebase uses feature-sliced co-location for maintainability:
+
+- `features/project-core/` contains project logic and tests.
+- `features/studio-ui/` contains studio UI behavior and styles.
+- `features/studio-e2e/` contains end-to-end user-flow tests.
+
+Testing:
+
+- Unit/core: `npm run test:core`
+- User-flow E2E: `npm run test:e2e`
 
 Every approved build becomes the new project baseline.
 

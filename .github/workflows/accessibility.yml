@@ -24,9 +24,13 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install dependencies
+        shell: bash
+        run: npm ci
+
       - name: Install Playwright Chromium
         shell: bash
-        run: npx --yes playwright@1.54.2 install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Run WCAG 2.2 AA required scan
         shell: bash
@@ -35,8 +39,7 @@ jobs:
           SERVER_PID=$!
           trap "kill $SERVER_PID" EXIT
 
-          npx --yes -p playwright@1.54.2 -p @axe-core/playwright@4.10.2 \
-            node scripts/a11y-check.cjs http://127.0.0.1:4173/index.html wcag22aa
+          node scripts/a11y-check.cjs http://127.0.0.1:4173/index.html wcag22aa
 
       - name: Run WCAG 2.2 AAA advisory scan
         continue-on-error: true
@@ -46,5 +49,4 @@ jobs:
           SERVER_PID=$!
           trap "kill $SERVER_PID" EXIT
 
-          npx --yes -p playwright@1.54.2 -p @axe-core/playwright@4.10.2 \
-            node scripts/a11y-check.cjs http://127.0.0.1:4173/index.html wcag22aaa
+          node scripts/a11y-check.cjs http://127.0.0.1:4173/index.html wcag22aaa

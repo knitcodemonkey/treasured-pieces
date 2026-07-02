@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## v6.0.0
+
+- Moved to feature-sliced architecture with co-located code and tests.
+- Cut over to native feature entry points (removed legacy root JS/CSS paths).
+- Added user-flow end-to-end suite under `features/studio-e2e/`.
+- Added deterministic local tooling via `package.json` and pinned dev dependencies.
+- Added CI workflow for studio user-flow E2E tests.
+- Updated accessibility audit script compatibility and kept WCAG 2.2 checks active.
+
 ## v5.4.3
 
 - Added starter template library for canvas kickoffs

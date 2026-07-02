@@ -11,10 +11,12 @@ async function run() {
 	}
 
 	const browser = await chromium.launch();
-	const page = await browser.newPage();
+	const context = await browser.newContext();
+	const page = await context.newPage();
 	await page.goto(url, { waitUntil: "networkidle" });
 
 	const results = await new AxeBuilder({ page }).withTags(tags).analyze();
+	await context.close();
 	await browser.close();
 
 	if (results.violations.length > 0) {

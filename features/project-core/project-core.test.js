@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { createProject, createSymmetryEngine } = require("../js/project");
+const { createProject, createSymmetryEngine } = require("./project-core");
 
 function sortPoints(points) {
 	return [...points].sort((a, b) => a.y - b.y || a.x - b.x);
@@ -53,4 +53,4 @@ assert.deepStrictEqual(engine.getPoints(5, 3, "180°"), [
 const eightWayPoints = engine.getPoints(8, 6, "8-Way Radial");
 assert.strictEqual(eightWayPoints.length, 8);
 
-console.log("project tests passed");
+console.log("project-core tests passed");

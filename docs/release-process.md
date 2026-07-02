@@ -31,3 +31,10 @@ Release execution checklist:
 6. Create and push tag `vX.Y.Z`.
 7. Verify the Create Release workflow completed successfully.
 8. Verify the GitHub Release body matches `docs/releases/vX.Y.Z.md`.
+
+Validation command:
+
+- `npm run test:core`
+- `npm run test:e2e`
+- `npm run test:a11y:aa`
+- `npm run test:a11y:aaa`

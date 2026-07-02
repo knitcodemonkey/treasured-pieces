@@ -358,14 +358,16 @@ function createSymmetryEngine({ cols, rows }) {
 
 	return { getPoints };
 }
+
 if (typeof window !== "undefined") {
-	window.projectModule = {
+	window.projectCore = {
 		createProject,
 		createSymmetryEngine,
 		createTemplateLibrary,
 		DEFAULT_PALETTE
 	};
 }
+
 if (typeof module !== "undefined") {
 	module.exports = {
 		createProject,
