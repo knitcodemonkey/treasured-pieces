@@ -7,6 +7,7 @@
 - 180° rotational symmetry
 - 4-way radial symmetry
 - 8-way radial symmetry
+- Starter template library
 - Modular architecture (project.js, canvas.js, ui.js, app.js)
 - GitHub Pages deployment workflow
 - Release-driven versioning system
@@ -28,4 +29,3 @@
 ## Future
 
 - Surface abstractions
-- Templates

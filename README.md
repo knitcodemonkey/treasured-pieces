@@ -22,7 +22,7 @@ Our philosophy is simple:
 
 Treasured Pieces is currently in active development.
 
-**Current baseline:** `v5.1.0-alpha2d`
+**Current baseline:** `v5.4.3`
 
 Recent improvements include:
 
@@ -42,6 +42,7 @@ Recent improvements include:
 - Paint-by-cell editor
 - Multiple symmetry modes
 - Palette selection
+- Starter template library
 - Grid overlay
 - Clear canvas
 

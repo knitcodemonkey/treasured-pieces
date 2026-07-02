@@ -50,6 +50,9 @@ function bootstrap() {
 	const paletteContainer = document.getElementById("palette");
 	const gridToggle = document.getElementById("gridToggle");
 	const symmetrySelect = document.getElementById("mirror");
+	const templateSelect = document.getElementById("templateSelect");
+	const templateHint = document.getElementById("templateHint");
+	const applyTemplateButton = document.getElementById("applyTemplateBtn");
 	const clearButton = document.getElementById("clearBtn");
 	const symmetryEngine = window.projectModule.createSymmetryEngine({
 		cols: project.cols,
@@ -70,9 +73,44 @@ function bootstrap() {
 		}
 	});
 
+	if (templateSelect) {
+		const blankOption = document.createElement("option");
+		blankOption.value = "";
+		blankOption.textContent = "Blank";
+		blankOption.dataset.description = "Start from an empty canvas.";
+		templateSelect.appendChild(blankOption);
+
+		project.templates.forEach((template) => {
+			const option = document.createElement("option");
+			option.value = template.id;
+			option.textContent = template.name;
+			option.dataset.description = template.description;
+			templateSelect.appendChild(option);
+		});
+
+		const syncTemplateHint = () => {
+			const selected = templateSelect.selectedOptions[0];
+			const description =
+				selected?.dataset?.description || "Select a starter design.";
+
+			if (templateHint) {
+				templateHint.textContent = description;
+			}
+			templateSelect.title = description;
+			if (applyTemplateButton) {
+				applyTemplateButton.title = description;
+			}
+		};
+
+		templateSelect.addEventListener("change", syncTemplateHint);
+		syncTemplateHint();
+	}
+
 	window.createToolbarUI({
 		gridToggle,
 		symmetrySelect,
+		templateSelect,
+		applyTemplateButton,
 		clearButton,
 		onToggleGrid: (checked) => {
 			project.showGrid = checked;
@@ -81,6 +119,17 @@ function bootstrap() {
 		onChangeSymmetry: (mode) => {
 			project.symmetryMode = mode;
 			controller.render();
+		},
+		onApplyTemplate: (templateId) => {
+			if (!templateId) {
+				project.clear();
+				controller.render();
+				return;
+			}
+
+			if (project.applyTemplate(templateId)) {
+				controller.render();
+			}
 		},
 		onClear: () => {
 			project.clear();

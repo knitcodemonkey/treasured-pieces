@@ -42,9 +42,12 @@ function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 function createToolbarUI({
 	gridToggle,
 	symmetrySelect,
+	templateSelect,
+	applyTemplateButton,
 	clearButton,
 	onToggleGrid,
 	onChangeSymmetry,
+	onApplyTemplate,
 	onClear
 }) {
 	gridToggle.addEventListener("change", () => {
@@ -54,6 +57,12 @@ function createToolbarUI({
 	symmetrySelect.addEventListener("change", () => {
 		onChangeSymmetry(symmetrySelect.value);
 	});
+
+	if (applyTemplateButton && templateSelect && onApplyTemplate) {
+		applyTemplateButton.addEventListener("click", () => {
+			onApplyTemplate(templateSelect.value);
+		});
+	}
 
 	clearButton.addEventListener("click", () => {
 		onClear();

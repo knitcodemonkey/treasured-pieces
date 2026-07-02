@@ -20,6 +20,210 @@ const DEFAULT_PALETTE = {
 	]
 };
 
+const TEMPLATE_DEFINITIONS = [
+	{
+		id: "sun",
+		name: "Sun",
+		description: "A bright sun cross with warm orange accents.",
+		buildCells() {
+			const cells = [];
+			for (let i = -4; i <= 4; i += 1) {
+				cells.push({ dx: i, dy: 0, colorId: "yellow" });
+				cells.push({ dx: 0, dy: i, colorId: "yellow" });
+			}
+			[
+				[-3, -3],
+				[3, -3],
+				[-3, 3],
+				[3, 3],
+				[-2, -2],
+				[2, -2],
+				[-2, 2],
+				[2, 2]
+			].forEach(([dx, dy]) => {
+				cells.push({ dx, dy, colorId: "orange" });
+			});
+			cells.push({ dx: 0, dy: 0, colorId: "white" });
+			return cells;
+		}
+	},
+	{
+		id: "moon",
+		name: "Moon",
+		description: "A bold crescent moon silhouette.",
+		buildCells() {
+			const cells = [];
+			for (let y = -5; y <= 5; y += 1) {
+				for (let x = -4; x <= 2; x += 1) {
+					if (x * x + y * y < 22) {
+						cells.push({ dx: x, dy: y, colorId: "white" });
+					}
+				}
+			}
+			for (let y = -4; y <= 4; y += 1) {
+				for (let x = -1; x <= 4; x += 1) {
+					if (x * x + y * y < 16) {
+						cells.push({ dx: x, dy: y, colorId: "black" });
+					}
+				}
+			}
+			return cells;
+		}
+	},
+	{
+		id: "compass",
+		name: "Compass Rose",
+		description: "A compass rose with sky-blue corner points.",
+		buildCells() {
+			const cells = [];
+			for (let i = -5; i <= 5; i += 1) {
+				cells.push({ dx: i, dy: 0, colorId: "yellow" });
+				cells.push({ dx: 0, dy: i, colorId: "yellow" });
+			}
+			[
+				[-4, -4],
+				[4, -4],
+				[-4, 4],
+				[4, 4],
+				[-3, -3],
+				[3, -3],
+				[-3, 3],
+				[3, 3]
+			].forEach(([dx, dy]) => {
+				cells.push({ dx, dy, colorId: "light_blue" });
+			});
+			cells.push({ dx: 0, dy: 0, colorId: "white" });
+			return cells;
+		}
+	},
+	{
+		id: "flower",
+		name: "Flower",
+		description: "A simple flower medallion with a gold center.",
+		cells: [
+			{ dx: 0, dy: 0, colorId: "yellow" },
+			{ dx: 0, dy: -2, colorId: "purple" },
+			{ dx: 0, dy: 2, colorId: "purple" },
+			{ dx: -2, dy: 0, colorId: "purple" },
+			{ dx: 2, dy: 0, colorId: "purple" },
+			{ dx: -1, dy: -1, colorId: "purple" },
+			{ dx: 1, dy: -1, colorId: "purple" },
+			{ dx: -1, dy: 1, colorId: "purple" },
+			{ dx: 1, dy: 1, colorId: "purple" }
+		]
+	},
+	{
+		id: "deco",
+		name: "Art Deco Diamond",
+		description: "A layered diamond motif with a bright center tile.",
+		buildCells() {
+			const cells = [];
+			const rings = [
+				{ radius: 4, colorId: "brown" },
+				{ radius: 3, colorId: "orange" },
+				{ radius: 2, colorId: "yellow" },
+				{ radius: 1, colorId: "white" }
+			];
+
+			for (const ring of rings) {
+				for (let y = -ring.radius; y <= ring.radius; y += 1) {
+					for (let x = -ring.radius; x <= ring.radius; x += 1) {
+						if (Math.abs(x) + Math.abs(y) === ring.radius) {
+							cells.push({ dx: x, dy: y, colorId: ring.colorId });
+						}
+					}
+				}
+			}
+			cells.push({ dx: 0, dy: 0, colorId: "yellow" });
+			return cells;
+		}
+	},
+	{
+		id: "deco-fan",
+		name: "Art Deco Fan",
+		description: "A stepped fan with rising gold and amber bands.",
+		buildCells() {
+			const cells = [];
+			for (let row = 0; row < 6; row += 1) {
+				const width = row * 2 + 1;
+				const colorId = row % 2 === 0 ? "yellow" : "orange";
+				for (
+					let x = -Math.floor(width / 2);
+					x <= Math.floor(width / 2);
+					x += 1
+				) {
+					cells.push({ dx: x, dy: 3 - row, colorId });
+				}
+			}
+			for (let y = -2; y <= 3; y += 1) {
+				cells.push({ dx: -6, dy: y, colorId: "brown" });
+				cells.push({ dx: 6, dy: y, colorId: "brown" });
+			}
+			cells.push({ dx: 0, dy: 4, colorId: "white" });
+			return cells;
+		}
+	},
+	{
+		id: "deco-pillars",
+		name: "Art Deco Pillars",
+		description: "Symmetric stepped columns with a framed center jewel.",
+		buildCells() {
+			const cells = [];
+			for (let y = -4; y <= 4; y += 1) {
+				cells.push({ dx: -6, dy: y, colorId: "brown" });
+				cells.push({ dx: 6, dy: y, colorId: "brown" });
+			}
+			for (let y = -3; y <= 3; y += 1) {
+				cells.push({ dx: -5, dy: y, colorId: "orange" });
+				cells.push({ dx: 5, dy: y, colorId: "orange" });
+			}
+			for (let y = -2; y <= 2; y += 1) {
+				cells.push({ dx: -4, dy: y, colorId: "yellow" });
+				cells.push({ dx: 4, dy: y, colorId: "yellow" });
+			}
+			for (let x = -2; x <= 2; x += 1) {
+				cells.push({ dx: x, dy: -2, colorId: "light_gray" });
+				cells.push({ dx: x, dy: 2, colorId: "light_gray" });
+			}
+			for (let y = -1; y <= 1; y += 1) {
+				cells.push({ dx: -2, dy: y, colorId: "light_gray" });
+				cells.push({ dx: 2, dy: y, colorId: "light_gray" });
+			}
+			cells.push({ dx: 0, dy: 0, colorId: "white" });
+			return cells;
+		}
+	}
+];
+
+function createTemplateLibrary({ cols, rows, palette = DEFAULT_PALETTE }) {
+	const colorById = new Map(
+		palette.colors.map((entry) => [entry.id, entry.hex])
+	);
+	const fallbackColor = palette.colors[0]?.hex || "#000000";
+	const centerX = Math.floor((cols - 1) / 2);
+	const centerY = Math.floor((rows - 1) / 2);
+
+	return TEMPLATE_DEFINITIONS.map((definition) => {
+		const sourceCells = definition.cells || definition.buildCells();
+		const cells = sourceCells
+			.map((cell) => ({
+				x: centerX + cell.dx,
+				y: centerY + cell.dy,
+				color: colorById.get(cell.colorId) || fallbackColor
+			}))
+			.filter((cell) => {
+				return cell.x >= 0 && cell.x < cols && cell.y >= 0 && cell.y < rows;
+			});
+
+		return {
+			id: definition.id,
+			name: definition.name,
+			description: definition.description,
+			cells
+		};
+	});
+}
+
 function createProject({
 	cols = 19,
 	rows = 15,
@@ -27,12 +231,14 @@ function createProject({
 } = {}) {
 	const colors = palette.colors.map((color) => color.hex);
 	const grid = Array.from({ length: rows }, () => Array(cols).fill(colors[0]));
+	const templates = createTemplateLibrary({ cols, rows, palette });
 
 	return {
 		cols,
 		rows,
 		palette,
 		colors,
+		templates,
 		grid,
 		currentColor: colors[0],
 		symmetryMode: "None",
@@ -43,6 +249,19 @@ function createProject({
 					grid[y][x] = colors[0];
 				}
 			}
+		},
+		applyTemplate(templateId) {
+			const template = templates.find((entry) => entry.id === templateId);
+			if (!template) {
+				return false;
+			}
+
+			this.clear();
+			for (const cell of template.cells) {
+				grid[cell.y][cell.x] = cell.color;
+			}
+
+			return true;
 		}
 	};
 }
@@ -143,9 +362,15 @@ if (typeof window !== "undefined") {
 	window.projectModule = {
 		createProject,
 		createSymmetryEngine,
+		createTemplateLibrary,
 		DEFAULT_PALETTE
 	};
 }
 if (typeof module !== "undefined") {
-	module.exports = { createProject, createSymmetryEngine, DEFAULT_PALETTE };
+	module.exports = {
+		createProject,
+		createSymmetryEngine,
+		createTemplateLibrary,
+		DEFAULT_PALETTE
+	};
 }

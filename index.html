@@ -2,11 +2,11 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<title>Treasured Pieces • Version 5.1.0 Alpha 2c</title>
+		<title>Treasured Pieces • Version 5.4.3</title>
 		<link rel="stylesheet" href="css/app.css" />
 	</head>
-	<body>
-		<div class="app" data-version="v0.0.0">
+	<body data-version="v5.4.3">
+		<div class="app">
 			<header>
 				<h1>Treasured Pieces</h1>
 				<div class="tagline">
@@ -30,6 +30,12 @@
 						<option>Diagonal ↗</option>
 					</select>
 				</label>
+				<label
+					>Template:
+					<select id="templateSelect"></select>
+				</label>
+				<span id="templateHint" class="template-hint" aria-live="polite"></span>
+				<button id="applyTemplateBtn" type="button">Apply Template</button>
 				<button id="clearBtn" type="button">🗑 Clear</button>
 			</div>
 
