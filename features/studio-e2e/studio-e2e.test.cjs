@@ -81,7 +81,6 @@ async function run() {
 		);
 
 		// Flow 4: clear should return painted cells to default.
-		await page.click("#tabCanvas");
 		await page.click("#clearBtn");
 		const clearedSource = await colorAt(page, source.x, source.y);
 		assert.strictEqual(

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v6.1.1
+
+- Simplified top toolbar by keeping Grid and Clear always visible.
+- Reduced mode switching by keeping only Symmetry and Motifs feature tabs.
+- Stabilized control area height to avoid page movement when switching features.
+- Removed palette side-scroll and tuned swatch sizing so 16 colors fit in one row on iPad.
+- Added roadmap language for curated palette bar planning.
+
 ## v6.1.0
 
 - Replaced motif dropdown flow with a visual motif picker using mini previews and names.

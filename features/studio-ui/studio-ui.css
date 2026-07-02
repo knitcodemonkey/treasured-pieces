@@ -90,6 +90,18 @@ h1 {
 	gap: 12px;
 }
 
+.controls-topbar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.control-inline-top {
+	white-space: nowrap;
+}
+
 .feature-tabs {
 	display: flex;
 	justify-content: center;
@@ -120,6 +132,7 @@ h1 {
 	border: 1px solid rgba(129, 109, 67, 0.45);
 	border-radius: 12px;
 	padding: 10px 12px;
+	min-height: 94px;
 }
 
 .feature-panel {
@@ -128,6 +141,7 @@ h1 {
 	justify-content: center;
 	gap: 12px;
 	flex-wrap: wrap;
+	min-height: 72px;
 }
 
 .feature-panel[hidden] {
@@ -137,9 +151,12 @@ h1 {
 .motif-picker {
 	display: flex;
 	gap: 8px;
-	flex-wrap: wrap;
-	justify-content: center;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
 	width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	padding-bottom: 2px;
 }
 
 .motif-option {
@@ -148,8 +165,9 @@ h1 {
 	align-items: center;
 	gap: 4px;
 	padding: 6px;
-	min-height: 72px;
+	min-height: 70px;
 	min-width: 68px;
+	flex: 0 0 auto;
 	border-radius: 10px;
 	background: rgba(0, 0, 0, 0.18);
 	border: 1px solid rgba(129, 109, 67, 0.55);
@@ -173,10 +191,14 @@ h1 {
 	color: #f0e5cb;
 	line-height: 1;
 	text-align: center;
-	max-width: 74px;
+	max-width: 68px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.clear-btn-sticky {
+	min-width: 124px;
 }
 
 .control-inline,
@@ -249,9 +271,11 @@ input[type="checkbox"]:focus-visible,
 #palette {
 	display: flex;
 	justify-content: center;
-	gap: 6px;
-	flex-wrap: wrap;
+	gap: 5px;
+	flex-wrap: nowrap;
 	margin: 0;
+	width: 100%;
+	padding-bottom: 2px;
 }
 
 .swatch {
@@ -259,8 +283,8 @@ input[type="checkbox"]:focus-visible,
 	border: 2px solid #666;
 	padding: 0;
 	background: transparent;
-	width: 32px;
-	height: 32px;
+	width: 30px;
+	height: 30px;
 	border-radius: 4px;
 	cursor: pointer;
 	box-sizing: border-box;
@@ -354,11 +378,19 @@ button:hover {
 	}
 
 	.feature-tabs {
-		justify-content: flex-start;
+		justify-content: center;
 	}
 
 	.feature-panel {
-		justify-content: flex-start;
+		justify-content: center;
+	}
+
+	.controls-topbar {
+		justify-content: center;
+	}
+
+	.clear-btn-sticky {
+		min-width: 0;
 	}
 
 	.motif-picker {
@@ -384,12 +416,12 @@ button:hover {
 	}
 
 	#palette {
-		gap: 8px;
+		gap: 5px;
 	}
 
 	.swatch {
-		width: 40px;
-		height: 40px;
+		width: 30px;
+		height: 30px;
 	}
 
 	.feature-tab {
@@ -400,6 +432,10 @@ button:hover {
 	.motif-option {
 		min-height: 82px;
 		min-width: 76px;
+	}
+
+	.feature-panels {
+		min-height: 106px;
 	}
 }
 

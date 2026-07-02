@@ -209,7 +209,7 @@ function createToolbarUI({
 		onClear();
 	});
 
-	setActivePanel("canvas");
+	setActivePanel("symmetry");
 }
 
 function createMotifPickerUI({

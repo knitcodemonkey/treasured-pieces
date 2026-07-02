@@ -23,9 +23,11 @@
 
 ## Upcoming
 
-- Multiple palettes
+- Selectable palettes
+- Preset palette sets
 - Save/load projects
 
 ## Future
 
 - Surface abstractions
+- Curated palette bar (mix-and-match colors from any palette)
