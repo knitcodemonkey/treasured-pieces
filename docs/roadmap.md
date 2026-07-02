@@ -1,17 +1,23 @@
 # Roadmap
 
+## Completed
+- Project object (ADR-0001)
+- Transform engine with symmetry modes
+- 4-way radial symmetry
+- Modular architecture (project.js, canvas.js, ui.js, app.js)
+- GitHub Pages deployment workflow
+- Release-driven versioning system
+- Dynamic version display in footer
+
 ## Current
-- Project object
-- Transform engine activation
+- 180° symmetry
 
 ## Next
-- 180° symmetry
-- 4-way radial
 - 8-way radial
-
-## Future
 - Variable canvas sizes
 - Non-destructive resize
+
+## Future
 - Multiple palettes
 - Surface abstractions
 - Templates
