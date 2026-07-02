@@ -55,6 +55,17 @@ jobs:
             exit 1
           fi
 
+      - name: Validate accessibility compliance section
+        shell: bash
+        run: |
+          NOTES_PATH="${{ steps.notes.outputs.path }}"
+          if grep -Eq '^## Accessibility Compliance$' "$NOTES_PATH"; then
+            echo "Accessibility compliance section found."
+          else
+            echo "Release notes must include a '## Accessibility Compliance' section: $NOTES_PATH"
+            exit 1
+          fi
+
       - name: Create GitHub Release from notes file
         if: steps.notes.outputs.has_file == 'true'
         uses: softprops/action-gh-release@v2

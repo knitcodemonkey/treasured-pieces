@@ -18,14 +18,16 @@ Release notes policy:
 GitHub automation:
 
 - The release workflow reads `docs/releases/<tag>.md` when available and uses it as the GitHub Release body.
-- If no matching file exists, the workflow falls back to GitHub-generated release notes.
+- The release workflow fails if `docs/releases/<tag>.md` is missing.
+- The release workflow fails if the release notes file does not include `## Accessibility Compliance`.
 
 Release execution checklist:
 
 1. Finalize the approved code and docs changes on `main`.
 2. Update `CHANGELOG.md` with the release section.
 3. Create or update `docs/releases/vX.Y.Z.md`.
-4. Commit release changes to `main`.
-5. Create and push tag `vX.Y.Z`.
-6. Verify the Create Release workflow completed successfully.
-7. Verify the GitHub Release body matches `docs/releases/vX.Y.Z.md`.
+4. Include `## Accessibility Compliance` and record the release's compliance status.
+5. Commit release changes to `main`.
+6. Create and push tag `vX.Y.Z`.
+7. Verify the Create Release workflow completed successfully.
+8. Verify the GitHub Release body matches `docs/releases/vX.Y.Z.md`.

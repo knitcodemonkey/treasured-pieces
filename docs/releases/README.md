@@ -8,6 +8,18 @@ This folder stores long-form release notes by version.
 - Filename format: `vX.Y.Z.md`.
 - Keep `CHANGELOG.md` as the concise canonical history.
 - Use these files for polished release copy (GitHub Releases, announcements, and archival notes).
+- Include a `## Accessibility Compliance` section in every release file.
+
+## Required Sections
+
+- `# vX.Y.Z`
+- `Release date: YYYY-MM-DD`
+- `## Summary`
+- `## Highlights`
+- `## Included Updates`
+- `## Accessibility Compliance`
+- `## Validation`
+- `## Tag`
 
 ## Releases
 
