@@ -39,23 +39,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Determine release tag
-        id: tag
-        shell: bash
-        run: |
-          VERSION="$(node -e "const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); const match=html.match(/data-version=\"([^\"]+)\"); if(match){console.log(match[1]);} else {console.log('v0.0.0');}" )"
-          echo "tag=$VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Create release tag
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag "${{ steps.tag.outputs.tag }}" || true
-          git push origin "${{ steps.tag.outputs.tag }}" || true
 
       - name: Deploy to GitHub Pages
         id: deployment

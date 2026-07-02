@@ -6,13 +6,12 @@
 		<link rel="stylesheet" href="css/app.css" />
 	</head>
 	<body>
-		<div class="app">
+		<div class="app" data-version="v0.0.0">
 			<header>
 				<h1>Treasured Pieces</h1>
 				<div class="tagline">
 					Beautiful treasures deserve to become beautiful works.
 				</div>
-				<div class="version">Version 5.1.0 Alpha 2c</div>
 				<div class="divider">──────────── ✦ ────────────</div>
 			</header>
 
@@ -35,6 +34,10 @@
 
 			<div id="palette"></div>
 			<canvas id="canvas" width="570" height="450"></canvas>
+
+			<div class="app-footer">
+				<span id="appVersion" class="app-version">v0.0.0</span>
+			</div>
 
 			<script src="js/project.js"></script>
 			<script src="js/ui.js"></script>
