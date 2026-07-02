@@ -96,6 +96,23 @@ function createSymmetryEngine({ cols, rows }) {
 				points.push(firstRotation, secondRotation, thirdRotation);
 				break;
 			}
+			case "8-Way Radial": {
+				const origin = { x, y };
+				const firstRotation = rotatePoint(origin);
+				const secondRotation = rotatePoint(firstRotation);
+				const thirdRotation = rotatePoint(secondRotation);
+				const radialPoints = [
+					origin,
+					firstRotation,
+					secondRotation,
+					thirdRotation
+				];
+				radialPoints.forEach((point) => {
+					const mirrored = { x: cols - 1 - point.x, y: rows - 1 - point.y };
+					points.push(mirrored);
+				});
+				break;
+			}
 			case "Diagonal ↘":
 				if (x < rows && y < cols) {
 					points.push({ x: y, y: x });

@@ -24,5 +24,13 @@ assert.deepStrictEqual(engine.getPoints(5, 3, "180°"), [
 	{ x: 5, y: 3 },
 	{ x: 13, y: 11 }
 ]);
+const eightWayPoints = engine.getPoints(8, 6, "8-Way Radial");
+assert.strictEqual(eightWayPoints.length, 4);
+assert.deepStrictEqual(eightWayPoints.sort((a, b) => a.x - b.x || a.y - b.y), [
+	{ x: 8, y: 6 },
+	{ x: 8, y: 8 },
+	{ x: 10, y: 6 },
+	{ x: 10, y: 8 }
+]);
 
 console.log("project tests passed");
