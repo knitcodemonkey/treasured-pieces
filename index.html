@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Treasured Pieces • Version 6.0.1</title>
+		<title>Treasured Pieces • Version 6.1.0</title>
 		<link rel="stylesheet" href="features/studio-ui/studio-ui.css" />
 	</head>
-	<body data-version="v6.0.1">
+	<body data-version="v6.1.0">
 		<a class="skip-link" href="#studioMain">Skip to drawing studio</a>
 		<main id="studioMain" class="app">
 			<header>
@@ -17,50 +17,95 @@
 			</header>
 
 			<section class="controls-panel" aria-label="Drawing controls">
-				<div class="controls-sequence" aria-hidden="true">
-					Canvas | Symmetry | Template | Actions
-				</div>
-				<div class="controls-row controls-row-primary">
-					<label class="control-inline"
-						><input id="gridToggle" type="checkbox" checked /> Grid
-						Overlay</label
+				<div class="feature-tabs" role="tablist" aria-label="Toolbar features">
+					<button
+						type="button"
+						class="feature-tab is-active"
+						id="tabCanvas"
+						role="tab"
+						aria-selected="true"
+						aria-controls="panelCanvas"
+						data-panel="canvas"
 					>
-					<span class="controls-divider" aria-hidden="true">|</span>
-					<label class="control-field"
-						><span>Symmetry Mode</span>
-						<select id="mirror">
-							<option value="None">Off</option>
-							<option value="Horizontal">Mirror Horizontal</option>
-							<option value="Vertical">Mirror Vertical</option>
-							<option value="180°">Rotate 180°</option>
-							<option value="Quad">Mirror Both Axes (Quad)</option>
-							<option value="4-Way Radial">Radial 4-Way</option>
-							<option value="8-Way Radial">Radial 8-Way</option>
-							<option value="Diagonal ↘">Mirror Diagonal ↘</option>
-							<option value="Diagonal ↗">Mirror Diagonal ↗</option>
-						</select></label
+						Canvas
+					</button>
+					<button
+						type="button"
+						class="feature-tab"
+						id="tabSymmetry"
+						role="tab"
+						aria-selected="false"
+						aria-controls="panelSymmetry"
+						data-panel="symmetry"
 					>
-					<span class="controls-divider" aria-hidden="true">|</span>
-					<label class="control-field"
-						><span>Template Library</span>
-						<select id="templateSelect"></select
-					></label>
+						Symmetry
+					</button>
+					<button
+						type="button"
+						class="feature-tab"
+						id="tabTemplate"
+						role="tab"
+						aria-selected="false"
+						aria-controls="panelTemplate"
+						data-panel="template"
+					>
+						Motifs
+					</button>
 				</div>
 
-				<div class="controls-row controls-row-secondary">
-					<span
-						id="templateHint"
-						class="template-hint"
-						aria-live="polite"
-					></span>
-					<span
-						class="controls-divider controls-divider-secondary"
-						aria-hidden="true"
-						>|</span
+				<div class="feature-panels">
+					<div
+						id="panelCanvas"
+						class="feature-panel is-active"
+						role="tabpanel"
+						aria-labelledby="tabCanvas"
+						data-panel="canvas"
 					>
-					<div class="control-actions">
-						<button id="applyTemplateBtn" type="button">Apply Template</button>
+						<label class="control-inline"
+							><input id="gridToggle" type="checkbox" checked /> Grid
+							Overlay</label
+						>
 						<button id="clearBtn" type="button">Clear Canvas</button>
+					</div>
+
+					<div
+						id="panelSymmetry"
+						class="feature-panel"
+						role="tabpanel"
+						aria-labelledby="tabSymmetry"
+						data-panel="symmetry"
+						hidden
+					>
+						<label class="control-field"
+							><span>Symmetry Mode</span>
+							<select id="mirror">
+								<option value="None">Off</option>
+								<option value="Horizontal">Mirror Horizontal</option>
+								<option value="Vertical">Mirror Vertical</option>
+								<option value="180°">Rotate 180°</option>
+								<option value="Quad">Mirror Both Axes (Quad)</option>
+								<option value="4-Way Radial">Radial 4-Way</option>
+								<option value="8-Way Radial">Radial 8-Way</option>
+								<option value="Diagonal ↘">Mirror Diagonal ↘</option>
+								<option value="Diagonal ↗">Mirror Diagonal ↗</option>
+							</select></label
+						>
+					</div>
+
+					<div
+						id="panelTemplate"
+						class="feature-panel"
+						role="tabpanel"
+						aria-labelledby="tabTemplate"
+						data-panel="template"
+						hidden
+					>
+						<div
+							id="motifPicker"
+							class="motif-picker"
+							role="group"
+							aria-label="Choose a motif"
+						></div>
 					</div>
 				</div>
 			</section>

@@ -54,18 +54,19 @@ async function run() {
 			"Cell should be painted, not default white"
 		);
 
-		// Flow 2: apply a template and verify center changed from default.
-		await page.selectOption("#templateSelect", "sun");
-		await page.click("#applyTemplateBtn");
+		// Flow 2: load a motif and verify center changed from default.
+		await page.click("#tabTemplate");
+		await page.click("#motifPicker .motif-option[data-motif-id='sun']");
 		const center = centerOfCell(9, 7);
 		const centerColor = await colorAt(page, center.x, center.y);
 		assert.notStrictEqual(
 			centerColor,
 			"#f9fffe",
-			"Template should change center cell"
+			"Motif should change center cell"
 		);
 
 		// Flow 3: symmetry paint should mirror across center in 180 mode.
+		await page.click("#tabSymmetry");
 		await page.selectOption("#mirror", "180°");
 		await selectSwatch(page, 6); // orange swatch
 		await clickCanvasCell(page, 2, 3);
@@ -80,6 +81,7 @@ async function run() {
 		);
 
 		// Flow 4: clear should return painted cells to default.
+		await page.click("#tabCanvas");
 		await page.click("#clearBtn");
 		const clearedSource = await colorAt(page, source.x, source.y);
 		assert.strictEqual(

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v6.1.0
+
+- Replaced motif dropdown flow with a visual motif picker using mini previews and names.
+- Merged motif selection and loading into a single tap interaction.
+- Simplified toolbar UX with feature tab panels (Canvas, Symmetry, Motifs).
+- Renamed user-facing motif terminology for clearer maker-focused language.
+- Updated end-to-end tests to match tabbed controls and visual motif selection.
+
 ## v6.0.1
 
 - Improved iPad mini and Apple Pencil ergonomics for toolbar and palette interaction.

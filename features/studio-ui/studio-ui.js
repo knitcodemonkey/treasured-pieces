@@ -170,14 +170,33 @@ function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 function createToolbarUI({
 	gridToggle,
 	symmetrySelect,
-	templateSelect,
-	applyTemplateButton,
 	clearButton,
+	featureTabs,
+	featurePanels,
 	onToggleGrid,
 	onChangeSymmetry,
-	onApplyTemplate,
 	onClear
 }) {
+	function setActivePanel(panelId) {
+		featureTabs?.forEach((tab) => {
+			const isActive = tab.dataset.panel === panelId;
+			tab.classList.toggle("is-active", isActive);
+			tab.setAttribute("aria-selected", isActive ? "true" : "false");
+		});
+
+		featurePanels?.forEach((panel) => {
+			const isActive = panel.dataset.panel === panelId;
+			panel.classList.toggle("is-active", isActive);
+			panel.hidden = !isActive;
+		});
+	}
+
+	featureTabs?.forEach((tab) => {
+		tab.addEventListener("click", () => {
+			setActivePanel(tab.dataset.panel);
+		});
+	});
+
 	gridToggle.addEventListener("change", () => {
 		onToggleGrid(gridToggle.checked);
 	});
@@ -186,15 +205,113 @@ function createToolbarUI({
 		onChangeSymmetry(symmetrySelect.value);
 	});
 
-	if (applyTemplateButton && templateSelect && onApplyTemplate) {
-		applyTemplateButton.addEventListener("click", () => {
-			onApplyTemplate(templateSelect.value);
-		});
-	}
-
 	clearButton.addEventListener("click", () => {
 		onClear();
 	});
+
+	setActivePanel("canvas");
+}
+
+function createMotifPickerUI({
+	container,
+	motifs,
+	cols,
+	rows,
+	onLoadMotif,
+	onLoadBlank
+}) {
+	if (!container) {
+		return { setActiveMotif: () => {} };
+	}
+
+	const PREVIEW_WIDTH = 48;
+	const PREVIEW_HEIGHT = 38;
+	const motifButtons = [];
+
+	function renderMotifPreview(canvas, motif) {
+		const ctx = canvas.getContext("2d");
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = "#f9fffe";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		if (!motif || !Array.isArray(motif.cells)) {
+			return;
+		}
+
+		const cellW = canvas.width / cols;
+		const cellH = canvas.height / rows;
+		for (const cell of motif.cells) {
+			ctx.fillStyle = cell.color;
+			ctx.fillRect(cell.x * cellW, cell.y * cellH, cellW, cellH);
+		}
+
+		ctx.strokeStyle = "rgba(0, 0, 0, 0.12)";
+		ctx.strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
+	}
+
+	function setActiveMotif(motifId) {
+		motifButtons.forEach((button) => {
+			const isActive = button.dataset.motifId === motifId;
+			button.classList.toggle("is-active", isActive);
+			button.setAttribute("aria-pressed", isActive ? "true" : "false");
+		});
+	}
+
+	function addMotifButton({ id, name, motif, onClick }) {
+		const button = document.createElement("button");
+		button.type = "button";
+		button.className = "motif-option";
+		button.dataset.motifId = id;
+		button.setAttribute("aria-pressed", "false");
+		button.setAttribute("aria-label", `Load motif ${name}`);
+
+		const preview = document.createElement("canvas");
+		preview.className = "motif-preview";
+		preview.width = PREVIEW_WIDTH;
+		preview.height = PREVIEW_HEIGHT;
+		renderMotifPreview(preview, motif);
+
+		const label = document.createElement("span");
+		label.className = "motif-name";
+		label.textContent = name;
+
+		button.appendChild(preview);
+		button.appendChild(label);
+		button.addEventListener("click", onClick);
+
+		container.appendChild(button);
+		motifButtons.push(button);
+	}
+
+	container.innerHTML = "";
+
+	addMotifButton({
+		id: "",
+		name: "Blank",
+		motif: null,
+		onClick: () => {
+			onLoadBlank?.();
+			setActiveMotif("");
+		}
+	});
+
+	motifs.forEach((motif) => {
+		addMotifButton({
+			id: motif.id,
+			name: motif.name,
+			motif,
+			onClick: () => {
+				onLoadMotif?.(motif.id);
+				setActiveMotif(motif.id);
+			}
+		});
+	});
+
+	setActiveMotif("");
+
+	return {
+		setActiveMotif
+	};
 }
 
 function createCanvasController({
@@ -464,11 +581,11 @@ function bootstrap() {
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
 	const paletteContainer = document.getElementById("palette");
+	const featureTabs = Array.from(document.querySelectorAll(".feature-tab"));
+	const featurePanels = Array.from(document.querySelectorAll(".feature-panel"));
 	const gridToggle = document.getElementById("gridToggle");
 	const symmetrySelect = document.getElementById("mirror");
-	const templateSelect = document.getElementById("templateSelect");
-	const templateHint = document.getElementById("templateHint");
-	const applyTemplateButton = document.getElementById("applyTemplateBtn");
+	const motifPicker = document.getElementById("motifPicker");
 	const clearButton = document.getElementById("clearBtn");
 	const symmetryEngine = window.projectCore.createSymmetryEngine({
 		cols: project.cols,
@@ -513,45 +630,28 @@ function bootstrap() {
 		}
 	});
 
-	if (templateSelect) {
-		const blankOption = document.createElement("option");
-		blankOption.value = "";
-		blankOption.textContent = "Blank";
-		blankOption.dataset.description = "Start from an empty canvas.";
-		templateSelect.appendChild(blankOption);
-
-		project.templates.forEach((template) => {
-			const option = document.createElement("option");
-			option.value = template.id;
-			option.textContent = template.name;
-			option.dataset.description = template.description;
-			templateSelect.appendChild(option);
-		});
-
-		const syncTemplateHint = () => {
-			const selected = templateSelect.selectedOptions[0];
-			const description =
-				selected?.dataset?.description || "Select a starter design.";
-
-			if (templateHint) {
-				templateHint.textContent = description;
+	const motifPickerUI = createMotifPickerUI({
+		container: motifPicker,
+		motifs: project.templates,
+		cols: project.cols,
+		rows: project.rows,
+		onLoadMotif: (motifId) => {
+			if (project.applyTemplate(motifId)) {
+				controller.render();
 			}
-			templateSelect.title = description;
-			if (applyTemplateButton) {
-				applyTemplateButton.title = description;
-			}
-		};
-
-		templateSelect.addEventListener("change", syncTemplateHint);
-		syncTemplateHint();
-	}
+		},
+		onLoadBlank: () => {
+			project.clear();
+			controller.render();
+		}
+	});
 
 	createToolbarUI({
 		gridToggle,
 		symmetrySelect,
-		templateSelect,
-		applyTemplateButton,
 		clearButton,
+		featureTabs,
+		featurePanels,
 		onToggleGrid: (checked) => {
 			project.showGrid = checked;
 			controller.render();
@@ -560,19 +660,9 @@ function bootstrap() {
 			project.symmetryMode = mode;
 			controller.render();
 		},
-		onApplyTemplate: (templateId) => {
-			if (!templateId) {
-				project.clear();
-				controller.render();
-				return;
-			}
-
-			if (project.applyTemplate(templateId)) {
-				controller.render();
-			}
-		},
 		onClear: () => {
 			project.clear();
+			motifPickerUI.setActiveMotif("");
 			controller.render();
 		}
 	});
