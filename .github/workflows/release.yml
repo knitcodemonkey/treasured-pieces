@@ -40,7 +40,33 @@ jobs:
 
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Create GitHub Release
+      - name: Find release notes file
+        id: notes
+        shell: bash
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          NOTES_PATH="docs/releases/${TAG}.md"
+
+          if [ -f "$NOTES_PATH" ]; then
+            echo "has_file=true" >> "$GITHUB_OUTPUT"
+            echo "path=$NOTES_PATH" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_file=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release from notes file
+        if: steps.notes.outputs.has_file == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Release ${{ steps.tag.outputs.tag }}
+          body_path: ${{ steps.notes.outputs.path }}
+          generate_release_notes: false
+          append_body: false
+          prerelease: ${{ contains(steps.tag.outputs.tag, '-') }}
+
+      - name: Create GitHub Release from generated notes
+        if: steps.notes.outputs.has_file != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}

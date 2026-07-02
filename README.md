@@ -78,6 +78,7 @@ Additional documentation is available in the `docs` directory.
 - **Vision** — Why Treasured Pieces exists
 - **Philosophy** — Design principles
 - **Roadmap** — Planned features and milestones
+- **Release Notes** — Long-form release writeups (`docs/releases`)
 - **Architecture** — Project structure
 - **Design Notes** — UI, palettes, symmetry, and surfaces
 - **Architecture Decision Records (ADRs)** — Why key technical decisions were made
