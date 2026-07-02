@@ -29,7 +29,9 @@ Recent improvements include:
 - Workbench-inspired interface
 - Named palettes with custom tooltips
 - Centered coordinate system
-- Foundation for transform-based symmetry
+- Transform-based symmetry engine
+- 180° rotational symmetry
+- 4-way and 8-way radial symmetry
 
 ---
 
@@ -45,8 +47,6 @@ Recent improvements include:
 
 ### Planned
 
-- Rotational symmetry
-- Radial symmetry
 - Variable canvas sizes
 - Non-destructive canvas resizing
 - Multiple palettes

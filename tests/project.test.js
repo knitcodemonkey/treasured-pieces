@@ -1,6 +1,10 @@
 const assert = require("assert");
 const { createProject, createSymmetryEngine } = require("../js/project");
 
+function sortPoints(points) {
+	return [...points].sort((a, b) => a.y - b.y || a.x - b.x);
+}
+
 const project = createProject({ cols: 19, rows: 15 });
 assert.strictEqual(project.cols, 19);
 assert.strictEqual(project.rows, 15);
@@ -14,12 +18,15 @@ assert.deepStrictEqual(engine.getPoints(0, 0, "Quad"), [
 	{ x: 0, y: 14 },
 	{ x: 18, y: 14 }
 ]);
-assert.deepStrictEqual(engine.getPoints(8, 6, "4-Way Radial"), [
-	{ x: 8, y: 6 },
-	{ x: 8, y: 8 },
-	{ x: 10, y: 8 },
-	{ x: 10, y: 6 }
-]);
+assert.deepStrictEqual(
+	sortPoints(engine.getPoints(8, 6, "4-Way Radial")),
+	sortPoints([
+		{ x: 8, y: 6 },
+		{ x: 8, y: 8 },
+		{ x: 10, y: 8 },
+		{ x: 10, y: 6 }
+	])
+);
 assert.deepStrictEqual(engine.getPoints(5, 3, "180°"), [
 	{ x: 5, y: 3 },
 	{ x: 13, y: 11 }
