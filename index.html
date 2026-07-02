@@ -2,11 +2,13 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Treasured Pieces • Version 5.4.3</title>
 		<link rel="stylesheet" href="css/app.css" />
 	</head>
 	<body data-version="v5.4.3">
-		<div class="app">
+		<a class="skip-link" href="#studioMain">Skip to drawing studio</a>
+		<main id="studioMain" class="app">
 			<header>
 				<h1>Treasured Pieces</h1>
 				<div class="tagline">
@@ -14,39 +16,68 @@
 				</div>
 			</header>
 
-			<div class="toolbar">
-				<label><input id="gridToggle" type="checkbox" checked /> Grid</label>
-				<label
-					>Symmetry:
-					<select id="mirror">
-						<option>None</option>
-						<option>Horizontal</option>
-						<option>Vertical</option>
-						<option>180°</option>
-						<option>Quad</option>
-						<option>4-Way Radial</option>
-						<option>8-Way Radial</option>
-						<option>Diagonal ↘</option>
-						<option>Diagonal ↗</option>
-					</select>
-				</label>
-				<label
-					>Template:
-					<select id="templateSelect"></select>
-				</label>
-				<span id="templateHint" class="template-hint" aria-live="polite"></span>
-				<button id="applyTemplateBtn" type="button">Apply Template</button>
-				<button id="clearBtn" type="button">🗑 Clear</button>
-			</div>
+			<section class="controls-panel" aria-label="Drawing controls">
+				<div class="controls-row controls-row-primary">
+					<label class="control-inline"
+						><input id="gridToggle" type="checkbox" checked /> Grid</label
+					>
+					<label class="control-field"
+						><span>Symmetry</span>
+						<select id="mirror">
+							<option>None</option>
+							<option>Horizontal</option>
+							<option>Vertical</option>
+							<option>180°</option>
+							<option>Quad</option>
+							<option>4-Way Radial</option>
+							<option>8-Way Radial</option>
+							<option>Diagonal ↘</option>
+							<option>Diagonal ↗</option>
+						</select></label
+					>
+					<label class="control-field"
+						><span>Template</span>
+						<select id="templateSelect"></select
+					></label>
+				</div>
 
-			<div id="palette"></div>
-			<canvas id="canvas" width="570" height="450"></canvas>
+				<div class="controls-row controls-row-secondary">
+					<span
+						id="templateHint"
+						class="template-hint"
+						aria-live="polite"
+					></span>
+					<div class="control-actions">
+						<button id="applyTemplateBtn" type="button">Apply Template</button>
+						<button id="clearBtn" type="button">Clear</button>
+					</div>
+				</div>
+			</section>
+
+			<section class="palette-panel" aria-label="Color palette">
+				<div
+					id="palette"
+					role="radiogroup"
+					aria-label="Choose paint color"
+				></div>
+			</section>
+
+			<section class="canvas-panel" aria-label="Pattern canvas">
+				<div class="canvas-wrap">
+					<canvas
+						id="canvas"
+						width="570"
+						height="450"
+						aria-label="Drawing canvas"
+					></canvas>
+				</div>
+			</section>
 
 			<script src="js/project.js"></script>
 			<script src="js/ui.js"></script>
 			<script src="js/canvas.js"></script>
 			<script src="js/app.js"></script>
-		</div>
+		</main>
 		<span id="appVersion" class="app-version">v0.0.0</span>
 	</body>
 </html>
