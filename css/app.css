@@ -1,84 +1,135 @@
-html,body{
-margin:0;
-background:#202124;
-color:#eee;
-font-family:Arial,sans-serif;
-user-select:none;
--webkit-user-select:none;
--webkit-touch-callout:none;
+html,
+body {
+	margin: 0;
+	background: #202124;
+	color: #eee;
+	font-family: Arial, sans-serif;
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
 }
-.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
-#palette{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.swatch{width:24px;height:24px;border:2px solid #666;border-radius:4px;cursor:pointer;box-sizing:border-box}
-.sel{outline:2px solid gold}
-canvas{border:1px solid #666;background:#fff;touch-action:none;user-select:none;-webkit-user-select:none}
+.toolbar {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	flex-wrap: wrap;
+	margin-bottom: 12px;
+}
+#palette {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	margin-bottom: 12px;
+}
+.swatch {
+	width: 24px;
+	height: 24px;
+	border: 2px solid #666;
+	border-radius: 4px;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+.sel {
+	outline: 2px solid gold;
+}
+canvas {
+	border: 1px solid #666;
+	background: #fff;
+	touch-action: none;
+	user-select: none;
+	-webkit-user-select: none;
+}
 
-.app{
-  width:fit-content;
-  margin:40px auto;
-  padding:32px 36px 40px;
-  background:#2b2c2f;
-  border:1px solid #6d6148;
-  border-radius:18px;
-  box-shadow:0 14px 40px rgba(0,0,0,.45);
+.app {
+	width: fit-content;
+	margin: 40px auto;
+	padding: 32px 36px 40px;
+	background: #2b2c2f;
+	border: 1px solid #6d6148;
+	border-radius: 18px;
+	box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
 }
-header{text-align:center;margin-bottom:24px}
-h1{
- margin:0;
- font:700 56px Georgia,"Times New Roman",serif;
- color:#ead8a5;
+header {
+	text-align: center;
+	margin-bottom: 24px;
 }
-.tagline{
- margin-top:10px;
- font-size:18px;
- font-style:italic;
- color:#ece3d1;
+h1 {
+	margin: 0;
+	font:
+		700 56px Georgia,
+		"Times New Roman",
+		serif;
+	color: #ead8a5;
 }
-.version{
- margin-top:18px;
- font-size:18px;
- font-weight:bold;
- color:#c8a45a;
+.tagline {
+	margin-top: 10px;
+	font-size: 18px;
+	font-style: italic;
+	color: #ece3d1;
 }
-.divider{
- margin:18px 0 24px;
- color:#8d7b56;
- letter-spacing:.08rem;
+.version {
+	margin-top: 18px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #c8a45a;
 }
-.toolbar{
- justify-content:center;
- gap:16px;
- border-top:1px solid #5d5648;
- padding-top:18px;
- margin-bottom:14px;
+.divider {
+	margin: 18px 0 24px;
+	color: #8d7b56;
+	letter-spacing: 0.08rem;
 }
-#palette{
- justify-content:center;
- margin:18px 0;
+.toolbar {
+	justify-content: center;
+	gap: 16px;
+	border-top: 1px solid #5d5648;
+	padding-top: 18px;
+	margin-bottom: 14px;
 }
-button{
- background:#3d3529;
- color:#f2efe8;
- border:1px solid #816d43;
- border-radius:8px;
- padding:8px 16px;
- cursor:pointer;
+#palette {
+	justify-content: center;
+	margin: 18px 0;
 }
-button:hover{background:#504634}
+button {
+	background: #3d3529;
+	color: #f2efe8;
+	border: 1px solid #816d43;
+	border-radius: 8px;
+	padding: 8px 16px;
+	cursor: pointer;
+}
+button:hover {
+	background: #504634;
+}
 
-
-.tooltip{
-position:fixed;
-pointer-events:none;
-background:#2f2b24;
-border:1px solid #816d43;
-border-radius:6px;
-padding:6px 10px;
-color:#f2efe8;
-font-size:14px;
-opacity:0;
-transform:translate(14px,14px);
-transition:opacity .08s ease;
-box-shadow:0 6px 16px rgba(0,0,0,.35);
+.tooltip {
+	position: fixed;
+	pointer-events: none;
+	background: #2f2b24;
+	border: 1px solid #816d43;
+	border-radius: 6px;
+	padding: 6px 10px;
+	color: #f2efe8;
+	font-size: 14px;
+	opacity: 0;
+	transform: translate(14px, 14px);
+	transition: opacity 0.08s ease;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
-.tooltip .sub{font-size:12px;color:#c8a45a;}
+.tooltip .sub {
+	font-size: 12px;
+	color: #c8a45a;
+}
+
+.page {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 40px 0;
+}
+
+.app-footer {
+	margin-top: 16px;
+	font-size: 0.8rem;
+	color: #8d7b56;
+	text-align: center;
+}
