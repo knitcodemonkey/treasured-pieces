@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v6.0.1
+
+- Improved iPad mini and Apple Pencil ergonomics for toolbar and palette interaction.
+- Added Pencil-focused drawing improvements with smoother continuous stroke interpolation.
+- Added a Pencil double-tap gesture on canvas to toggle between active color and white erase.
+- Removed native browser swatch tooltip duplication on iPad hover.
+- Repositioned custom swatch tooltips above colors with edge-aware fallback below.
+
 ## v6.0.0
 
 - Moved to feature-sliced architecture with co-located code and tests.

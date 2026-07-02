@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Treasured Pieces • Version 6.0.0</title>
+		<title>Treasured Pieces • Version 6.0.1</title>
 		<link rel="stylesheet" href="features/studio-ui/studio-ui.css" />
 	</head>
-	<body data-version="v6.0.0">
+	<body data-version="v6.0.1">
 		<a class="skip-link" href="#studioMain">Skip to drawing studio</a>
 		<main id="studioMain" class="app">
 			<header>
@@ -17,26 +17,32 @@
 			</header>
 
 			<section class="controls-panel" aria-label="Drawing controls">
+				<div class="controls-sequence" aria-hidden="true">
+					Canvas | Symmetry | Template | Actions
+				</div>
 				<div class="controls-row controls-row-primary">
 					<label class="control-inline"
-						><input id="gridToggle" type="checkbox" checked /> Grid</label
+						><input id="gridToggle" type="checkbox" checked /> Grid
+						Overlay</label
 					>
+					<span class="controls-divider" aria-hidden="true">|</span>
 					<label class="control-field"
-						><span>Symmetry</span>
+						><span>Symmetry Mode</span>
 						<select id="mirror">
-							<option>None</option>
-							<option>Horizontal</option>
-							<option>Vertical</option>
-							<option>180°</option>
-							<option>Quad</option>
-							<option>4-Way Radial</option>
-							<option>8-Way Radial</option>
-							<option>Diagonal ↘</option>
-							<option>Diagonal ↗</option>
+							<option value="None">Off</option>
+							<option value="Horizontal">Mirror Horizontal</option>
+							<option value="Vertical">Mirror Vertical</option>
+							<option value="180°">Rotate 180°</option>
+							<option value="Quad">Mirror Both Axes (Quad)</option>
+							<option value="4-Way Radial">Radial 4-Way</option>
+							<option value="8-Way Radial">Radial 8-Way</option>
+							<option value="Diagonal ↘">Mirror Diagonal ↘</option>
+							<option value="Diagonal ↗">Mirror Diagonal ↗</option>
 						</select></label
 					>
+					<span class="controls-divider" aria-hidden="true">|</span>
 					<label class="control-field"
-						><span>Template</span>
+						><span>Template Library</span>
 						<select id="templateSelect"></select
 					></label>
 				</div>
@@ -47,9 +53,14 @@
 						class="template-hint"
 						aria-live="polite"
 					></span>
+					<span
+						class="controls-divider controls-divider-secondary"
+						aria-hidden="true"
+						>|</span
+					>
 					<div class="control-actions">
 						<button id="applyTemplateBtn" type="button">Apply Template</button>
-						<button id="clearBtn" type="button">Clear</button>
+						<button id="clearBtn" type="button">Clear Canvas</button>
 					</div>
 				</div>
 			</section>

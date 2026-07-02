@@ -10,26 +10,86 @@ function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 	}
 
 	const swatches = [];
+	const byHex = new Map();
 
-	function setSelected(selectedSwatch) {
+	function positionTooltipForSwatch(swatch) {
+		const rect = swatch.getBoundingClientRect();
+		const viewportPadding = 8;
+		const gap = 8;
+		const tooltipWidth = tooltip.offsetWidth;
+		const tooltipHeight = tooltip.offsetHeight;
+
+		let left = rect.left + rect.width / 2;
+		const halfWidth = tooltipWidth / 2;
+		if (left - halfWidth < viewportPadding) {
+			left = viewportPadding + halfWidth;
+		}
+		if (left + halfWidth > window.innerWidth - viewportPadding) {
+			left = window.innerWidth - viewportPadding - halfWidth;
+		}
+
+		const topY = rect.top - gap;
+		const hasRoomAbove = topY - tooltipHeight > viewportPadding;
+		tooltip.dataset.placement = hasRoomAbove ? "top" : "bottom";
+		const top = hasRoomAbove ? topY : rect.bottom + gap;
+
+		tooltip.style.left = `${left}px`;
+		tooltip.style.top = `${top}px`;
+	}
+
+	function showTooltipForSwatch(swatch, entry) {
+		tooltip.innerHTML = `<strong>${entry.name}</strong><div class="sub">${palette.name}</div>`;
+		tooltip.style.opacity = "1";
+		positionTooltipForSwatch(swatch);
+	}
+
+	function hideTooltip() {
+		tooltip.style.opacity = "0";
+	}
+
+	function setSelected(selectedSwatch, { focus = true } = {}) {
 		swatches.forEach((item) => {
 			const isActive = item === selectedSwatch;
 			item.classList.toggle("sel", isActive);
 			item.setAttribute("aria-checked", isActive ? "true" : "false");
 			item.tabIndex = isActive ? 0 : -1;
 		});
-		selectedSwatch?.focus();
+		if (focus) {
+			selectedSwatch?.focus();
+		}
 	}
 
-	function moveSelection(nextIndex) {
+	function selectByIndex(nextIndex, { focus = true } = {}) {
 		const boundedIndex = Math.max(0, Math.min(swatches.length - 1, nextIndex));
 		const swatch = swatches[boundedIndex];
 		if (!swatch) {
 			return;
 		}
 
-		setSelected(swatch);
+		setSelected(swatch, { focus });
 		onSelect(palette.colors[boundedIndex].hex);
+	}
+
+	function selectByHex(hex, { focus = false, notify = false } = {}) {
+		if (!hex) {
+			return false;
+		}
+
+		const normalized = String(hex).toUpperCase();
+		const swatch = byHex.get(normalized);
+		if (!swatch) {
+			return false;
+		}
+
+		setSelected(swatch, { focus });
+		if (notify) {
+			const index = swatches.indexOf(swatch);
+			if (index >= 0) {
+				onSelect(palette.colors[index].hex);
+			}
+		}
+
+		return true;
 	}
 
 	palette.colors.forEach((entry, index) => {
@@ -38,28 +98,33 @@ function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 		swatch.setAttribute("role", "radio");
 		swatch.setAttribute("aria-label", `${entry.name} (${entry.hex})`);
 		swatch.setAttribute("aria-checked", index === 0 ? "true" : "false");
-		swatch.title = `${entry.name} - ${palette.name}`;
 		swatch.tabIndex = index === 0 ? 0 : -1;
 		swatch.className = `swatch${index === 0 ? " sel" : ""}`;
 		swatch.style.background = entry.hex;
+		byHex.set(entry.hex.toUpperCase(), swatch);
 
 		swatch.addEventListener("mouseenter", () => {
-			tooltip.innerHTML = `<strong>${entry.name}</strong><div class="sub">${palette.name}</div>`;
-			tooltip.style.opacity = "1";
+			showTooltipForSwatch(swatch, entry);
 		});
 
-		swatch.addEventListener("mousemove", (event) => {
-			tooltip.style.left = `${event.clientX}px`;
-			tooltip.style.top = `${event.clientY}px`;
+		swatch.addEventListener("mousemove", () => {
+			positionTooltipForSwatch(swatch);
 		});
 
-		swatch.addEventListener("mouseleave", () => {
-			tooltip.style.opacity = "0";
+		swatch.addEventListener("pointerenter", () => {
+			showTooltipForSwatch(swatch, entry);
 		});
+
+		swatch.addEventListener("pointermove", () => {
+			positionTooltipForSwatch(swatch);
+		});
+
+		swatch.addEventListener("mouseleave", hideTooltip);
+		swatch.addEventListener("pointerleave", hideTooltip);
+		swatch.addEventListener("blur", hideTooltip);
 
 		swatch.addEventListener("click", () => {
-			setSelected(swatch);
-			onSelect(entry.hex);
+			selectByIndex(index);
 		});
 
 		swatch.addEventListener("keydown", (event) => {
@@ -68,26 +133,25 @@ function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 				case "ArrowRight":
 				case "ArrowDown":
 					event.preventDefault();
-					moveSelection(currentIndex + 1);
+					selectByIndex(currentIndex + 1);
 					break;
 				case "ArrowLeft":
 				case "ArrowUp":
 					event.preventDefault();
-					moveSelection(currentIndex - 1);
+					selectByIndex(currentIndex - 1);
 					break;
 				case "Home":
 					event.preventDefault();
-					moveSelection(0);
+					selectByIndex(0);
 					break;
 				case "End":
 					event.preventDefault();
-					moveSelection(swatches.length - 1);
+					selectByIndex(swatches.length - 1);
 					break;
 				case "Enter":
 				case " ":
 					event.preventDefault();
-					setSelected(swatch);
-					onSelect(entry.hex);
+					selectByIndex(index);
 					break;
 				default:
 					break;
@@ -97,6 +161,10 @@ function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 		container.appendChild(swatch);
 		swatches.push(swatch);
 	});
+
+	return {
+		selectByHex
+	};
 }
 
 function createToolbarUI({
@@ -134,10 +202,79 @@ function createCanvasController({
 	context,
 	project,
 	symmetryEngine,
-	cellSize
+	cellSize,
+	onPenToggleEraser
 }) {
 	let drawing = false;
 	let lastPaintedCell = null;
+	let activePointerId = null;
+	let hasSeenPenInput = false;
+	let lastPenTapTime = 0;
+	let lastPenTapCell = null;
+	const PEN_TOGGLE_WINDOW_MS = 320;
+
+	function getCellFromEvent(event) {
+		const rect = canvas.getBoundingClientRect();
+		const x = Math.floor((event.clientX - rect.left) / cellSize);
+		const y = Math.floor((event.clientY - rect.top) / cellSize);
+
+		if (x < 0 || x >= project.cols || y < 0 || y >= project.rows) {
+			return null;
+		}
+
+		return { x, y };
+	}
+
+	function paintCell(x, y) {
+		for (const point of symmetryEngine.getPoints(x, y, project.symmetryMode)) {
+			project.grid[point.y][point.x] = project.currentColor;
+		}
+	}
+
+	function paintLine(fromCell, toCell) {
+		let x0 = fromCell.x;
+		let y0 = fromCell.y;
+		const x1 = toCell.x;
+		const y1 = toCell.y;
+
+		const deltaX = Math.abs(x1 - x0);
+		const deltaY = Math.abs(y1 - y0);
+		const stepX = x0 < x1 ? 1 : -1;
+		const stepY = y0 < y1 ? 1 : -1;
+		let error = deltaX - deltaY;
+
+		while (true) {
+			paintCell(x0, y0);
+
+			if (x0 === x1 && y0 === y1) {
+				break;
+			}
+
+			const doubledError = error * 2;
+			if (doubledError > -deltaY) {
+				error -= deltaY;
+				x0 += stepX;
+			}
+			if (doubledError < deltaX) {
+				error += deltaX;
+				y0 += stepY;
+			}
+		}
+	}
+
+	function shouldIgnorePointer(event) {
+		if (!event.isPrimary) {
+			return true;
+		}
+
+		// On iPad, once pencil input is detected, ignore touch pointers to reduce
+		// accidental marks from palm or hand contact during stylus drawing.
+		if (hasSeenPenInput && event.pointerType === "touch") {
+			return true;
+		}
+
+		return false;
+	}
 
 	function render() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
@@ -184,29 +321,64 @@ function createCanvasController({
 	}
 
 	function paintEvent(event) {
-		const rect = canvas.getBoundingClientRect();
-		const x = Math.floor((event.clientX - rect.left) / cellSize);
-		const y = Math.floor((event.clientY - rect.top) / cellSize);
-
-		if (x < 0 || x >= project.cols || y < 0 || y >= project.rows) {
+		const nextCell = getCellFromEvent(event);
+		if (!nextCell) {
 			return;
 		}
 
-		if (lastPaintedCell && lastPaintedCell.x === x && lastPaintedCell.y === y) {
+		if (
+			lastPaintedCell &&
+			lastPaintedCell.x === nextCell.x &&
+			lastPaintedCell.y === nextCell.y
+		) {
 			return;
 		}
 
-		lastPaintedCell = { x, y };
-
-		for (const point of symmetryEngine.getPoints(x, y, project.symmetryMode)) {
-			project.grid[point.y][point.x] = project.currentColor;
+		if (lastPaintedCell) {
+			paintLine(lastPaintedCell, nextCell);
+		} else {
+			paintCell(nextCell.x, nextCell.y);
 		}
+
+		lastPaintedCell = nextCell;
 
 		render();
 	}
 
 	canvas.addEventListener("pointerdown", (event) => {
+		if (shouldIgnorePointer(event)) {
+			return;
+		}
+
+		if (event.pointerType === "pen") {
+			const penCell = getCellFromEvent(event);
+			const now = Date.now();
+			const isDoubleTapToggle =
+				penCell &&
+				lastPenTapCell &&
+				now - lastPenTapTime <= PEN_TOGGLE_WINDOW_MS &&
+				lastPenTapCell.x === penCell.x &&
+				lastPenTapCell.y === penCell.y;
+
+			if (isDoubleTapToggle) {
+				onPenToggleEraser?.();
+				lastPenTapTime = 0;
+				lastPenTapCell = null;
+				drawing = false;
+				activePointerId = null;
+				lastPaintedCell = null;
+				return;
+			}
+
+			lastPenTapTime = now;
+			lastPenTapCell = penCell;
+		}
+
 		event.preventDefault();
+		activePointerId = event.pointerId;
+		if (event.pointerType === "pen") {
+			hasSeenPenInput = true;
+		}
 		canvas.setPointerCapture?.(event.pointerId);
 
 		drawing = true;
@@ -215,19 +387,31 @@ function createCanvasController({
 	});
 
 	canvas.addEventListener("pointermove", (event) => {
-		event.preventDefault();
-		if (drawing) {
-			paintEvent(event);
+		if (!drawing || event.pointerId !== activePointerId) {
+			return;
 		}
+
+		event.preventDefault();
+		paintEvent(event);
 	});
 
-	canvas.addEventListener("pointercancel", () => {
+	canvas.addEventListener("pointercancel", (event) => {
+		if (event.pointerId !== activePointerId) {
+			return;
+		}
+
 		drawing = false;
+		activePointerId = null;
 		lastPaintedCell = null;
 	});
 
-	window.addEventListener("pointerup", () => {
+	window.addEventListener("pointerup", (event) => {
+		if (event.pointerId !== activePointerId) {
+			return;
+		}
+
 		drawing = false;
+		activePointerId = null;
 		lastPaintedCell = null;
 	});
 
@@ -295,14 +479,37 @@ function bootstrap() {
 		context,
 		project,
 		symmetryEngine,
-		cellSize: CELL
+		cellSize: CELL,
+		onPenToggleEraser: () => {
+			const isEraseActive =
+				normalizeColor(project.currentColor) === normalizeColor(eraseColor);
+			const nextColor = isEraseActive ? lastPaintColor : eraseColor;
+
+			project.currentColor = nextColor;
+			if (normalizeColor(nextColor) !== normalizeColor(eraseColor)) {
+				lastPaintColor = nextColor;
+			}
+
+			paletteUI?.selectByHex(nextColor, { focus: false, notify: false });
+		}
 	});
 
-	createPaletteUI({
+	const eraseColor = project.colors[0];
+	const normalizeColor = (value) => String(value || "").toUpperCase();
+	let lastPaintColor =
+		normalizeColor(project.currentColor) === normalizeColor(eraseColor)
+			? project.colors[1] || eraseColor
+			: project.currentColor;
+	let paletteUI = null;
+
+	paletteUI = createPaletteUI({
 		palette: project.palette,
 		container: paletteContainer,
 		onSelect: (color) => {
 			project.currentColor = color;
+			if (normalizeColor(color) !== normalizeColor(eraseColor)) {
+				lastPaintColor = color;
+			}
 		}
 	});
 

@@ -90,6 +90,15 @@ h1 {
 	gap: 10px;
 }
 
+.controls-sequence {
+	text-align: center;
+	font-size: 0.84rem;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	color: #b9ab8c;
+	font-weight: 700;
+}
+
 .controls-row {
 	display: flex;
 	align-items: center;
@@ -102,11 +111,24 @@ h1 {
 	gap: 18px;
 }
 
+.controls-divider {
+	color: #9a8d70;
+	font-size: 1rem;
+	font-weight: 700;
+	line-height: 1;
+	user-select: none;
+}
+
 .controls-row-secondary {
 	justify-content: center;
-	flex-direction: column;
+	flex-direction: row;
+	flex-wrap: wrap;
 	padding: 6px 2px 0;
 	gap: 8px;
+}
+
+.controls-divider-secondary {
+	opacity: 0.8;
 }
 
 .control-inline,
@@ -157,6 +179,7 @@ select,
 input[type="checkbox"],
 .swatch {
 	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
 }
 
 button:focus-visible,
@@ -256,9 +279,13 @@ button:hover {
 	color: #f2efe8;
 	font-size: 14px;
 	opacity: 0;
-	transform: translate(14px, 14px);
+	transform: translate(-50%, -100%);
 	transition: opacity 0.08s ease;
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.tooltip[data-placement="bottom"] {
+	transform: translate(-50%, 0);
 }
 
 .tooltip .sub {
@@ -300,5 +327,89 @@ button:hover {
 
 	.canvas-panel {
 		padding: 8px;
+	}
+
+	.controls-row-primary .controls-divider {
+		display: none;
+	}
+
+	.controls-sequence {
+		font-size: 0.78rem;
+	}
+}
+
+/* iPad mini + touch/pen ergonomics */
+@media (hover: none) and (pointer: coarse) {
+	.control-inline,
+	.control-field {
+		font-size: 1rem;
+	}
+
+	select,
+	button {
+		min-height: 46px;
+		font-size: 0.98rem;
+	}
+
+	#palette {
+		gap: 8px;
+	}
+
+	.swatch {
+		width: 40px;
+		height: 40px;
+	}
+
+	.controls-row-primary {
+		gap: 14px;
+	}
+
+	.control-actions {
+		gap: 12px;
+	}
+}
+
+/* iPad mini portrait specific layout tightening */
+@media (min-width: 700px) and (max-width: 820px) and (orientation: portrait) {
+	.app {
+		margin: 10px;
+		padding: 20px 14px 22px;
+	}
+
+	h1 {
+		font-size: 48px;
+	}
+
+	.controls-row-primary {
+		justify-content: space-between;
+		gap: 10px;
+	}
+
+	.control-field {
+		flex: 1 1 300px;
+		justify-content: space-between;
+	}
+
+	.control-field select {
+		width: 58%;
+	}
+
+	.controls-row-secondary {
+		justify-content: center;
+		gap: 10px;
+	}
+
+	.template-hint {
+		max-width: 100%;
+		flex-basis: 100%;
+	}
+
+	.control-actions {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.control-actions button {
+		min-width: 180px;
 	}
 }
