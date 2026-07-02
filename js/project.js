@@ -101,6 +101,7 @@ function createSymmetryEngine({ cols, rows }) {
 				const firstRotation = rotatePoint(origin);
 				const secondRotation = rotatePoint(firstRotation);
 				const thirdRotation = rotatePoint(secondRotation);
+				points.push(firstRotation, secondRotation, thirdRotation);
 				const radialPoints = [
 					origin,
 					firstRotation,
