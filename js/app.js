@@ -2,7 +2,45 @@ const COLS = 19;
 const ROWS = 15;
 const CELL = 30;
 
+async function updateVersionLabel(versionLabel) {
+	const fallbackVersion =
+		document.body.dataset.version ||
+		versionLabel?.textContent?.trim() ||
+		"v0.0.0";
+
+	if (!versionLabel) {
+		return fallbackVersion;
+	}
+
+	try {
+		const response = await fetch(
+			"https://api.github.com/repos/knitcodemonkey/treasured-pieces/releases?per_page=5"
+		);
+		if (!response.ok) {
+			throw new Error("Release lookup failed");
+		}
+
+		const releases = await response.json();
+		const latestTag =
+			releases.find((release) => release.tag_name)?.tag_name || null;
+		const nextVersion = latestTag || fallbackVersion;
+		versionLabel.textContent = nextVersion;
+		return nextVersion;
+	} catch (error) {
+		versionLabel.textContent = fallbackVersion;
+		return fallbackVersion;
+	}
+}
+
 function bootstrap() {
+	const versionLabel = document.getElementById("appVersion");
+	if (versionLabel) {
+		versionLabel.textContent =
+			document.body.dataset.version || versionLabel.textContent || "v0.0.0";
+	}
+
+	void updateVersionLabel(versionLabel);
+
 	const project = window.projectModule.createProject({
 		cols: COLS,
 		rows: ROWS

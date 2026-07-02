@@ -67,11 +67,14 @@ h1 {
 	font-style: italic;
 	color: #ece3d1;
 }
-.version {
-	margin-top: 18px;
-	font-size: 18px;
-	font-weight: bold;
-	color: #c8a45a;
+.app-version {
+	display: inline-block;
+	margin-top: 12px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #8d7b56;
 }
 .divider {
 	margin: 18px 0 24px;
