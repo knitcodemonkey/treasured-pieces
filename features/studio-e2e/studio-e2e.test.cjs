@@ -55,7 +55,7 @@ async function run() {
 		);
 
 		// Flow 2: load a motif and verify center changed from default.
-		await page.click("#tabTemplate");
+		await page.click("#openMotifsBtn");
 		await page.click("#motifPicker .motif-option[data-motif-id='sun']");
 		const center = centerOfCell(9, 7);
 		const centerColor = await colorAt(page, center.x, center.y);
@@ -66,7 +66,6 @@ async function run() {
 		);
 
 		// Flow 3: symmetry paint should mirror across center in 180 mode.
-		await page.click("#tabSymmetry");
 		await page.selectOption("#mirror", "180°");
 		await selectSwatch(page, 6); // orange swatch
 		await clickCanvasCell(page, 2, 3);

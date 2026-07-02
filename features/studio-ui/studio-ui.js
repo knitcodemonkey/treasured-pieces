@@ -171,30 +171,42 @@ function createToolbarUI({
 	gridToggle,
 	symmetrySelect,
 	clearButton,
-	featureTabs,
-	featurePanels,
+	openMotifsButton,
+	closeMotifsButton,
+	motifModal,
+	motifModalBackdrop,
+	onOpenMotifs,
+	onCloseMotifs,
 	onToggleGrid,
 	onChangeSymmetry,
 	onClear
 }) {
-	function setActivePanel(panelId) {
-		featureTabs?.forEach((tab) => {
-			const isActive = tab.dataset.panel === panelId;
-			tab.classList.toggle("is-active", isActive);
-			tab.setAttribute("aria-selected", isActive ? "true" : "false");
-		});
-
-		featurePanels?.forEach((panel) => {
-			const isActive = panel.dataset.panel === panelId;
-			panel.classList.toggle("is-active", isActive);
-			panel.hidden = !isActive;
-		});
+	function openMotifsModal() {
+		if (!motifModal) {
+			return;
+		}
+		motifModal.hidden = false;
+		document.body.style.overflow = "hidden";
+		onOpenMotifs?.();
 	}
 
-	featureTabs?.forEach((tab) => {
-		tab.addEventListener("click", () => {
-			setActivePanel(tab.dataset.panel);
-		});
+	function closeMotifsModal() {
+		if (!motifModal) {
+			return;
+		}
+		motifModal.hidden = true;
+		document.body.style.overflow = "";
+		onCloseMotifs?.();
+	}
+
+	openMotifsButton?.addEventListener("click", openMotifsModal);
+	closeMotifsButton?.addEventListener("click", closeMotifsModal);
+	motifModalBackdrop?.addEventListener("click", closeMotifsModal);
+
+	window.addEventListener("keydown", (event) => {
+		if (event.key === "Escape" && motifModal && !motifModal.hidden) {
+			closeMotifsModal();
+		}
 	});
 
 	gridToggle.addEventListener("change", () => {
@@ -209,17 +221,13 @@ function createToolbarUI({
 		onClear();
 	});
 
-	setActivePanel("symmetry");
+	return {
+		openMotifsModal,
+		closeMotifsModal
+	};
 }
 
-function createMotifPickerUI({
-	container,
-	motifs,
-	cols,
-	rows,
-	onLoadMotif,
-	onLoadBlank
-}) {
+function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 	if (!container) {
 		return { setActiveMotif: () => {} };
 	}
@@ -285,16 +293,6 @@ function createMotifPickerUI({
 
 	container.innerHTML = "";
 
-	addMotifButton({
-		id: "",
-		name: "Blank",
-		motif: null,
-		onClick: () => {
-			onLoadBlank?.();
-			setActiveMotif("");
-		}
-	});
-
 	motifs.forEach((motif) => {
 		addMotifButton({
 			id: motif.id,
@@ -306,8 +304,6 @@ function createMotifPickerUI({
 			}
 		});
 	});
-
-	setActiveMotif("");
 
 	return {
 		setActiveMotif
@@ -581,10 +577,12 @@ function bootstrap() {
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
 	const paletteContainer = document.getElementById("palette");
-	const featureTabs = Array.from(document.querySelectorAll(".feature-tab"));
-	const featurePanels = Array.from(document.querySelectorAll(".feature-panel"));
 	const gridToggle = document.getElementById("gridToggle");
 	const symmetrySelect = document.getElementById("mirror");
+	const openMotifsButton = document.getElementById("openMotifsBtn");
+	const closeMotifsButton = document.getElementById("closeMotifsBtn");
+	const motifModal = document.getElementById("motifModal");
+	const motifModalBackdrop = document.getElementById("motifModalBackdrop");
 	const motifPicker = document.getElementById("motifPicker");
 	const clearButton = document.getElementById("clearBtn");
 	const symmetryEngine = window.projectCore.createSymmetryEngine({
@@ -638,20 +636,25 @@ function bootstrap() {
 		onLoadMotif: (motifId) => {
 			if (project.applyTemplate(motifId)) {
 				controller.render();
+				toolbarUI?.closeMotifsModal();
 			}
-		},
-		onLoadBlank: () => {
-			project.clear();
-			controller.render();
 		}
 	});
 
-	createToolbarUI({
+	const toolbarUI = createToolbarUI({
 		gridToggle,
 		symmetrySelect,
 		clearButton,
-		featureTabs,
-		featurePanels,
+		openMotifsButton,
+		closeMotifsButton,
+		motifModal,
+		motifModalBackdrop,
+		onOpenMotifs: () => {
+			openMotifsButton?.classList.add("is-active");
+		},
+		onCloseMotifs: () => {
+			openMotifsButton?.classList.remove("is-active");
+		},
 		onToggleGrid: (checked) => {
 			project.showGrid = checked;
 			controller.render();
@@ -662,7 +665,7 @@ function bootstrap() {
 		},
 		onClear: () => {
 			project.clear();
-			motifPickerUI.setActiveMotif("");
+			motifPickerUI.setActiveMotif(null);
 			controller.render();
 		}
 	});

@@ -22,80 +22,51 @@
 						><input id="gridToggle" type="checkbox" checked /> Grid
 						Overlay</label
 					>
-					<div
-						class="feature-tabs"
-						role="tablist"
-						aria-label="Toolbar features"
+					<label class="control-field control-field-inline"
+						><span>Symmetry</span>
+						<select id="mirror">
+							<option value="None">Off</option>
+							<option value="Horizontal">Mirror Horizontal</option>
+							<option value="Vertical">Mirror Vertical</option>
+							<option value="180°">Rotate 180°</option>
+							<option value="Quad">Mirror Both Axes (Quad)</option>
+							<option value="4-Way Radial">Radial 4-Way</option>
+							<option value="8-Way Radial">Radial 8-Way</option>
+							<option value="Diagonal ↘">Mirror Diagonal ↘</option>
+							<option value="Diagonal ↗">Mirror Diagonal ↗</option>
+						</select></label
 					>
-						<button
-							type="button"
-							class="feature-tab is-active"
-							id="tabSymmetry"
-							role="tab"
-							aria-selected="true"
-							aria-controls="panelSymmetry"
-							data-panel="symmetry"
-						>
-							Symmetry
-						</button>
-						<button
-							type="button"
-							class="feature-tab"
-							id="tabTemplate"
-							role="tab"
-							aria-selected="false"
-							aria-controls="panelTemplate"
-							data-panel="template"
-						>
-							Motifs
-						</button>
-					</div>
+					<button id="openMotifsBtn" type="button" class="feature-tab">
+						Motifs
+					</button>
 					<button id="clearBtn" type="button" class="clear-btn-sticky">
 						Clear Canvas
 					</button>
 				</div>
+			</section>
 
-				<div class="feature-panels">
-					<div
-						id="panelSymmetry"
-						class="feature-panel is-active"
-						role="tabpanel"
-						aria-labelledby="tabSymmetry"
-						data-panel="symmetry"
-					>
-						<label class="control-field"
-							><span>Symmetry Mode</span>
-							<select id="mirror">
-								<option value="None">Off</option>
-								<option value="Horizontal">Mirror Horizontal</option>
-								<option value="Vertical">Mirror Vertical</option>
-								<option value="180°">Rotate 180°</option>
-								<option value="Quad">Mirror Both Axes (Quad)</option>
-								<option value="4-Way Radial">Radial 4-Way</option>
-								<option value="8-Way Radial">Radial 8-Way</option>
-								<option value="Diagonal ↘">Mirror Diagonal ↘</option>
-								<option value="Diagonal ↗">Mirror Diagonal ↗</option>
-							</select></label
-						>
-					</div>
-
-					<div
-						id="panelTemplate"
-						class="feature-panel"
-						role="tabpanel"
-						aria-labelledby="tabTemplate"
-						data-panel="template"
-						hidden
-					>
+			<div id="motifModal" class="motif-modal" hidden>
+				<div id="motifModalBackdrop" class="motif-modal-backdrop"></div>
+				<section
+					class="motif-modal-dialog"
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="motifModalTitle"
+				>
+					<header class="motif-modal-header">
+						<h2 id="motifModalTitle">Motifs</h2>
+						<button id="closeMotifsBtn" type="button">Close</button>
+					</header>
+					<div class="motif-modal-body">
 						<div
 							id="motifPicker"
-							class="motif-picker"
+							class="motif-picker motif-picker-modal"
 							role="group"
 							aria-label="Choose a motif"
 						></div>
 					</div>
-				</div>
-			</section>
+				</section>
+			</div>
 
 			<section class="palette-panel" aria-label="Color palette">
 				<div

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## v6.1.2
+
+- Replaced tabbed Motifs panel with a dedicated Motifs modal.
+- Kept Symmetry selection permanently visible in the top bar.
+- Added modal open/close behavior including backdrop and Escape handling.
+- Removed the Blank motif option from the motif picker.
+- Redesigned the Moon motif with a cleaner crescent-and-stars look.
+- Updated end-to-end tests for the modal motifs workflow.
+
 ## v6.1.1
 
 - Simplified top toolbar by keeping Grid and Clear always visible.

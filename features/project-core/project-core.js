@@ -50,23 +50,36 @@ const TEMPLATE_DEFINITIONS = [
 	{
 		id: "moon",
 		name: "Moon",
-		description: "A bold crescent moon silhouette.",
+		description: "A crescent moon with a small star field accent.",
 		buildCells() {
 			const cells = [];
-			for (let y = -5; y <= 5; y += 1) {
-				for (let x = -4; x <= 2; x += 1) {
-					if (x * x + y * y < 22) {
+
+			const outerRadius = 5;
+			const innerRadius = 4;
+			const innerOffsetX = 2;
+
+			for (let y = -outerRadius; y <= outerRadius; y += 1) {
+				for (let x = -outerRadius; x <= outerRadius; x += 1) {
+					const inOuter = x * x + y * y <= outerRadius * outerRadius;
+					const innerX = x - innerOffsetX;
+					const inInner = innerX * innerX + y * y <= innerRadius * innerRadius;
+
+					if (inOuter && !inInner) {
 						cells.push({ dx: x, dy: y, colorId: "white" });
 					}
 				}
 			}
-			for (let y = -4; y <= 4; y += 1) {
-				for (let x = -1; x <= 4; x += 1) {
-					if (x * x + y * y < 16) {
-						cells.push({ dx: x, dy: y, colorId: "black" });
-					}
-				}
-			}
+
+			[
+				{ dx: 4, dy: -4, colorId: "yellow" },
+				{ dx: 6, dy: -2, colorId: "light_blue" },
+				{ dx: 5, dy: 1, colorId: "yellow" },
+				{ dx: 7, dy: 2, colorId: "light_blue" },
+				{ dx: 6, dy: 4, colorId: "yellow" }
+			].forEach((star) => {
+				cells.push(star);
+			});
+
 			return cells;
 		}
 	},
