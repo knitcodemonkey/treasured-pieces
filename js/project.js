@@ -50,23 +50,16 @@ function createProject({
 function createSymmetryEngine({ cols, rows }) {
 	const centerX = (cols - 1) / 2;
 	const centerY = (rows - 1) / 2;
-	const rotatePoint = (point) => {
-		const dx = point.x - centerX;
-		const dy = point.y - centerY;
-		return {
-			x: Math.round(centerX + dy),
-			y: Math.round(centerY - dx)
-		};
-	};
 
-	const rotate45Point = (point) => {
+	const rotatePoint = (point, segments) => {
 		const dx = point.x - centerX;
 		const dy = point.y - centerY;
-		const cos45 = Math.SQRT2 / 2;
-		const sin45 = Math.SQRT2 / 2;
+		const degrees = (360 / segments) * (Math.PI / 180);
+		const cos = Math.cos(degrees);
+		const sin = Math.sin(degrees);
 		return {
-			x: Math.round(centerX + (dx * cos45 - dy * sin45)),
-			y: Math.round(centerY + (dx * sin45 + dy * cos45))
+			x: Math.round(centerX + (dx * cos - dy * sin)),
+			y: Math.round(centerY + (dx * sin + dy * cos))
 		};
 	};
 
@@ -101,10 +94,11 @@ function createSymmetryEngine({ cols, rows }) {
 				break;
 			case "4-Way Radial": {
 				const origin = { x, y };
-				const firstRotation = rotatePoint(origin);
-				const secondRotation = rotatePoint(firstRotation);
-				const thirdRotation = rotatePoint(secondRotation);
-				points.push(firstRotation, secondRotation, thirdRotation);
+				let current = origin;
+				for (let i = 0; i < 4; i += 1) {
+					points.push(current);
+					current = rotatePoint(current, 4);
+				}
 				break;
 			}
 			case "8-Way Radial": {
@@ -112,7 +106,7 @@ function createSymmetryEngine({ cols, rows }) {
 				let current = origin;
 				for (let i = 0; i < 8; i += 1) {
 					points.push(current);
-					current = rotate45Point(current);
+					current = rotatePoint(current, 8);
 				}
 				break;
 			}
