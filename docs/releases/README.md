@@ -11,4 +11,5 @@ This folder stores long-form release notes by version.
 
 ## Releases
 
+- [v5.4.4](./v5.4.4.md)
 - [v5.4.3](./v5.4.3.md)
