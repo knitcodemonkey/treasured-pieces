@@ -209,8 +209,8 @@ function createToolbarUI({
 		}
 	});
 
-	gridToggle.addEventListener("change", () => {
-		onToggleGrid(gridToggle.checked);
+	gridToggle?.addEventListener("change", () => {
+		onToggleGrid?.(gridToggle.checked);
 	});
 
 	symmetrySelect.addEventListener("change", () => {
@@ -585,6 +585,10 @@ function bootstrap() {
 	const motifModalBackdrop = document.getElementById("motifModalBackdrop");
 	const motifPicker = document.getElementById("motifPicker");
 	const clearButton = document.getElementById("clearBtn");
+	if (gridToggle) {
+		project.showGrid = gridToggle.checked;
+	}
+
 	const symmetryEngine = window.projectCore.createSymmetryEngine({
 		cols: project.cols,
 		rows: project.rows

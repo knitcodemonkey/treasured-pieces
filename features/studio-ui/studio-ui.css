@@ -93,9 +93,30 @@ h1 {
 .controls-topbar {
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
 	gap: 10px;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
+	width: 100%;
+}
+
+.controls-feature-group,
+.controls-danger-group {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: nowrap;
+}
+
+.controls-feature-group {
+	justify-content: flex-start;
+	margin-right: auto;
+}
+
+.controls-danger-group {
+	justify-content: flex-end;
+	margin-left: 12px;
+	padding-left: 12px;
+	border-left: 1px solid rgba(129, 109, 67, 0.45);
 }
 
 .control-inline-top {
@@ -104,6 +125,9 @@ h1 {
 
 .control-field-inline {
 	white-space: nowrap;
+	flex: 0 0 auto;
+	justify-content: flex-start;
+	gap: 6px;
 }
 
 .control-field-inline select {
@@ -438,7 +462,18 @@ button:hover {
 	}
 
 	.controls-topbar {
-		justify-content: center;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.controls-feature-group {
+		margin-right: 0;
+	}
+
+	.controls-danger-group {
+		margin-left: auto;
+		padding-left: 0;
+		border-left: 0;
 	}
 
 	.clear-btn-sticky {
@@ -508,8 +543,17 @@ button:hover {
 		justify-content: space-between;
 	}
 
+	.control-field-inline {
+		flex: 0 0 auto;
+		justify-content: flex-start;
+	}
+
 	.control-field select {
 		width: 58%;
+	}
+
+	.control-field-inline select {
+		width: auto;
 	}
 
 	.feature-panel button {

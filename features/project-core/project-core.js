@@ -255,7 +255,7 @@ function createProject({
 		grid,
 		currentColor: colors[0],
 		symmetryMode: "None",
-		showGrid: true,
+		showGrid: false,
 		clear() {
 			for (let y = 0; y < rows; y += 1) {
 				for (let x = 0; x < cols; x += 1) {

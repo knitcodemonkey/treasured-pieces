@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v6.1.3
+
+- Hid the Grid Overlay control from the top toolbar.
+- Set grid visibility default to off for a cleaner startup canvas.
+- Tightened symmetry label/dropdown spacing to avoid visual ambiguity.
+- Reorganized toolbar into feature and destructive action groups.
+- Reordered and aligned controls: Motifs then Symmetry on the left, Clear on the right.
+
 ## v6.1.2
 
 - Replaced tabbed Motifs panel with a dedicated Motifs modal.
