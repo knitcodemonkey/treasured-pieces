@@ -80,6 +80,9 @@ function createSymmetryEngine({ cols, rows }) {
 			case "Vertical":
 				points.push({ x, y: rows - 1 - y });
 				break;
+			case "180°":
+				points.push({ x: cols - 1 - x, y: rows - 1 - y });
+				break;
 			case "Quad":
 				points.push({ x: cols - 1 - x, y });
 				points.push({ x, y: rows - 1 - y });

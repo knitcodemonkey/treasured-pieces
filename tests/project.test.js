@@ -20,5 +20,9 @@ assert.deepStrictEqual(engine.getPoints(8, 6, "4-Way Radial"), [
 	{ x: 10, y: 8 },
 	{ x: 10, y: 6 }
 ]);
+assert.deepStrictEqual(engine.getPoints(5, 3, "180°"), [
+	{ x: 5, y: 3 },
+	{ x: 13, y: 11 }
+]);
 
 console.log("project tests passed");
