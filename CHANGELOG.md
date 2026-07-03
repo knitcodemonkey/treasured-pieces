@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v6.1.14
+
+- Rethemed full-window Sun and Moon motifs toward symbolic major-arcana sigils.
+- Replaced literal scene-like composition with clearer geometric iconography.
+- Added concentric, axial, and ritual marker structure for stronger tarot symbolism at low resolution.
+- Kept the 19x26 full-window constraint and existing motif IDs stable.
+
 ## v6.1.13
 
 - Removed the full-window Star motif due to low-readability visual complexity.
