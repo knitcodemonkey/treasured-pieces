@@ -55,6 +55,28 @@ jobs:
             exit 1
           fi
 
+      - name: Validate tag matches page and package version
+        shell: bash
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          EXPECTED="${TAG#v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+
+          if [ "$PACKAGE_VERSION" != "$EXPECTED" ]; then
+            echo "package.json version ($PACKAGE_VERSION) does not match tag ($TAG)"
+            exit 1
+          fi
+
+          if ! grep -Eq "<body[^>]*data-version=\"$TAG\"" index.html; then
+            echo "index.html data-version does not match tag ($TAG)"
+            exit 1
+          fi
+
+          if ! grep -Fq "Version $EXPECTED" index.html; then
+            echo "index.html title does not include Version $EXPECTED"
+            exit 1
+          fi
+
       - name: Validate accessibility compliance section
         shell: bash
         run: |

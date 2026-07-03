@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v6.1.8
+
+- Fixed app version display to reflect the deployed page version, not remote latest-release lookups.
+- Added release workflow guardrails requiring tag/version parity across package.json and index.html.
+- Hardened Pages deployment workflow with automatic retry for transient GitHub Pages deployment failures.
+
 ## v6.1.7
 
 - Replaced the simple clock-hourglass motif with a more ornate "Astral Clockwork" centerpiece.

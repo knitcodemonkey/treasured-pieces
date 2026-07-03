@@ -706,34 +706,18 @@ function createCanvasController({
 	return { render };
 }
 
-async function updateVersionLabel(versionLabel) {
-	const fallbackVersion =
+function updateVersionLabel(versionLabel) {
+	const pageVersion =
 		document.body.dataset.version ||
 		versionLabel?.textContent?.trim() ||
 		"v0.0.0";
 
 	if (!versionLabel) {
-		return fallbackVersion;
+		return pageVersion;
 	}
 
-	try {
-		const response = await fetch(
-			"https://api.github.com/repos/knitcodemonkey/treasured-pieces/releases?per_page=5"
-		);
-		if (!response.ok) {
-			throw new Error("Release lookup failed");
-		}
-
-		const releases = await response.json();
-		const latestTag =
-			releases.find((release) => release.tag_name)?.tag_name || null;
-		const nextVersion = latestTag || fallbackVersion;
-		versionLabel.textContent = nextVersion;
-		return nextVersion;
-	} catch (error) {
-		versionLabel.textContent = fallbackVersion;
-		return fallbackVersion;
-	}
+	versionLabel.textContent = pageVersion;
+	return pageVersion;
 }
 
 function syncCanvasElementSize(canvas, cols, rows) {
@@ -748,7 +732,7 @@ function bootstrap() {
 			document.body.dataset.version || versionLabel.textContent || "v0.0.0";
 	}
 
-	void updateVersionLabel(versionLabel);
+	updateVersionLabel(versionLabel);
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
 	const paletteContainer = document.getElementById("palette");
