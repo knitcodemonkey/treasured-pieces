@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v6.1.6
+
+- Rebalanced motif color usage to reduce warm-color dominance across the library.
+- Updated several existing single and border motifs with cooler and neutral palettes.
+- Added new single motifs with cyan, blue, purple, magenta, green, and lime emphasis.
+- Added new border motifs with night-sky and ruby-chain color families.
+- Ensured all palette colors are now represented across motif definitions.
+
 ## v6.1.5
 
 - Added variable canvas width and height controls in the top toolbar.
