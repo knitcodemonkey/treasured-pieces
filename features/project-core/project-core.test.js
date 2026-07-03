@@ -44,6 +44,21 @@ assert.ok(
 assert.ok(
 	project.templates.some((template) => template.id === "inner-gears-clockwork")
 );
+assert.ok(
+	project.templates.some(
+		(template) => template.id === "full-window-kintsugi-sanctuary"
+	)
+);
+assert.ok(
+	project.templates.some(
+		(template) => template.id === "full-window-lotus-ascension"
+	)
+);
+assert.ok(
+	project.templates.some(
+		(template) => template.id === "full-window-wheel-of-fortune"
+	)
+);
 assert.ok(project.templates.some((template) => template.id === "border-beads"));
 assert.ok(project.templates.some((template) => template.id === "border-steps"));
 assert.ok(

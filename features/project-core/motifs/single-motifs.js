@@ -1139,6 +1139,267 @@ const SINGLE_MOTIFS = [
 		}
 	},
 	{
+		id: "full-window-kintsugi-sanctuary",
+		name: "XVI • The Tower Reforged",
+		category: "single",
+		placement: "center",
+		description:
+			"A 19x26 major-arcana tower card: rupture, repair, and gilded resilience.",
+		buildCells() {
+			const cells = [];
+
+			for (let y = -13; y <= 12; y += 1) {
+				for (let x = -9; x <= 9; x += 1) {
+					let colorId = "blue";
+					if (Math.abs(x) === 9 || y === -13 || y === 12) {
+						colorId = "light_gray";
+					} else if (Math.abs(x) === 8 || y === -12 || y === 11) {
+						colorId = "purple";
+					}
+
+					if (Math.abs(x) <= 1 && y >= -10 && y <= 9) {
+						colorId = "white";
+					}
+
+					if ((Math.abs(x) === 3 || Math.abs(x) === 4) && y >= -9 && y <= 7) {
+						colorId = y % 2 === 0 ? "cyan" : "light_blue";
+					}
+
+					if (y >= 8 && Math.abs(x) <= 7) {
+						colorId = (x + y) % 2 === 0 ? "gray" : "black";
+					}
+
+					const seamA = Math.abs(y - Math.trunc((x + 2) / 2) + 2) <= 1;
+					const seamB = Math.abs(y + Math.trunc((x - 1) / 2) - 1) <= 1;
+					const seamC = Math.abs(x + 1) <= 1 && y >= -11 && y <= 10;
+					if (seamA || seamB || seamC) {
+						colorId = (x + y) % 3 === 0 ? "orange" : "yellow";
+					}
+
+					cells.push({ dx: x, dy: y, colorId });
+				}
+			}
+
+			for (let y = -13; y <= -9; y += 1) {
+				for (let x = -5; x <= 5; x += 1) {
+					if (x * x + (y + 10) * (y + 10) <= 20) {
+						cells.push({ dx: x, dy: y, colorId: "yellow" });
+					}
+				}
+			}
+
+			[
+				[0, -13],
+				[-4, -12],
+				[4, -12],
+				[-7, -10],
+				[7, -10],
+				[-6, 10],
+				[6, 10]
+			].forEach(([dx, dy]) => {
+				cells.push({ dx, dy, colorId: "white" });
+			});
+
+			[
+				[-2, -12],
+				[-1, -12],
+				[1, -12],
+				[2, -12],
+				[-2, 11],
+				[-1, 11],
+				[1, 11],
+				[2, 11]
+			].forEach(([dx, dy]) => {
+				cells.push({ dx, dy, colorId: "yellow" });
+			});
+
+			return cells;
+		}
+	},
+	{
+		id: "full-window-lotus-ascension",
+		name: "XVII • The Star Lotus",
+		category: "single",
+		placement: "center",
+		description:
+			"A 19x26 major-arcana star card where lotus bloom rises from the depths.",
+		buildCells() {
+			const cells = [];
+
+			for (let y = -13; y <= 12; y += 1) {
+				for (let x = -9; x <= 9; x += 1) {
+					let colorId = "light_blue";
+					if (Math.abs(x) >= 8 || y <= -12 || y >= 11) {
+						colorId = "light_gray";
+					}
+
+					if (Math.abs(x) <= 6 && y >= -11 && y <= 8) {
+						colorId = y <= -4 ? "blue" : "cyan";
+					}
+
+					if ((Math.abs(x) === 2 || Math.abs(x) === 5) && y >= -10 && y <= 8) {
+						colorId = "white";
+					}
+
+					if (y >= 8 && Math.abs(x) <= 7) {
+						colorId = (x + y) % 2 === 0 ? "purple" : "magenta";
+					}
+
+					cells.push({ dx: x, dy: y, colorId });
+				}
+			}
+
+			for (let y = -9; y <= 1; y += 1) {
+				for (let x = -6; x <= 6; x += 1) {
+					const d2 = x * x + (y + 4) * (y + 4);
+					if (d2 <= 32 && d2 >= 10) {
+						cells.push({ dx: x, dy: y, colorId: "yellow" });
+					}
+					if (d2 <= 9) {
+						cells.push({ dx: x, dy: y, colorId: "white" });
+					}
+				}
+			}
+
+			[
+				[-5, -4],
+				[5, -4],
+				[0, -10],
+				[0, 2],
+				[-7, 9],
+				[7, 9],
+				[-3, -1],
+				[3, -1]
+			].forEach(([dx, dy]) => {
+				cells.push({ dx, dy, colorId: "orange" });
+			});
+
+			for (let y = -2; y <= 2; y += 1) {
+				for (let x = -6; x <= 6; x += 1) {
+					if (Math.abs(y) <= 2 && Math.abs(x) + Math.abs(y) <= 6 && y >= 0) {
+						cells.push({
+							dx: x,
+							dy: y,
+							colorId: Math.abs(x) % 2 === 0 ? "pink" : "white"
+						});
+					}
+				}
+			}
+
+			[
+				[0, -12],
+				[-2, -11],
+				[2, -11],
+				[-5, -9],
+				[5, -9],
+				[-6, -6],
+				[6, -6]
+			].forEach(([dx, dy], index) => {
+				cells.push({ dx, dy, colorId: index === 0 ? "white" : "yellow" });
+			});
+
+			[
+				[-2, 11],
+				[-1, 11],
+				[1, 11],
+				[2, 11]
+			].forEach(([dx, dy]) => {
+				cells.push({ dx, dy, colorId: "yellow" });
+			});
+
+			return cells;
+		}
+	},
+	{
+		id: "full-window-wheel-of-fortune",
+		name: "X • Wheel Of Fortune",
+		category: "single",
+		placement: "center",
+		description:
+			"A 19x26 major-arcana wheel card tracing descent, nadir, and return.",
+		buildCells() {
+			const cells = [];
+
+			for (let y = -13; y <= 12; y += 1) {
+				for (let x = -9; x <= 9; x += 1) {
+					let colorId = "black";
+					if (Math.abs(x) === 9 || y === -13 || y === 12) {
+						colorId = "gray";
+					} else if (Math.abs(x) === 8 || y === -12 || y === 11) {
+						colorId = "purple";
+					}
+
+					if (Math.abs(x) <= 6 && y >= -11 && y <= 8) {
+						colorId = "blue";
+					}
+
+					if ((x === 0 || Math.abs(x) === 3) && y >= -10 && y <= 9) {
+						colorId = "light_gray";
+					}
+
+					if (y >= 8 && Math.abs(x) <= 7) {
+						colorId = (x + y) % 2 === 0 ? "gray" : "black";
+					}
+
+					cells.push({ dx: x, dy: y, colorId });
+				}
+			}
+
+			for (let y = -10; y <= 2; y += 1) {
+				for (let x = -7; x <= 7; x += 1) {
+					const d2 = x * x + (y + 4) * (y + 4);
+					if (d2 <= 42 && d2 >= 28) {
+						cells.push({ dx: x, dy: y, colorId: "yellow" });
+					}
+					if (d2 <= 27 && d2 >= 12) {
+						cells.push({ dx: x, dy: y, colorId: "orange" });
+					}
+					if (d2 <= 11) {
+						cells.push({ dx: x, dy: y, colorId: "white" });
+					}
+				}
+			}
+
+			[
+				[0, -10],
+				[4, -9],
+				[7, -6],
+				[8, -2],
+				[7, 2],
+				[4, 5],
+				[0, 6],
+				[-4, 5],
+				[-7, 2],
+				[-8, -2],
+				[-7, -6],
+				[-4, -9]
+			].forEach(([dx, dy]) => {
+				cells.push({ dx, dy, colorId: "cyan" });
+			});
+
+			cells.push({ dx: 0, dy: -6, colorId: "black" });
+			cells.push({ dx: 0, dy: -5, colorId: "black" });
+			cells.push({ dx: 1, dy: -4, colorId: "black" });
+			cells.push({ dx: 2, dy: -3, colorId: "black" });
+			cells.push({ dx: 3, dy: -2, colorId: "black" });
+			cells.push({ dx: 0, dy: -1, colorId: "black" });
+			cells.push({ dx: 1, dy: -1, colorId: "black" });
+
+			[
+				[-6, -10],
+				[6, -10],
+				[-6, 8],
+				[6, 8],
+				[0, -12],
+				[0, 11]
+			].forEach(([dx, dy], index) => {
+				cells.push({ dx, dy, colorId: index < 4 ? "white" : "yellow" });
+			});
+
+			return cells;
+		}
+	},
+	{
 		id: "clock-lancet-spire",
 		name: "Lancet Spire",
 		category: "single",

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v6.1.11
+
+- Added three full-window motifs tailored for 19x26 canvases with tall tarot-card composition.
+- Reframed the new full-window set around Major Arcana themes:
+  - `XVI • The Tower Reforged`
+  - `XVII • The Star Lotus`
+  - `X • Wheel Of Fortune`
+- Tuned motif symbolism to align with project philosophy: repair, growth through adversity, and cyclical ascent.
+- Added core coverage assertions for the new full-window motif IDs.
+
 ## v6.1.10
 
 - Fixed border-repeat motif alignment so border patterns are phase-centered across the canvas.
