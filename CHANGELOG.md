@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v6.1.9
+
+- Updated CI workflows to use the latest stable Node runtime instead of pinned Node 20.
+- Added Node setup to release workflow for consistent runtime behavior across checks.
+- Added `.nvmrc` with `node` to align local development runtime with CI defaults.
+
 ## v6.1.8
 
 - Fixed app version display to reflect the deployed page version, not remote latest-release lookups.
