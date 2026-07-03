@@ -1186,12 +1186,12 @@ const SINGLE_MOTIFS = [
 		}
 	},
 	{
-		id: "full-window-lotus-ascension",
-		name: "XVII • The Star Lotus",
+		id: "full-window-sun-arcana",
+		name: "XIX • The Sun",
 		category: "single",
 		placement: "center",
 		description:
-			"A 19x26 major-arcana star card where lotus bloom rises from the depths.",
+			"A 19x26 major-arcana sun card with a clear solar disk and rays.",
 		buildCells() {
 			const cells = [];
 
@@ -1202,7 +1202,7 @@ const SINGLE_MOTIFS = [
 						colorId = "light_gray";
 					}
 
-					if (y >= 5 && Math.abs(x) <= 7) {
+					if (y >= 6 && Math.abs(x) <= 7) {
 						colorId = "blue";
 					}
 
@@ -1210,29 +1210,85 @@ const SINGLE_MOTIFS = [
 						colorId = "black";
 					}
 
-					if (Math.abs(x) <= 1 && y >= -10 && y <= 7) {
-						colorId = "white";
+					cells.push({ dx: x, dy: y, colorId });
+				}
+			}
+
+			for (let y = -10; y <= 0; y += 1) {
+				for (let x = -6; x <= 6; x += 1) {
+					const d2 = x * x + (y + 6) * (y + 6);
+					if (d2 <= 26 && d2 >= 12) {
+						cells.push({ dx: x, dy: y, colorId: "orange" });
+					}
+					if (d2 <= 11) {
+						cells.push({ dx: x, dy: y, colorId: "yellow" });
+					}
+				}
+			}
+
+			for (let i = -5; i <= 5; i += 1) {
+				cells.push({ dx: i, dy: -6, colorId: "yellow" });
+				cells.push({ dx: 0, dy: i - 6, colorId: "yellow" });
+			}
+
+			cells.push({ dx: 0, dy: -11, colorId: "white" });
+			cells.push({ dx: 0, dy: 10, colorId: "yellow" });
+
+			return cells;
+		}
+	},
+	{
+		id: "full-window-moon-arcana",
+		name: "XVIII • The Moon",
+		category: "single",
+		placement: "center",
+		description:
+			"A 19x26 major-arcana moon card with a bold crescent in a dark sky.",
+		buildCells() {
+			const cells = [];
+
+			for (let y = -13; y <= 12; y += 1) {
+				for (let x = -9; x <= 9; x += 1) {
+					let colorId = "black";
+					if (Math.abs(x) >= 8 || y <= -12 || y >= 11) {
+						colorId = "light_gray";
+					}
+
+					if (Math.abs(x) <= 7 && y >= -11 && y <= 8) {
+						colorId = "blue";
+					}
+
+					if (y >= 8 && Math.abs(x) <= 7) {
+						colorId = "black";
 					}
 
 					cells.push({ dx: x, dy: y, colorId });
 				}
 			}
 
-			for (let y = -2; y <= 3; y += 1) {
-				for (let x = -6; x <= 6; x += 1) {
-					if (Math.abs(x) + Math.abs(y - 1) <= 6) {
-						cells.push({
-							dx: x,
-							dy: y,
-							colorId: Math.abs(x) % 2 === 0 ? "pink" : "light_gray"
-						});
+			for (let y = -10; y <= 2; y += 1) {
+				for (let x = -7; x <= 7; x += 1) {
+					const outer = x * x + (y + 5) * (y + 5) <= 30;
+					const inner = (x + 3) * (x + 3) + (y + 5) * (y + 5) <= 22;
+					if (outer && !inner) {
+						cells.push({ dx: x, dy: y, colorId: "white" });
 					}
 				}
 			}
 
+			[
+				[-5, -10],
+				[5, -9],
+				[-6, -6],
+				[6, -5],
+				[-5, -2],
+				[5, -1]
+			].forEach(([dx, dy]) => {
+				cells.push({ dx, dy, colorId: "yellow" });
+			});
+
 			cells.push({ dx: 0, dy: -11, colorId: "white" });
-			cells.push({ dx: -1, dy: -10, colorId: "yellow" });
-			cells.push({ dx: 1, dy: -10, colorId: "yellow" });
+			cells.push({ dx: 0, dy: 10, colorId: "yellow" });
 
 			return cells;
 		}

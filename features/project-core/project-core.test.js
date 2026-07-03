@@ -50,8 +50,11 @@ assert.ok(
 	)
 );
 assert.ok(
+	project.templates.some((template) => template.id === "full-window-sun-arcana")
+);
+assert.ok(
 	project.templates.some(
-		(template) => template.id === "full-window-lotus-ascension"
+		(template) => template.id === "full-window-moon-arcana"
 	)
 );
 assert.ok(

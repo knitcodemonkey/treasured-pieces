@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## v6.1.13
+
+- Removed the full-window Star motif due to low-readability visual complexity.
+- Added two clearer 19x26 major-arcana motifs:
+  - `XIX • The Sun` (`full-window-sun-arcana`)
+  - `XVIII • The Moon` (`full-window-moon-arcana`)
+- Kept `X • Wheel Of Fortune` as the stable full-window reference motif.
+- Updated core template assertions to validate the new sun/moon full-window IDs.
+
 ## v6.1.12
 
 - Simplified 19x26 full-window tarot motifs to improve legibility at low pixel density.
