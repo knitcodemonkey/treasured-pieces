@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v6.1.12
+
+- Simplified 19x26 full-window tarot motifs to improve legibility at low pixel density.
+- Reduced color complexity for `XVI • The Tower Reforged` and `XVII • The Star Lotus`.
+- Preserved `X • Wheel Of Fortune` composition while keeping the full-window major arcana set intact.
+- Prioritized clear silhouette-first reads over high-detail texture in tall card panels.
+
 ## v6.1.11
 
 - Added three full-window motifs tailored for 19x26 canvases with tall tarot-card composition.
