@@ -110,6 +110,7 @@ h1 {
 .controls-feature-group {
 	justify-content: flex-start;
 	margin-right: auto;
+	gap: 16px;
 }
 
 .controls-danger-group {
@@ -172,10 +173,25 @@ h1 {
 
 .motif-picker-modal {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
-	gap: 10px;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
 	overflow: visible;
 	padding-bottom: 0;
+}
+
+.motif-section-title {
+	grid-column: 1 / -1;
+	margin: 10px 0 2px;
+	font-size: 0.82rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: #d7c189;
+	text-align: left;
+}
+
+.motif-section-title:first-child {
+	margin-top: 0;
 }
 
 .motif-option {
@@ -193,8 +209,31 @@ h1 {
 }
 
 .motif-picker-modal .motif-option {
+	display: grid;
+	grid-template-columns: 48px minmax(0, 1fr);
+	align-items: center;
+	justify-items: start;
+	gap: 10px;
+	padding: 8px 10px;
+	min-height: 78px;
 	width: 100%;
 	min-width: 0;
+}
+
+.motif-meta {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	min-width: 0;
+}
+
+.motif-title-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+	width: 100%;
 }
 
 .motif-option.is-active {
@@ -213,12 +252,48 @@ h1 {
 	font-size: 0.75rem;
 	font-weight: 700;
 	color: #f0e5cb;
-	line-height: 1;
-	text-align: center;
-	max-width: 68px;
-	white-space: nowrap;
+	line-height: 1.2;
+	text-align: left;
+	max-width: 100%;
+	white-space: normal;
 	overflow: hidden;
-	text-overflow: ellipsis;
+	text-overflow: unset;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	min-height: 2.4em;
+}
+
+.motif-dimensions {
+	font-size: 0.66rem;
+	font-weight: 600;
+	line-height: 1;
+	color: #c8b992;
+	letter-spacing: 0.02em;
+}
+
+.motif-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2px 6px;
+	border-radius: 999px;
+	border: 1px solid rgba(214, 178, 97, 0.7);
+	background: rgba(214, 178, 97, 0.2);
+	color: #f4e4b7;
+	font-size: 0.58rem;
+	font-weight: 800;
+	line-height: 1;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+	.motif-picker-modal {
+		grid-template-columns: 1fr;
+	}
 }
 
 .clear-btn-sticky {
@@ -468,6 +543,7 @@ button:hover {
 
 	.controls-feature-group {
 		margin-right: 0;
+		gap: 12px;
 	}
 
 	.controls-danger-group {

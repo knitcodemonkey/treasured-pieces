@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v6.1.4
+
+- Split motif definitions into dedicated motif modules under `features/project-core/motifs/`.
+- Added category-based motif files for centered motifs and border motifs.
+- Added multiple new centered motifs and border designs (including corner-companion border sets).
+- Added visual corner badges and improved border motif metadata in the motifs modal.
+- Kept grid overlay always visible by default while the grid checkbox remains hidden.
+
 ## v6.1.3
 
 - Hid the Grid Overlay control from the top toolbar.

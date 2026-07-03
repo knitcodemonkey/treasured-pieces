@@ -17,6 +17,23 @@ assert.ok(project.templates.some((template) => template.id === "flower"));
 assert.ok(project.templates.some((template) => template.id === "deco"));
 assert.ok(project.templates.some((template) => template.id === "deco-fan"));
 assert.ok(project.templates.some((template) => template.id === "deco-pillars"));
+assert.ok(
+	project.templates.some((template) => template.id === "star-medallion")
+);
+assert.ok(project.templates.some((template) => template.id === "lotus-bloom"));
+assert.ok(project.templates.some((template) => template.id === "hearth-knot"));
+assert.ok(project.templates.some((template) => template.id === "wind-rose"));
+assert.ok(project.templates.some((template) => template.id === "border-beads"));
+assert.ok(project.templates.some((template) => template.id === "border-steps"));
+assert.ok(
+	project.templates.some((template) => template.id === "border-celtic-knot")
+);
+assert.ok(
+	project.templates.some((template) => template.id === "border-diamonds")
+);
+assert.ok(project.templates.some((template) => template.id === "border-vine"));
+assert.ok(project.templates.some((template) => template.id === "border-rope"));
+assert.ok(project.templates.some((template) => template.category === "border"));
 
 const applied = project.applyTemplate(project.templates[0].id);
 assert.strictEqual(applied, true);
@@ -25,6 +42,66 @@ const nonDefaultCells = project.grid
 	.flat()
 	.filter((color) => color !== project.palette.colors[0].hex);
 assert.ok(nonDefaultCells.length > 0);
+
+const borderApplied = project.applyTemplate("border-beads");
+assert.strictEqual(borderApplied, true);
+const defaultColor = project.palette.colors[0].hex;
+const topEdgePainted = project.grid[0].some((color) => color !== defaultColor);
+const bottomEdgePainted = project.grid[project.rows - 1].some(
+	(color) => color !== defaultColor
+);
+const leftEdgePainted = project.grid.some((row) => row[0] !== defaultColor);
+const rightEdgePainted = project.grid.some(
+	(row) => row[project.cols - 1] !== defaultColor
+);
+
+assert.strictEqual(topEdgePainted, true, "Border motif should paint top edge");
+assert.strictEqual(
+	bottomEdgePainted,
+	true,
+	"Border motif should paint bottom edge"
+);
+assert.strictEqual(
+	leftEdgePainted,
+	true,
+	"Border motif should paint left edge"
+);
+assert.strictEqual(
+	rightEdgePainted,
+	true,
+	"Border motif should paint right edge"
+);
+
+const celticApplied = project.applyTemplate("border-celtic-knot");
+assert.strictEqual(celticApplied, true);
+assert.notStrictEqual(
+	project.grid[0][0],
+	defaultColor,
+	"Celtic border corner companion should paint top-left corner"
+);
+assert.notStrictEqual(
+	project.grid[0][project.cols - 1],
+	defaultColor,
+	"Celtic border corner companion should paint top-right corner"
+);
+assert.notStrictEqual(
+	project.grid[project.rows - 1][0],
+	defaultColor,
+	"Celtic border corner companion should paint bottom-left corner"
+);
+assert.notStrictEqual(
+	project.grid[project.rows - 1][project.cols - 1],
+	defaultColor,
+	"Celtic border corner companion should paint bottom-right corner"
+);
+
+const ropeApplied = project.applyTemplate("border-rope");
+assert.strictEqual(ropeApplied, true);
+assert.notStrictEqual(
+	project.grid[0][0],
+	defaultColor,
+	"Rope border should include companion corner paint"
+);
 
 const notApplied = project.applyTemplate("missing-template");
 assert.strictEqual(notApplied, false);

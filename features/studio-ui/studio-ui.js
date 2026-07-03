@@ -265,13 +265,68 @@ function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 		});
 	}
 
+	function addSectionTitle(text) {
+		const title = document.createElement("h3");
+		title.className = "motif-section-title";
+		title.textContent = text;
+		container.appendChild(title);
+	}
+
+	function getMotifDimensions(motif) {
+		if (motif?.placement === "border-repeat") {
+			return {
+				width: motif.patternWidth || 0,
+				height: motif.patternHeight || 0,
+				isTile: true
+			};
+		}
+
+		if (!motif || !Array.isArray(motif.cells) || motif.cells.length === 0) {
+			return null;
+		}
+
+		let minX = Infinity;
+		let maxX = -Infinity;
+		let minY = Infinity;
+		let maxY = -Infinity;
+
+		for (const cell of motif.cells) {
+			if (cell.x < minX) {
+				minX = cell.x;
+			}
+			if (cell.x > maxX) {
+				maxX = cell.x;
+			}
+			if (cell.y < minY) {
+				minY = cell.y;
+			}
+			if (cell.y > maxY) {
+				maxY = cell.y;
+			}
+		}
+
+		return {
+			width: maxX - minX + 1,
+			height: maxY - minY + 1,
+			isTile: false
+		};
+	}
+
 	function addMotifButton({ id, name, motif, onClick }) {
+		const dimensions = getMotifDimensions(motif);
 		const button = document.createElement("button");
 		button.type = "button";
 		button.className = "motif-option";
 		button.dataset.motifId = id;
 		button.setAttribute("aria-pressed", "false");
-		button.setAttribute("aria-label", `Load motif ${name}`);
+		button.setAttribute(
+			"aria-label",
+			dimensions
+				? dimensions.isTile
+					? `Load border motif ${name}, tile ${dimensions.width} by ${dimensions.height} cells`
+					: `Load motif ${name}, ${dimensions.width} by ${dimensions.height} cells`
+				: `Load motif ${name}`
+		);
 
 		const preview = document.createElement("canvas");
 		preview.className = "motif-preview";
@@ -283,8 +338,34 @@ function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 		label.className = "motif-name";
 		label.textContent = name;
 
+		const titleRow = document.createElement("div");
+		titleRow.className = "motif-title-row";
+		titleRow.appendChild(label);
+
+		if (dimensions?.isTile && motif.hasCornerCompanions) {
+			const cornerBadge = document.createElement("span");
+			cornerBadge.className = "motif-badge";
+			cornerBadge.textContent = "Corners";
+			titleRow.appendChild(cornerBadge);
+		}
+
+		const dimensionsLabel = document.createElement("span");
+		dimensionsLabel.className = "motif-dimensions";
+		dimensionsLabel.textContent = dimensions
+			? dimensions.isTile
+				? motif.hasCornerCompanions
+					? `Tile ${dimensions.width} x ${dimensions.height} + corners`
+					: `Tile ${dimensions.width} x ${dimensions.height}`
+				: `${dimensions.width} x ${dimensions.height}`
+			: "-";
+
+		const meta = document.createElement("div");
+		meta.className = "motif-meta";
+		meta.appendChild(titleRow);
+		meta.appendChild(dimensionsLabel);
+
 		button.appendChild(preview);
-		button.appendChild(label);
+		button.appendChild(meta);
 		button.addEventListener("click", onClick);
 
 		container.appendChild(button);
@@ -293,17 +374,40 @@ function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 
 	container.innerHTML = "";
 
-	motifs.forEach((motif) => {
-		addMotifButton({
-			id: motif.id,
-			name: motif.name,
-			motif,
-			onClick: () => {
-				onLoadMotif?.(motif.id);
-				setActiveMotif(motif.id);
-			}
+	const centeredMotifs = motifs.filter(
+		(motif) => (motif.category || "single") === "single"
+	);
+	const borderMotifs = motifs.filter((motif) => motif.category === "border");
+
+	if (centeredMotifs.length > 0) {
+		addSectionTitle("Single Motifs (Centered)");
+		centeredMotifs.forEach((motif) => {
+			addMotifButton({
+				id: motif.id,
+				name: motif.name,
+				motif,
+				onClick: () => {
+					onLoadMotif?.(motif.id);
+					setActiveMotif(motif.id);
+				}
+			});
 		});
-	});
+	}
+
+	if (borderMotifs.length > 0) {
+		addSectionTitle("Repeatable Border Motifs");
+		borderMotifs.forEach((motif) => {
+			addMotifButton({
+				id: motif.id,
+				name: motif.name,
+				motif,
+				onClick: () => {
+					onLoadMotif?.(motif.id);
+					setActiveMotif(motif.id);
+				}
+			});
+		});
+	}
 
 	return {
 		setActiveMotif
