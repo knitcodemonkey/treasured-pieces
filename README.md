@@ -16,13 +16,20 @@ Our philosophy is simple:
 
 > **Beautiful treasures deserve to become beautiful works.**
 
+Guiding symbols in our design language:
+
+- Kintsugi (repair as strength)
+- Lotus (growth through difficulty)
+- Stained glass (light from within)
+- Wheel/Clock (cycles, timing, and renewal)
+
 ---
 
 ## Current Status
 
 Treasured Pieces is currently in active development.
 
-**Current baseline:** `v6.1.9`
+**Current baseline:** `v6.1.10`
 
 Recent improvements include:
 

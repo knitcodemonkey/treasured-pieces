@@ -246,6 +246,16 @@ function createProject({
 				const startBottom = Math.max(0, rows - heightStep);
 				const startRight = Math.max(0, cols - widthStep);
 
+				const buildCenteredAnchors = (span, step) => {
+					const repeatCount = Math.max(1, Math.ceil(span / step));
+					const totalCoverage = repeatCount * step;
+					const start = Math.floor((span - totalCoverage) / 2);
+					return Array.from(
+						{ length: repeatCount },
+						(_, index) => start + index * step
+					);
+				};
+
 				const paintPattern = (
 					patternCells,
 					originX,
@@ -267,12 +277,12 @@ function createProject({
 					}
 				};
 
-				for (let x = 0; x < cols; x += widthStep) {
+				for (const x of buildCenteredAnchors(cols, widthStep)) {
 					paintPattern(template.patternCells, x, 0);
 					paintPattern(template.patternCells, x, startBottom);
 				}
 
-				for (let y = 0; y < rows; y += heightStep) {
+				for (const y of buildCenteredAnchors(rows, heightStep)) {
 					paintPattern(template.patternCells, 0, y);
 					paintPattern(template.patternCells, startRight, y);
 				}

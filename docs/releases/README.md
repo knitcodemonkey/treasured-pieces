@@ -23,6 +23,7 @@ This folder stores long-form release notes by version.
 
 ## Releases
 
+- [v6.1.10](./v6.1.10.md)
 - [v6.1.9](./v6.1.9.md)
 - [v6.1.8](./v6.1.8.md)
 - [v6.1.7](./v6.1.7.md)

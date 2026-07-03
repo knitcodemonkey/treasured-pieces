@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v6.1.10
+
+- Fixed border-repeat motif alignment so border patterns are phase-centered across the canvas.
+- Added a tarot-inspired motif collection with kintsugi, lotus, and interlocked inner-gears themes.
+- Expanded Wheel of Fortune direction with a clockwork gear interpretation and stronger clock station cues.
+- Improved moon motif contrast so white lunar elements render against a darker nocturne background.
+- Added core test coverage for new motif IDs and retained green core/e2e validation.
+
 ## v6.1.9
 
 - Updated CI workflows to use the latest stable Node runtime instead of pinned Node 20.

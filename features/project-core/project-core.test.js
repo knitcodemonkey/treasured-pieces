@@ -23,6 +23,27 @@ assert.ok(
 assert.ok(project.templates.some((template) => template.id === "lotus-bloom"));
 assert.ok(project.templates.some((template) => template.id === "hearth-knot"));
 assert.ok(project.templates.some((template) => template.id === "wind-rose"));
+assert.ok(
+	project.templates.some((template) => template.id === "tarot-sun-arcana")
+);
+assert.ok(
+	project.templates.some((template) => template.id === "tarot-moon-arcana")
+);
+assert.ok(
+	project.templates.some((template) => template.id === "tarot-star-arcana")
+);
+assert.ok(
+	project.templates.some((template) => template.id === "tarot-wheel-arcana")
+);
+assert.ok(
+	project.templates.some((template) => template.id === "kintsugi-gold-seams")
+);
+assert.ok(
+	project.templates.some((template) => template.id === "lotus-habitat-bloom")
+);
+assert.ok(
+	project.templates.some((template) => template.id === "inner-gears-clockwork")
+);
 assert.ok(project.templates.some((template) => template.id === "border-beads"));
 assert.ok(project.templates.some((template) => template.id === "border-steps"));
 assert.ok(
@@ -70,6 +91,25 @@ assert.strictEqual(
 	rightEdgePainted,
 	true,
 	"Border motif should paint right edge"
+);
+
+const topRowPaintedColumns = project.grid[0]
+	.map((color, index) => ({ color, index }))
+	.filter((entry) => entry.color !== defaultColor)
+	.map((entry) => entry.index);
+assert.ok(
+	topRowPaintedColumns.length > 0,
+	"Expected border motif to paint at least one top-edge column"
+);
+assert.strictEqual(
+	topRowPaintedColumns[0],
+	0,
+	"Border repeat phase should be centered so top motif starts flush when clipped"
+);
+assert.strictEqual(
+	topRowPaintedColumns[topRowPaintedColumns.length - 1],
+	project.cols - 1,
+	"Border repeat phase should be centered so top motif ends flush when clipped"
 );
 
 const celticApplied = project.applyTemplate("border-celtic-knot");
