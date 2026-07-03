@@ -88,6 +88,32 @@ async function run() {
 			"Clear should reset painted cells"
 		);
 
+		// Flow 5: resize canvas dimensions and verify new drawing bounds.
+		await page.fill("#canvasCols", "24");
+		await page.fill("#canvasRows", "12");
+		await page.click("#resizeCanvasBtn");
+
+		const dimensions = await page.evaluate(() => {
+			const canvas = document.getElementById("canvas");
+			return { width: canvas.width, height: canvas.height };
+		});
+		assert.strictEqual(dimensions.width, 24 * 30, "Canvas width should resize");
+		assert.strictEqual(
+			dimensions.height,
+			12 * 30,
+			"Canvas height should resize"
+		);
+
+		await selectSwatch(page, 7); // yellow swatch
+		await clickCanvasCell(page, 23, 11);
+		const resizedCorner = centerOfCell(23, 11);
+		const resizedColor = await colorAt(page, resizedCorner.x, resizedCorner.y);
+		assert.notStrictEqual(
+			resizedColor,
+			"#f9fffe",
+			"Painting should work at the new bottom-right corner"
+		);
+
 		console.log("studio-e2e tests passed");
 	} finally {
 		await browser.close();

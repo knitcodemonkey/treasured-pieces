@@ -113,6 +113,31 @@ h1 {
 	gap: 16px;
 }
 
+.size-controls {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: nowrap;
+}
+
+.control-size-field {
+	gap: 5px;
+}
+
+.control-size-field input {
+	width: 68px;
+	min-height: 40px;
+	padding: 6px 8px;
+	border: 1px solid #b9ab8c;
+	border-radius: 8px;
+	background: var(--field-bg);
+	color: var(--field-text);
+	font-size: 0.9rem;
+	font-weight: 600;
+	line-height: 1.2;
+	box-sizing: border-box;
+}
+
 .controls-danger-group {
 	justify-content: flex-end;
 	margin-left: 12px;
@@ -401,6 +426,7 @@ select {
 
 button,
 select,
+input[type="number"],
 input[type="checkbox"],
 .swatch {
 	-webkit-tap-highlight-color: transparent;
@@ -409,6 +435,7 @@ input[type="checkbox"],
 
 button:focus-visible,
 select:focus-visible,
+input[type="number"]:focus-visible,
 input[type="checkbox"]:focus-visible,
 .swatch:focus-visible {
 	outline: 3px solid var(--focus);
@@ -544,6 +571,11 @@ button:hover {
 	.controls-feature-group {
 		margin-right: 0;
 		gap: 12px;
+		flex-wrap: wrap;
+	}
+
+	.size-controls {
+		margin-right: auto;
 	}
 
 	.controls-danger-group {
@@ -578,7 +610,8 @@ button:hover {
 	}
 
 	select,
-	button {
+	button,
+	input[type="number"] {
 		min-height: 46px;
 		font-size: 0.98rem;
 	}

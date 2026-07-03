@@ -106,6 +106,28 @@ assert.notStrictEqual(
 const notApplied = project.applyTemplate("missing-template");
 assert.strictEqual(notApplied, false);
 
+project.grid[0][0] = project.palette.colors[5].hex;
+const resized = project.resize(12, 10);
+assert.strictEqual(resized, true);
+assert.strictEqual(project.cols, 12);
+assert.strictEqual(project.rows, 10);
+assert.strictEqual(project.grid.length, 10);
+assert.strictEqual(project.grid[0].length, 12);
+assert.strictEqual(
+	project.grid[0][0],
+	project.palette.colors[5].hex,
+	"Resize should preserve existing painted cells by default"
+);
+assert.ok(
+	project.templates.some((template) => template.id === "sun"),
+	"Templates should be rebuilt after resize"
+);
+
+const invalidResize = project.resize(0, 10);
+assert.strictEqual(invalidResize, false);
+assert.strictEqual(project.cols, 12);
+assert.strictEqual(project.rows, 10);
+
 const engine = createSymmetryEngine({ cols: 19, rows: 15 });
 assert.deepStrictEqual(engine.getPoints(0, 0, "None"), [{ x: 0, y: 0 }]);
 assert.deepStrictEqual(engine.getPoints(0, 0, "Quad"), [

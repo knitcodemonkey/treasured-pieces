@@ -172,31 +172,70 @@ function createProject({
 	palette = DEFAULT_PALETTE
 } = {}) {
 	const colors = palette.colors.map((color) => color.hex);
-	const grid = Array.from({ length: rows }, () => Array(cols).fill(colors[0]));
-	const templates = createTemplateLibrary({ cols, rows, palette });
+	const createGrid = (width, height) => {
+		return Array.from({ length: height }, () => Array(width).fill(colors[0]));
+	};
 
-	return {
+	const project = {
 		cols,
 		rows,
 		palette,
 		colors,
-		templates,
-		grid,
+		templates: createTemplateLibrary({ cols, rows, palette }),
+		grid: createGrid(cols, rows),
 		currentColor: colors[0],
 		symmetryMode: "None",
 		showGrid: true,
 		clear() {
-			for (let y = 0; y < rows; y += 1) {
-				for (let x = 0; x < cols; x += 1) {
-					grid[y][x] = colors[0];
+			for (let y = 0; y < this.rows; y += 1) {
+				for (let x = 0; x < this.cols; x += 1) {
+					this.grid[y][x] = colors[0];
 				}
 			}
 		},
+		resize(nextCols, nextRows, { preserve = true } = {}) {
+			const parsedCols = Number(nextCols);
+			const parsedRows = Number(nextRows);
+			if (!Number.isFinite(parsedCols) || !Number.isFinite(parsedRows)) {
+				return false;
+			}
+
+			const width = Math.trunc(parsedCols);
+			const height = Math.trunc(parsedRows);
+			if (width < 1 || height < 1) {
+				return false;
+			}
+
+			const nextGrid = createGrid(width, height);
+			if (preserve) {
+				const copyRows = Math.min(this.rows, height);
+				const copyCols = Math.min(this.cols, width);
+				for (let y = 0; y < copyRows; y += 1) {
+					for (let x = 0; x < copyCols; x += 1) {
+						nextGrid[y][x] = this.grid[y][x];
+					}
+				}
+			}
+
+			this.cols = width;
+			this.rows = height;
+			this.grid = nextGrid;
+			this.templates = createTemplateLibrary({
+				cols: width,
+				rows: height,
+				palette
+			});
+			return true;
+		},
 		applyTemplate(templateId) {
-			const template = templates.find((entry) => entry.id === templateId);
+			const template = this.templates.find((entry) => entry.id === templateId);
 			if (!template) {
 				return false;
 			}
+
+			const cols = this.cols;
+			const rows = this.rows;
+			const grid = this.grid;
 
 			this.clear();
 
@@ -275,6 +314,8 @@ function createProject({
 			return true;
 		}
 	};
+
+	return project;
 }
 
 function createSymmetryEngine({ cols, rows }) {

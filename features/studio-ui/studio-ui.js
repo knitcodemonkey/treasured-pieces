@@ -1,6 +1,21 @@
 const COLS = 19;
 const ROWS = 15;
 const CELL = 30;
+const MIN_DIMENSION = 5;
+const MAX_DIMENSION = 60;
+
+function parseDimension(value, fallback) {
+	const parsed = Number(value);
+	if (!Number.isFinite(parsed)) {
+		return fallback;
+	}
+
+	const clamped = Math.max(
+		MIN_DIMENSION,
+		Math.min(MAX_DIMENSION, Math.trunc(parsed))
+	);
+	return clamped;
+}
 
 function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 	const tooltip = tooltipHost || document.createElement("div");
@@ -170,6 +185,9 @@ function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 function createToolbarUI({
 	gridToggle,
 	symmetrySelect,
+	widthInput,
+	heightInput,
+	resizeButton,
 	clearButton,
 	openMotifsButton,
 	closeMotifsButton,
@@ -179,8 +197,21 @@ function createToolbarUI({
 	onCloseMotifs,
 	onToggleGrid,
 	onChangeSymmetry,
+	onResize,
 	onClear
 }) {
+	function readRequestedSize() {
+		const width = parseDimension(widthInput?.value, COLS);
+		const height = parseDimension(heightInput?.value, ROWS);
+		if (widthInput) {
+			widthInput.value = String(width);
+		}
+		if (heightInput) {
+			heightInput.value = String(height);
+		}
+		return { cols: width, rows: height };
+	}
+
 	function openMotifsModal() {
 		if (!motifModal) {
 			return;
@@ -217,24 +248,50 @@ function createToolbarUI({
 		onChangeSymmetry(symmetrySelect.value);
 	});
 
+	resizeButton?.addEventListener("click", () => {
+		onResize?.(readRequestedSize());
+	});
+
+	const handleSizeKey = (event) => {
+		if (event.key !== "Enter") {
+			return;
+		}
+		event.preventDefault();
+		onResize?.(readRequestedSize());
+	};
+
+	widthInput?.addEventListener("keydown", handleSizeKey);
+	heightInput?.addEventListener("keydown", handleSizeKey);
+
 	clearButton.addEventListener("click", () => {
 		onClear();
 	});
 
 	return {
 		openMotifsModal,
-		closeMotifsModal
+		closeMotifsModal,
+		syncSizeInputs(cols, rows) {
+			if (widthInput) {
+				widthInput.value = String(cols);
+			}
+			if (heightInput) {
+				heightInput.value = String(rows);
+			}
+		}
 	};
 }
 
 function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 	if (!container) {
-		return { setActiveMotif: () => {} };
+		return { setActiveMotif: () => {}, setLibrary: () => {} };
 	}
 
 	const PREVIEW_WIDTH = 48;
 	const PREVIEW_HEIGHT = 38;
 	const motifButtons = [];
+	let currentMotifs = motifs;
+	let currentCols = cols;
+	let currentRows = rows;
 
 	function renderMotifPreview(canvas, motif) {
 		const ctx = canvas.getContext("2d");
@@ -246,8 +303,8 @@ function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 			return;
 		}
 
-		const cellW = canvas.width / cols;
-		const cellH = canvas.height / rows;
+		const cellW = canvas.width / currentCols;
+		const cellH = canvas.height / currentRows;
 		for (const cell of motif.cells) {
 			ctx.fillStyle = cell.color;
 			ctx.fillRect(cell.x * cellW, cell.y * cellH, cellW, cellH);
@@ -372,45 +429,58 @@ function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 		motifButtons.push(button);
 	}
 
-	container.innerHTML = "";
+	function render() {
+		container.innerHTML = "";
+		motifButtons.length = 0;
 
-	const centeredMotifs = motifs.filter(
-		(motif) => (motif.category || "single") === "single"
-	);
-	const borderMotifs = motifs.filter((motif) => motif.category === "border");
+		const centeredMotifs = currentMotifs.filter(
+			(motif) => (motif.category || "single") === "single"
+		);
+		const borderMotifs = currentMotifs.filter(
+			(motif) => motif.category === "border"
+		);
 
-	if (centeredMotifs.length > 0) {
-		addSectionTitle("Single Motifs (Centered)");
-		centeredMotifs.forEach((motif) => {
-			addMotifButton({
-				id: motif.id,
-				name: motif.name,
-				motif,
-				onClick: () => {
-					onLoadMotif?.(motif.id);
-					setActiveMotif(motif.id);
-				}
+		if (centeredMotifs.length > 0) {
+			addSectionTitle("Single Motifs (Centered)");
+			centeredMotifs.forEach((motif) => {
+				addMotifButton({
+					id: motif.id,
+					name: motif.name,
+					motif,
+					onClick: () => {
+						onLoadMotif?.(motif.id);
+						setActiveMotif(motif.id);
+					}
+				});
 			});
-		});
+		}
+
+		if (borderMotifs.length > 0) {
+			addSectionTitle("Repeatable Border Motifs");
+			borderMotifs.forEach((motif) => {
+				addMotifButton({
+					id: motif.id,
+					name: motif.name,
+					motif,
+					onClick: () => {
+						onLoadMotif?.(motif.id);
+						setActiveMotif(motif.id);
+					}
+				});
+			});
+		}
 	}
 
-	if (borderMotifs.length > 0) {
-		addSectionTitle("Repeatable Border Motifs");
-		borderMotifs.forEach((motif) => {
-			addMotifButton({
-				id: motif.id,
-				name: motif.name,
-				motif,
-				onClick: () => {
-					onLoadMotif?.(motif.id);
-					setActiveMotif(motif.id);
-				}
-			});
-		});
-	}
+	render();
 
 	return {
-		setActiveMotif
+		setActiveMotif,
+		setLibrary({ motifs: nextMotifs, cols: nextCols, rows: nextRows }) {
+			currentMotifs = nextMotifs;
+			currentCols = nextCols;
+			currentRows = nextRows;
+			render();
+		}
 	};
 }
 
@@ -418,7 +488,7 @@ function createCanvasController({
 	canvas,
 	context,
 	project,
-	symmetryEngine,
+	getSymmetryEngine,
 	cellSize,
 	onPenToggleEraser
 }) {
@@ -443,6 +513,7 @@ function createCanvasController({
 	}
 
 	function paintCell(x, y) {
+		const symmetryEngine = getSymmetryEngine();
 		for (const point of symmetryEngine.getPoints(x, y, project.symmetryMode)) {
 			project.grid[point.y][point.x] = project.currentColor;
 		}
@@ -665,6 +736,11 @@ async function updateVersionLabel(versionLabel) {
 	}
 }
 
+function syncCanvasElementSize(canvas, cols, rows) {
+	canvas.width = cols * CELL;
+	canvas.height = rows * CELL;
+}
+
 function bootstrap() {
 	const versionLabel = document.getElementById("appVersion");
 	if (versionLabel) {
@@ -673,35 +749,58 @@ function bootstrap() {
 	}
 
 	void updateVersionLabel(versionLabel);
-
-	const project = window.projectCore.createProject({
-		cols: COLS,
-		rows: ROWS
-	});
 	const canvas = document.getElementById("canvas");
 	const context = canvas.getContext("2d");
 	const paletteContainer = document.getElementById("palette");
 	const gridToggle = document.getElementById("gridToggle");
 	const symmetrySelect = document.getElementById("mirror");
+	const widthInput = document.getElementById("canvasCols");
+	const heightInput = document.getElementById("canvasRows");
+	const resizeButton = document.getElementById("resizeCanvasBtn");
 	const openMotifsButton = document.getElementById("openMotifsBtn");
 	const closeMotifsButton = document.getElementById("closeMotifsBtn");
 	const motifModal = document.getElementById("motifModal");
 	const motifModalBackdrop = document.getElementById("motifModalBackdrop");
 	const motifPicker = document.getElementById("motifPicker");
 	const clearButton = document.getElementById("clearBtn");
+
+	const initialCols = parseDimension(widthInput?.value, COLS);
+	const initialRows = parseDimension(heightInput?.value, ROWS);
+	if (widthInput) {
+		widthInput.value = String(initialCols);
+	}
+	if (heightInput) {
+		heightInput.value = String(initialRows);
+	}
+
+	const project = window.projectCore.createProject({
+		cols: initialCols,
+		rows: initialRows
+	});
+	syncCanvasElementSize(canvas, project.cols, project.rows);
+
 	if (gridToggle) {
 		project.showGrid = gridToggle.checked;
 	}
 
-	const symmetryEngine = window.projectCore.createSymmetryEngine({
+	let symmetryEngine = window.projectCore.createSymmetryEngine({
 		cols: project.cols,
 		rows: project.rows
 	});
+
+	const getSymmetryEngine = () => symmetryEngine;
+	const rebuildSymmetryEngine = () => {
+		symmetryEngine = window.projectCore.createSymmetryEngine({
+			cols: project.cols,
+			rows: project.rows
+		});
+	};
+
 	const controller = createCanvasController({
 		canvas,
 		context,
 		project,
-		symmetryEngine,
+		getSymmetryEngine,
 		cellSize: CELL,
 		onPenToggleEraser: () => {
 			const isEraseActive =
@@ -752,6 +851,9 @@ function bootstrap() {
 	const toolbarUI = createToolbarUI({
 		gridToggle,
 		symmetrySelect,
+		widthInput,
+		heightInput,
+		resizeButton,
 		clearButton,
 		openMotifsButton,
 		closeMotifsButton,
@@ -769,6 +871,27 @@ function bootstrap() {
 		},
 		onChangeSymmetry: (mode) => {
 			project.symmetryMode = mode;
+			controller.render();
+		},
+		onResize: ({ cols, rows }) => {
+			if (cols === project.cols && rows === project.rows) {
+				return;
+			}
+
+			const resized = project.resize(cols, rows, { preserve: false });
+			if (!resized) {
+				return;
+			}
+
+			syncCanvasElementSize(canvas, project.cols, project.rows);
+			rebuildSymmetryEngine();
+			motifPickerUI.setActiveMotif(null);
+			motifPickerUI.setLibrary({
+				motifs: project.templates,
+				cols: project.cols,
+				rows: project.rows
+			});
+			toolbarUI?.syncSizeInputs(project.cols, project.rows);
 			controller.render();
 		},
 		onClear: () => {

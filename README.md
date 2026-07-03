@@ -22,7 +22,7 @@ Our philosophy is simple:
 
 Treasured Pieces is currently in active development.
 
-**Current baseline:** `v6.1.4`
+**Current baseline:** `v6.1.5`
 
 Recent improvements include:
 
@@ -45,10 +45,10 @@ Recent improvements include:
 - Starter template library
 - Grid overlay
 - Clear canvas
+- Variable canvas sizes
 
 ### Planned
 
-- Variable canvas sizes
 - Non-destructive canvas resizing
 - Multiple palettes
 - Project save/load

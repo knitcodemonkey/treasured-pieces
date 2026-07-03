@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v6.1.5
+
+- Added variable canvas width and height controls in the top toolbar.
+- Added resize action that updates canvas dimensions and refreshes motif previews.
+- Added project-level resize support in core with template library regeneration.
+- Added core tests for resize behavior and invalid-dimension guards.
+- Added end-to-end resize coverage for non-default canvas dimensions.
+
 ## v6.1.4
 
 - Split motif definitions into dedicated motif modules under `features/project-core/motifs/`.
