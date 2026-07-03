@@ -22,7 +22,7 @@ Our philosophy is simple:
 
 Treasured Pieces is currently in active development.
 
-**Current baseline:** `v6.1.6`
+**Current baseline:** `v6.1.7`
 
 Recent improvements include:
 

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v6.1.7
+
+- Replaced the simple clock-hourglass motif with a more ornate "Astral Clockwork" centerpiece.
+- Expanded the clock motif structure with vaulted crown details, jewel spokes, and pendulum styling.
+- Kept compatibility with variable-width panel workflows by preserving centered placement behavior.
+
 ## v6.1.6
 
 - Rebalanced motif color usage to reduce warm-color dominance across the library.
