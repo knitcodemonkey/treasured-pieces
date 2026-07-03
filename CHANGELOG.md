@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v6.1.16
+
+- Added sparse asymmetric dusk-star accents around `XVIII • The Moon`.
+- Added sparse asymmetric solar accents around `XIX • The Sun`.
+- Kept both cards symbolic and restrained while avoiding mirrored decoration.
+- Preserved readability and existing full-window motif IDs.
+
 ## v6.1.15
 
 - Added a live Build Counts panel showing how many cells of each color are used on the current canvas.

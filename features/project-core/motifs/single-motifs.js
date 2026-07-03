@@ -1237,6 +1237,18 @@ const SINGLE_MOTIFS = [
 				cells.push({ dx, dy, colorId: index % 2 === 0 ? "white" : "yellow" });
 			});
 
+			[
+				[-5, -8, "orange"],
+				[-2, -6, "white"],
+				[-6, 1, "yellow"],
+				[5, -9, "yellow"],
+				[2, -7, "orange"],
+				[6, -3, "white"],
+				[4, 4, "orange"]
+			].forEach(([dx, dy, colorId]) => {
+				cells.push({ dx, dy, colorId });
+			});
+
 			return cells;
 		}
 	},
@@ -1260,7 +1272,15 @@ const SINGLE_MOTIFS = [
 					}
 
 					if (Math.abs(x) <= 7 && y >= -10 && y <= 8) {
-						colorId = "blue";
+						if (y <= -6) {
+							colorId = "purple";
+						} else if (y <= -1) {
+							colorId = "blue";
+						} else if (y <= 4) {
+							colorId = "light_blue";
+						} else {
+							colorId = "blue";
+						}
 					}
 
 					if (y >= 8 && Math.abs(x) <= 7) {
@@ -1296,6 +1316,18 @@ const SINGLE_MOTIFS = [
 				[4, 2]
 			].forEach(([dx, dy]) => {
 				cells.push({ dx, dy, colorId: "yellow" });
+			});
+
+			[
+				[-5, -8, "magenta"],
+				[-3, -4, "yellow"],
+				[-6, 1, "light_blue"],
+				[5, -9, "yellow"],
+				[3, -5, "magenta"],
+				[6, -1, "light_blue"],
+				[4, 3, "yellow"]
+			].forEach(([dx, dy, colorId]) => {
+				cells.push({ dx, dy, colorId });
 			});
 
 			for (let y = 1; y <= 8; y += 1) {
