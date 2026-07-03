@@ -90,6 +90,78 @@ h1 {
 	gap: 12px;
 }
 
+.counts-panel {
+	border-top: 1px solid var(--soft-border);
+	margin-top: 14px;
+	padding-top: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.counts-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 12px;
+}
+
+.counts-header h2 {
+	margin: 0;
+	font-size: 1rem;
+	font-weight: 800;
+	color: #ead8a5;
+	letter-spacing: 0.02em;
+}
+
+.counts-summary {
+	font-size: 0.78rem;
+	font-weight: 700;
+	color: #d8ccb2;
+}
+
+.color-counts {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 8px;
+}
+
+.count-item {
+	display: grid;
+	grid-template-columns: 16px 1fr auto;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 8px;
+	border: 1px solid rgba(129, 109, 67, 0.45);
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.14);
+}
+
+.count-item.is-zero {
+	opacity: 0.55;
+}
+
+.count-swatch {
+	width: 16px;
+	height: 16px;
+	border-radius: 3px;
+	border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.count-name {
+	font-size: 0.72rem;
+	font-weight: 700;
+	line-height: 1;
+	color: #f0e5cb;
+}
+
+.count-value {
+	font-size: 0.75rem;
+	font-weight: 800;
+	line-height: 1;
+	color: #f8e5aa;
+}
+
 .controls-topbar {
 	display: flex;
 	align-items: center;

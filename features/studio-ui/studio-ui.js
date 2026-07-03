@@ -490,7 +490,8 @@ function createCanvasController({
 	project,
 	getSymmetryEngine,
 	cellSize,
-	onPenToggleEraser
+	onPenToggleEraser,
+	onRender
 }) {
 	let drawing = false;
 	let lastPaintedCell = null;
@@ -606,6 +607,8 @@ function createCanvasController({
 		context.beginPath();
 		context.arc(centerX * cellSize, centerY * cellSize, 3, 0, Math.PI * 2);
 		context.fill();
+
+		onRender?.();
 	}
 
 	function paintEvent(event) {
@@ -706,6 +709,71 @@ function createCanvasController({
 	return { render };
 }
 
+function createColorUsageUI({ container, summary, project }) {
+	if (!container || !project?.palette?.colors) {
+		return { render: () => {} };
+	}
+
+	const normalizeColor = (value) => String(value || "").toUpperCase();
+
+	function render() {
+		const counts = new Map(
+			project.palette.colors.map((entry) => [normalizeColor(entry.hex), 0])
+		);
+
+		for (let y = 0; y < project.rows; y += 1) {
+			for (let x = 0; x < project.cols; x += 1) {
+				const key = normalizeColor(project.grid[y][x]);
+				counts.set(key, (counts.get(key) || 0) + 1);
+			}
+		}
+
+		const entries = project.palette.colors.map((entry) => {
+			const count = counts.get(normalizeColor(entry.hex)) || 0;
+			return {
+				...entry,
+				count
+			};
+		});
+
+		entries.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+		const defaultColor = normalizeColor(project.palette.colors[0]?.hex);
+		const totalCells = project.cols * project.rows;
+		const defaultCount = counts.get(defaultColor) || 0;
+		const coloredCount = totalCells - defaultCount;
+
+		if (summary) {
+			summary.textContent = `${coloredCount} colored cells • ${totalCells} total`;
+		}
+
+		container.innerHTML = "";
+		for (const entry of entries) {
+			const item = document.createElement("div");
+			item.className = `count-item${entry.count === 0 ? " is-zero" : ""}`;
+
+			const swatch = document.createElement("span");
+			swatch.className = "count-swatch";
+			swatch.style.background = entry.hex;
+
+			const name = document.createElement("span");
+			name.className = "count-name";
+			name.textContent = entry.name;
+
+			const value = document.createElement("span");
+			value.className = "count-value";
+			value.textContent = String(entry.count);
+
+			item.appendChild(swatch);
+			item.appendChild(name);
+			item.appendChild(value);
+			container.appendChild(item);
+		}
+	}
+
+	return { render };
+}
+
 function updateVersionLabel(versionLabel) {
 	const pageVersion =
 		document.body.dataset.version ||
@@ -747,6 +815,8 @@ function bootstrap() {
 	const motifModalBackdrop = document.getElementById("motifModalBackdrop");
 	const motifPicker = document.getElementById("motifPicker");
 	const clearButton = document.getElementById("clearBtn");
+	const colorCountsContainer = document.getElementById("colorCounts");
+	const countsSummary = document.getElementById("countsSummary");
 
 	const initialCols = parseDimension(widthInput?.value, COLS);
 	const initialRows = parseDimension(heightInput?.value, ROWS);
@@ -780,12 +850,21 @@ function bootstrap() {
 		});
 	};
 
+	const colorUsageUI = createColorUsageUI({
+		container: colorCountsContainer,
+		summary: countsSummary,
+		project
+	});
+
 	const controller = createCanvasController({
 		canvas,
 		context,
 		project,
 		getSymmetryEngine,
 		cellSize: CELL,
+		onRender: () => {
+			colorUsageUI.render();
+		},
 		onPenToggleEraser: () => {
 			const isEraseActive =
 				normalizeColor(project.currentColor) === normalizeColor(eraseColor);

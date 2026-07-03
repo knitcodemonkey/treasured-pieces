@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v6.1.15
+
+- Added a live Build Counts panel showing how many cells of each color are used on the current canvas.
+- Added a total colored-cells summary to support planning physical builds.
+- Wired color counts to update after drawing, motif loads, clear actions, and resize flows.
+- Kept counts sorted by usage so the most-needed materials stay visible first.
+
 ## v6.1.14
 
 - Rethemed full-window Sun and Moon motifs toward symbolic major-arcana sigils.
