@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v7.2.8
+
+- Increased separation between the Map Art View toggle and the rest of the toolbar.
+- Kept the Map Art toggle right-aligned while leaving mode-specific zoom and size controls left-aligned.
+- Preserved the existing control-swap behavior between Map Art zoom and standard canvas size controls.
+- Maintained end-to-end and accessibility coverage for the adjusted toolbar spacing.
+
 ## v7.2.7
 
 - Reordered the top toolbar so Motifs and Symmetry sit together on the main row.

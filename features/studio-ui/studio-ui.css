@@ -218,6 +218,13 @@ h1 {
 	min-width: 0;
 }
 
+.map-art-toggle {
+	flex: 0 0 160px;
+	justify-content: flex-end;
+	text-align: right;
+	margin-right: 18px;
+}
+
 .size-controls {
 	display: inline-flex;
 	align-items: center;
@@ -728,6 +735,13 @@ button:hover {
 		margin-right: 0;
 		gap: 12px;
 		flex-wrap: wrap;
+	}
+
+	.map-art-toggle {
+		flex: 0 0 auto;
+		justify-content: flex-start;
+		text-align: left;
+		margin-right: 0;
 	}
 
 	.size-controls {
