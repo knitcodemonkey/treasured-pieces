@@ -7,6 +7,10 @@ const CANVAS_SIZE_STORAGE_KEY = "treasuredpieces.canvasSize";
 const MAP_ART_VIEW_STORAGE_KEY = "treasuredpieces.mapArtView";
 const MIN_MAP_ART_CELL = 2;
 const MAP_ART_DIMENSION = 128;
+const MIN_ZOOM_PERCENT = 50;
+const MAX_ZOOM_PERCENT = 400;
+const ZOOM_STEP_PERCENT = 25;
+const DEFAULT_ZOOM_PERCENT = 100;
 const createColorUsageUI =
 	window.countsUI?.createColorUsageUI ||
 	function () {
@@ -24,6 +28,16 @@ function parseDimension(value, fallback) {
 		Math.min(MAX_DIMENSION, Math.trunc(parsed))
 	);
 	return clamped;
+}
+
+function parseZoomPercent(value, fallback = DEFAULT_ZOOM_PERCENT) {
+	const parsed = Number(value);
+	if (!Number.isFinite(parsed)) {
+		return fallback;
+	}
+
+	const rounded = Math.round(parsed);
+	return Math.max(MIN_ZOOM_PERCENT, Math.min(MAX_ZOOM_PERCENT, rounded));
 }
 
 function loadStoredCanvasSize() {
@@ -242,6 +256,11 @@ function createToolbarUI({
 	gridToggle,
 	mapArtToggle,
 	sizeControlsContainer,
+	zoomRange,
+	zoomOutButton,
+	zoomInButton,
+	zoomResetButton,
+	zoomValue,
 	symmetrySelect,
 	widthInput,
 	heightInput,
@@ -255,6 +274,7 @@ function createToolbarUI({
 	onCloseMotifs,
 	onToggleGrid,
 	onToggleMapArt,
+	onZoomChange,
 	onChangeSymmetry,
 	onResize,
 	onClear
@@ -307,6 +327,47 @@ function createToolbarUI({
 		onToggleMapArt?.(mapArtToggle.checked);
 	});
 
+	const syncZoomUI = (nextPercent) => {
+		const zoomPercent = parseZoomPercent(nextPercent);
+		if (zoomRange) {
+			zoomRange.value = String(zoomPercent);
+		}
+		if (zoomValue) {
+			zoomValue.textContent = `${zoomPercent}%`;
+		}
+		if (zoomOutButton) {
+			zoomOutButton.disabled = zoomPercent <= MIN_ZOOM_PERCENT;
+		}
+		if (zoomInButton) {
+			zoomInButton.disabled = zoomPercent >= MAX_ZOOM_PERCENT;
+		}
+	};
+
+	zoomRange?.addEventListener("input", () => {
+		const zoomPercent = parseZoomPercent(zoomRange.value);
+		syncZoomUI(zoomPercent);
+		onZoomChange?.(zoomPercent);
+	});
+
+	zoomOutButton?.addEventListener("click", () => {
+		const currentPercent = parseZoomPercent(zoomRange?.value);
+		const nextPercent = parseZoomPercent(currentPercent - ZOOM_STEP_PERCENT);
+		syncZoomUI(nextPercent);
+		onZoomChange?.(nextPercent);
+	});
+
+	zoomInButton?.addEventListener("click", () => {
+		const currentPercent = parseZoomPercent(zoomRange?.value);
+		const nextPercent = parseZoomPercent(currentPercent + ZOOM_STEP_PERCENT);
+		syncZoomUI(nextPercent);
+		onZoomChange?.(nextPercent);
+	});
+
+	zoomResetButton?.addEventListener("click", () => {
+		syncZoomUI(DEFAULT_ZOOM_PERCENT);
+		onZoomChange?.(DEFAULT_ZOOM_PERCENT);
+	});
+
 	symmetrySelect.addEventListener("change", () => {
 		onChangeSymmetry(symmetrySelect.value);
 	});
@@ -333,6 +394,9 @@ function createToolbarUI({
 	return {
 		openMotifsModal,
 		closeMotifsModal,
+		syncZoom(percent) {
+			syncZoomUI(percent);
+		},
 		syncMapArtResizeLocked(locked) {
 			const isLocked = Boolean(locked);
 			if (sizeControlsContainer) {
@@ -658,6 +722,10 @@ function createCanvasController({
 			return true;
 		}
 
+		if (canvas.dataset.pinching === "1") {
+			return true;
+		}
+
 		// On iPad, once pencil input is detected, ignore touch pointers to reduce
 		// accidental marks from palm or hand contact during stylus drawing.
 		if (hasSeenPenInput && event.pointerType === "touch") {
@@ -898,6 +966,11 @@ function bootstrap() {
 	const clearButton = document.getElementById("clearBtn");
 	const mapArtToggle = document.getElementById("mapArtViewToggle");
 	const sizeControlsContainer = document.getElementById("sizeControls");
+	const zoomRange = document.getElementById("zoomRange");
+	const zoomOutButton = document.getElementById("zoomOutBtn");
+	const zoomInButton = document.getElementById("zoomInBtn");
+	const zoomResetButton = document.getElementById("zoomResetBtn");
+	const zoomValue = document.getElementById("zoomValue");
 	const colorCountsContainer = document.getElementById("colorCounts");
 	const countsSummary = document.getElementById("countsSummary");
 	const canvasPanel = document.querySelector(".canvas-panel");
@@ -928,6 +1001,7 @@ function bootstrap() {
 	let currentCellSize = mapArtViewEnabled
 		? calculateMapArtCellSize(project.cols, project.rows, canvasPanel)
 		: CELL;
+	let zoomPercent = DEFAULT_ZOOM_PERCENT;
 	if (mapArtToggle) {
 		mapArtToggle.checked = mapArtViewEnabled;
 	}
@@ -954,15 +1028,25 @@ function bootstrap() {
 	const getActiveTemplateLibrary = () => {
 		return mapArtViewEnabled ? project.mapArtTemplates : project.templates;
 	};
+	let toolbarUI = null;
 
 	function updateCanvasScale({ rerender = true } = {}) {
-		currentCellSize = mapArtViewEnabled
+		const baseCellSize = mapArtViewEnabled
 			? calculateMapArtCellSize(project.cols, project.rows, canvasPanel)
 			: CELL;
+		currentCellSize = Math.max(1, baseCellSize * (zoomPercent / 100));
 		syncCanvasElementSize(canvas, project.cols, project.rows, currentCellSize);
 		if (rerender) {
 			controller.render();
 		}
+	}
+
+	function setZoomPercent(nextZoomPercent, { syncUI = true } = {}) {
+		zoomPercent = parseZoomPercent(nextZoomPercent, zoomPercent);
+		if (syncUI) {
+			toolbarUI?.syncZoom(zoomPercent);
+		}
+		updateCanvasScale();
 	}
 
 	function resizeCanvas(cols, rows, { savePreference = true } = {}) {
@@ -1093,10 +1177,15 @@ function bootstrap() {
 		}
 	});
 
-	const toolbarUI = createToolbarUI({
+	toolbarUI = createToolbarUI({
 		gridToggle,
 		mapArtToggle,
 		sizeControlsContainer,
+		zoomRange,
+		zoomOutButton,
+		zoomInButton,
+		zoomResetButton,
+		zoomValue,
 		symmetrySelect,
 		widthInput,
 		heightInput,
@@ -1115,6 +1204,9 @@ function bootstrap() {
 		onToggleGrid: (checked) => {
 			project.showGrid = checked;
 			controller.render();
+		},
+		onZoomChange: (nextZoomPercent) => {
+			setZoomPercent(nextZoomPercent, { syncUI: false });
 		},
 		onToggleMapArt: (checked) => {
 			mapArtViewEnabled = checked;
@@ -1166,8 +1258,79 @@ function bootstrap() {
 		updateCanvasScale();
 	});
 
+	let pinchStartDistance = 0;
+	let pinchStartZoomPercent = zoomPercent;
+
+	const getTouchDistance = (touches) => {
+		if (!touches || touches.length < 2) {
+			return 0;
+		}
+		const first = touches[0];
+		const second = touches[1];
+		const deltaX = first.clientX - second.clientX;
+		const deltaY = first.clientY - second.clientY;
+		return Math.hypot(deltaX, deltaY);
+	};
+
+	canvas.addEventListener(
+		"touchstart",
+		(event) => {
+			if (event.touches.length < 2) {
+				return;
+			}
+
+			const distance = getTouchDistance(event.touches);
+			if (!distance) {
+				return;
+			}
+
+			canvas.dataset.pinching = "1";
+			pinchStartDistance = distance;
+			pinchStartZoomPercent = zoomPercent;
+			event.preventDefault();
+		},
+		{ passive: false }
+	);
+
+	canvas.addEventListener(
+		"touchmove",
+		(event) => {
+			if (canvas.dataset.pinching !== "1" || event.touches.length < 2) {
+				return;
+			}
+
+			const distance = getTouchDistance(event.touches);
+			if (!distance || !pinchStartDistance) {
+				return;
+			}
+
+			const scale = distance / pinchStartDistance;
+			setZoomPercent(pinchStartZoomPercent * scale, { syncUI: true });
+			event.preventDefault();
+		},
+		{ passive: false }
+	);
+
+	const endPinch = () => {
+		if (canvas.dataset.pinching === "1") {
+			canvas.dataset.pinching = "0";
+		}
+		pinchStartDistance = 0;
+	};
+
+	canvas.addEventListener("touchend", (event) => {
+		if (event.touches.length < 2) {
+			endPinch();
+		}
+	});
+
+	canvas.addEventListener("touchcancel", () => {
+		endPinch();
+	});
+
 	toolbarUI.syncMapArtToggle(mapArtViewEnabled);
 	toolbarUI.syncMapArtResizeLocked(mapArtViewEnabled);
+	toolbarUI.syncZoom(zoomPercent);
 
 	controller.render();
 }

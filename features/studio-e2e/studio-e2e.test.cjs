@@ -162,6 +162,33 @@ async function run() {
 			12 * 30,
 			"Canvas height should resize"
 		);
+		assert.strictEqual(
+			await page.locator("#zoomValue").innerText(),
+			"100%",
+			"Zoom label should start at 100%"
+		);
+		await page.click("#zoomInBtn");
+		const zoomedInDimensions = await getCanvasDimensions(page);
+		assert.ok(
+			zoomedInDimensions.width > dimensions.width,
+			"Zoom in should increase canvas width"
+		);
+		assert.ok(
+			zoomedInDimensions.height > dimensions.height,
+			"Zoom in should increase canvas height"
+		);
+		await page.click("#zoomResetBtn");
+		const resetZoomDimensions = await getCanvasDimensions(page);
+		assert.strictEqual(
+			resetZoomDimensions.width,
+			dimensions.width,
+			"Reset zoom should restore canvas width"
+		);
+		assert.strictEqual(
+			resetZoomDimensions.height,
+			dimensions.height,
+			"Reset zoom should restore canvas height"
+		);
 
 		await selectSwatch(page, 7); // yellow swatch
 		await clickCanvasCell(page, 23, 11);

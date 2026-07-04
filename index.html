@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Treasured Pieces • Version 7.2.2</title>
+		<title>Treasured Pieces • Version 7.2.3</title>
 		<link rel="stylesheet" href="features/studio-ui/studio-ui.css" />
 	</head>
-	<body data-version="v7.2.2">
+	<body data-version="v7.2.3">
 		<a class="skip-link" href="#studioMain">Skip to drawing studio</a>
 		<main id="studioMain" class="app">
 			<header>
@@ -73,6 +73,33 @@
 									aria-label="Canvas height in cells"
 							/></label>
 							<button id="resizeCanvasBtn" type="button">Resize</button>
+						</div>
+						<div
+							id="zoomControls"
+							class="zoom-controls"
+							role="group"
+							aria-label="Canvas zoom"
+						>
+							<button id="zoomOutBtn" type="button" aria-label="Zoom out">
+								-
+							</button>
+							<label class="control-field control-field-inline zoom-field">
+								<span>Zoom</span>
+								<input
+									id="zoomRange"
+									type="range"
+									min="50"
+									max="400"
+									step="25"
+									value="100"
+									aria-label="Canvas zoom percent"
+								/>
+								<span id="zoomValue" class="zoom-value">100%</span>
+							</label>
+							<button id="zoomInBtn" type="button" aria-label="Zoom in">
+								+
+							</button>
+							<button id="zoomResetBtn" type="button">Reset</button>
 						</div>
 					</div>
 					<div class="controls-danger-group" aria-label="Destructive actions">

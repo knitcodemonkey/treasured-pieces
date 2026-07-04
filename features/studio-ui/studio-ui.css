@@ -223,6 +223,29 @@ h1 {
 	flex-wrap: nowrap;
 }
 
+.zoom-controls {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: nowrap;
+}
+
+.zoom-field {
+	gap: 8px;
+}
+
+.zoom-field input[type="range"] {
+	width: 120px;
+}
+
+.zoom-value {
+	min-width: 44px;
+	font-size: 0.82rem;
+	font-weight: 700;
+	color: #f0e5cb;
+	text-align: right;
+}
+
 .control-size-field {
 	gap: 5px;
 }

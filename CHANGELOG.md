@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v7.2.3
+
+- Added canvas zoom controls (zoom out/in, slider, reset, live zoom label) to the studio toolbar.
+- Added iPad-friendly two-finger pinch zoom on the canvas with synchronization to toolbar zoom state.
+- Prevented accidental drawing during active pinch gestures to improve touch workflow reliability.
+- Added end-to-end coverage verifying zoom-in and zoom-reset canvas scaling behavior.
+
 ## v7.2.2
 
 - Changed border motif application to be non-destructive for interior cells, so applying borders updates only edge regions.
