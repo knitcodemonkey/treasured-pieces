@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v7.2.0
+
+- Added dedicated map-art motif libraries so Map Art View no longer reuses small standard motifs.
+- Added large-scale map-art single and border motifs designed for 128x128 canvases.
+- Updated studio motif picker and load logic to switch motif libraries based on Map Art View state.
+- Added core coverage for map-art template separation, size scaling expectations, and library-specific template application.
+
 ## v7.1.0
 
 - Added a Feature Handling Standard to enforce consistent feature structure, ownership, extraction rules, and validation gates.

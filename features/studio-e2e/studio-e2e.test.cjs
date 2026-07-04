@@ -260,6 +260,26 @@ async function run() {
 		);
 
 		await page.check("#mapArtViewToggle");
+		assert.strictEqual(
+			await page.locator("#sizeControls").isVisible(),
+			false,
+			"Map Art View should hide resize controls"
+		);
+		assert.strictEqual(
+			await page.isDisabled("#canvasCols"),
+			true,
+			"Map Art View should disable width input"
+		);
+		assert.strictEqual(
+			await page.isDisabled("#canvasRows"),
+			true,
+			"Map Art View should disable height input"
+		);
+		assert.strictEqual(
+			await page.isDisabled("#resizeCanvasBtn"),
+			true,
+			"Map Art View should disable resize button"
+		);
 		const mapArtState = await getCanvasState(page);
 		assert.strictEqual(
 			mapArtState.cols,
@@ -324,6 +344,26 @@ async function run() {
 		);
 
 		await page.uncheck("#mapArtViewToggle");
+		assert.strictEqual(
+			await page.locator("#sizeControls").isVisible(),
+			true,
+			"Disabling Map Art View should restore resize controls"
+		);
+		assert.strictEqual(
+			await page.isDisabled("#canvasCols"),
+			false,
+			"Disabling Map Art View should re-enable width input"
+		);
+		assert.strictEqual(
+			await page.isDisabled("#canvasRows"),
+			false,
+			"Disabling Map Art View should re-enable height input"
+		);
+		assert.strictEqual(
+			await page.isDisabled("#resizeCanvasBtn"),
+			false,
+			"Disabling Map Art View should re-enable resize button"
+		);
 		const restoredFromStorageState = await getCanvasState(page);
 		assert.strictEqual(
 			restoredFromStorageState.cols,

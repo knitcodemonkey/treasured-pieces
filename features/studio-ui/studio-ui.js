@@ -241,6 +241,7 @@ function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 function createToolbarUI({
 	gridToggle,
 	mapArtToggle,
+	sizeControlsContainer,
 	symmetrySelect,
 	widthInput,
 	heightInput,
@@ -332,6 +333,27 @@ function createToolbarUI({
 	return {
 		openMotifsModal,
 		closeMotifsModal,
+		syncMapArtResizeLocked(locked) {
+			const isLocked = Boolean(locked);
+			if (sizeControlsContainer) {
+				sizeControlsContainer.hidden = isLocked;
+				sizeControlsContainer.style.display = isLocked ? "none" : "inline-flex";
+				sizeControlsContainer.setAttribute(
+					"aria-hidden",
+					isLocked ? "true" : "false"
+				);
+			}
+
+			if (widthInput) {
+				widthInput.disabled = isLocked;
+			}
+			if (heightInput) {
+				heightInput.disabled = isLocked;
+			}
+			if (resizeButton) {
+				resizeButton.disabled = isLocked;
+			}
+		},
 		syncMapArtToggle(enabled) {
 			if (mapArtToggle) {
 				mapArtToggle.checked = Boolean(enabled);
@@ -875,6 +897,7 @@ function bootstrap() {
 	const motifPicker = document.getElementById("motifPicker");
 	const clearButton = document.getElementById("clearBtn");
 	const mapArtToggle = document.getElementById("mapArtViewToggle");
+	const sizeControlsContainer = document.getElementById("sizeControls");
 	const colorCountsContainer = document.getElementById("colorCounts");
 	const countsSummary = document.getElementById("countsSummary");
 	const canvasPanel = document.querySelector(".canvas-panel");
@@ -928,6 +951,10 @@ function bootstrap() {
 		});
 	};
 
+	const getActiveTemplateLibrary = () => {
+		return mapArtViewEnabled ? project.mapArtTemplates : project.templates;
+	};
+
 	function updateCanvasScale({ rerender = true } = {}) {
 		currentCellSize = mapArtViewEnabled
 			? calculateMapArtCellSize(project.cols, project.rows, canvasPanel)
@@ -952,7 +979,7 @@ function bootstrap() {
 		rebuildSymmetryEngine();
 		motifPickerUI.setActiveMotif(null);
 		motifPickerUI.setLibrary({
-			motifs: project.templates,
+			motifs: getActiveTemplateLibrary(),
 			cols: project.cols,
 			rows: project.rows
 		});
@@ -1019,13 +1046,12 @@ function bootstrap() {
 
 	const motifPickerUI = createMotifPickerUI({
 		container: motifPicker,
-		motifs: project.templates,
+		motifs: getActiveTemplateLibrary(),
 		cols: project.cols,
 		rows: project.rows,
 		onLoadMotif: (motifId) => {
-			const motif = project.templates.find(
-				(template) => template.id === motifId
-			);
+			const motifLibrary = getActiveTemplateLibrary();
+			const motif = motifLibrary.find((template) => template.id === motifId);
 			if (!motif) {
 				return false;
 			}
@@ -1053,7 +1079,11 @@ function bootstrap() {
 				}
 			}
 
-			if (project.applyTemplate(motifId)) {
+			if (
+				project.applyTemplate(motifId, {
+					library: mapArtViewEnabled ? "mapArt" : "standard"
+				})
+			) {
 				controller.render();
 				toolbarUI?.closeMotifsModal();
 				return true;
@@ -1066,6 +1096,7 @@ function bootstrap() {
 	const toolbarUI = createToolbarUI({
 		gridToggle,
 		mapArtToggle,
+		sizeControlsContainer,
 		symmetrySelect,
 		widthInput,
 		heightInput,
@@ -1088,6 +1119,7 @@ function bootstrap() {
 		onToggleMapArt: (checked) => {
 			mapArtViewEnabled = checked;
 			saveMapArtView(mapArtViewEnabled);
+			toolbarUI?.syncMapArtResizeLocked(mapArtViewEnabled);
 
 			if (mapArtViewEnabled) {
 				resizeCanvas(MAP_ART_DIMENSION, MAP_ART_DIMENSION, {
@@ -1135,6 +1167,7 @@ function bootstrap() {
 	});
 
 	toolbarUI.syncMapArtToggle(mapArtViewEnabled);
+	toolbarUI.syncMapArtResizeLocked(mapArtViewEnabled);
 
 	controller.render();
 }

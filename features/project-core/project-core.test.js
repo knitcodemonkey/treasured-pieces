@@ -82,6 +82,34 @@ assert.ok(
 assert.ok(project.templates.some((template) => template.id === "border-vine"));
 assert.ok(project.templates.some((template) => template.id === "border-rope"));
 assert.ok(project.templates.some((template) => template.category === "border"));
+assert.ok(project.mapArtTemplates.length > 0);
+assert.ok(
+	project.mapArtTemplates.some(
+		(template) => template.id === "mapart-solar-burst"
+	)
+);
+assert.ok(
+	project.mapArtTemplates.some(
+		(template) => template.id === "mapart-border-circuit"
+	)
+);
+assert.strictEqual(
+	project.mapArtTemplates.some((template) =>
+		project.templates.some((baseTemplate) => baseTemplate.id === template.id)
+	),
+	false,
+	"Map art motifs should be a separate template set"
+);
+
+const baseSun = project.templates.find((template) => template.id === "sun");
+const mapArtSun = project.mapArtTemplates.find(
+	(template) => template.id === "mapart-solar-burst"
+);
+assert.ok(baseSun && mapArtSun);
+assert.ok(
+	mapArtSun.sourceWidth > baseSun.sourceWidth,
+	"Map art motifs should be larger than standard motifs"
+);
 
 const applied = project.applyTemplate(project.templates[0].id);
 assert.strictEqual(applied, true);
@@ -202,6 +230,15 @@ assert.notStrictEqual(
 
 const notApplied = project.applyTemplate("missing-template");
 assert.strictEqual(notApplied, false);
+
+const mapArtApplied = project.applyTemplate("mapart-solar-burst", {
+	library: "mapArt"
+});
+assert.strictEqual(mapArtApplied, true);
+
+const standardCannotApplyMapArtByDefault =
+	project.applyTemplate("mapart-solar-burst");
+assert.strictEqual(standardCannotApplyMapArtByDefault, false);
 
 project.grid[0][0] = project.palette.colors[5].hex;
 const resized = project.resize(12, 10);

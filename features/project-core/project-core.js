@@ -21,17 +21,32 @@ const DEFAULT_PALETTE = {
 	]
 };
 
-const TEMPLATE_DEFINITIONS = (() => {
+const TEMPLATE_LIBRARY_DEFINITIONS = (() => {
 	if (typeof module !== "undefined" && module.exports) {
-		return require("./motifs").TEMPLATE_DEFINITIONS;
+		const motifModule = require("./motifs");
+		return {
+			standard: motifModule.TEMPLATE_DEFINITIONS || [],
+			mapArt: motifModule.MAP_ART_TEMPLATE_DEFINITIONS || []
+		};
 	}
 	if (typeof window !== "undefined") {
-		return window.projectCoreMotifs?.TEMPLATE_DEFINITIONS || [];
+		return {
+			standard: window.projectCoreMotifs?.TEMPLATE_DEFINITIONS || [],
+			mapArt: window.projectCoreMotifs?.MAP_ART_TEMPLATE_DEFINITIONS || []
+		};
 	}
-	return [];
+	return {
+		standard: [],
+		mapArt: []
+	};
 })();
 
-function createTemplateLibrary({ cols, rows, palette = DEFAULT_PALETTE }) {
+function createTemplateLibrary({
+	cols,
+	rows,
+	palette = DEFAULT_PALETTE,
+	templateDefinitions = TEMPLATE_LIBRARY_DEFINITIONS.standard
+}) {
 	const colorById = new Map(
 		palette.colors.map((entry) => [entry.id, entry.hex])
 	);
@@ -129,7 +144,7 @@ function createTemplateLibrary({ cols, rows, palette = DEFAULT_PALETTE }) {
 		return result;
 	}
 
-	return TEMPLATE_DEFINITIONS.map((definition) => {
+	return templateDefinitions.map((definition) => {
 		const sourceCells = resolveSourceCells(definition);
 		const placement = definition.placement || "center";
 		const category = definition.category || "single";
@@ -201,7 +216,18 @@ function createProject({
 		rows,
 		palette,
 		colors,
-		templates: createTemplateLibrary({ cols, rows, palette }),
+		templates: createTemplateLibrary({
+			cols,
+			rows,
+			palette,
+			templateDefinitions: TEMPLATE_LIBRARY_DEFINITIONS.standard
+		}),
+		mapArtTemplates: createTemplateLibrary({
+			cols,
+			rows,
+			palette,
+			templateDefinitions: TEMPLATE_LIBRARY_DEFINITIONS.mapArt
+		}),
 		grid: createGrid(cols, rows),
 		currentColor: colors[0],
 		symmetryMode: "None",
@@ -243,12 +269,26 @@ function createProject({
 			this.templates = createTemplateLibrary({
 				cols: width,
 				rows: height,
-				palette
+				palette,
+				templateDefinitions: TEMPLATE_LIBRARY_DEFINITIONS.standard
+			});
+			this.mapArtTemplates = createTemplateLibrary({
+				cols: width,
+				rows: height,
+				palette,
+				templateDefinitions: TEMPLATE_LIBRARY_DEFINITIONS.mapArt
 			});
 			return true;
 		},
-		applyTemplate(templateId) {
-			const template = this.templates.find((entry) => entry.id === templateId);
+		getTemplateLibrary(library = "standard") {
+			if (library === "mapArt") {
+				return this.mapArtTemplates;
+			}
+			return this.templates;
+		},
+		applyTemplate(templateId, { library = "standard" } = {}) {
+			const templateLibrary = this.getTemplateLibrary(library);
+			const template = templateLibrary.find((entry) => entry.id === templateId);
 			if (!template) {
 				return false;
 			}

@@ -19,19 +19,46 @@ const BORDER_MOTIFS_FROM_MODULE = (() => {
 	return [];
 })();
 
+const MAP_ART_SINGLE_MOTIFS_FROM_MODULE = (() => {
+	if (typeof module !== "undefined" && module.exports) {
+		return require("./map-art-single-motifs").MAP_ART_SINGLE_MOTIFS;
+	}
+	if (typeof window !== "undefined") {
+		return window.projectCoreMapArtSingleMotifs?.MAP_ART_SINGLE_MOTIFS || [];
+	}
+	return [];
+})();
+
+const MAP_ART_BORDER_MOTIFS_FROM_MODULE = (() => {
+	if (typeof module !== "undefined" && module.exports) {
+		return require("./map-art-border-motifs").MAP_ART_BORDER_MOTIFS;
+	}
+	if (typeof window !== "undefined") {
+		return window.projectCoreMapArtBorderMotifs?.MAP_ART_BORDER_MOTIFS || [];
+	}
+	return [];
+})();
+
 const MOTIF_TEMPLATE_DEFINITIONS = [
 	...SINGLE_MOTIFS_FROM_MODULE,
 	...BORDER_MOTIFS_FROM_MODULE
 ];
 
+const MAP_ART_TEMPLATE_DEFINITIONS = [
+	...MAP_ART_SINGLE_MOTIFS_FROM_MODULE,
+	...MAP_ART_BORDER_MOTIFS_FROM_MODULE
+];
+
 if (typeof window !== "undefined") {
 	window.projectCoreMotifs = {
-		TEMPLATE_DEFINITIONS: MOTIF_TEMPLATE_DEFINITIONS
+		TEMPLATE_DEFINITIONS: MOTIF_TEMPLATE_DEFINITIONS,
+		MAP_ART_TEMPLATE_DEFINITIONS
 	};
 }
 
 if (typeof module !== "undefined") {
 	module.exports = {
-		TEMPLATE_DEFINITIONS: MOTIF_TEMPLATE_DEFINITIONS
+		TEMPLATE_DEFINITIONS: MOTIF_TEMPLATE_DEFINITIONS,
+		MAP_ART_TEMPLATE_DEFINITIONS
 	};
 }

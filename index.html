@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Treasured Pieces • Version 7.1.0</title>
+		<title>Treasured Pieces • Version 7.2.0</title>
 		<link rel="stylesheet" href="features/studio-ui/studio-ui.css" />
 	</head>
-	<body data-version="v7.1.0">
+	<body data-version="v7.2.0">
 		<a class="skip-link" href="#studioMain">Skip to drawing studio</a>
 		<main id="studioMain" class="app">
 			<header>
@@ -40,7 +40,12 @@
 								<option value="Diagonal ↗">Mirror Diagonal ↗</option>
 							</select></label
 						>
-						<div class="size-controls" role="group" aria-label="Canvas size">
+						<div
+							id="sizeControls"
+							class="size-controls"
+							role="group"
+							aria-label="Canvas size"
+						>
 							<label
 								class="control-field control-field-inline control-size-field"
 								><span>W</span>
@@ -132,6 +137,8 @@
 
 			<script src="features/project-core/motifs/single-motifs.js"></script>
 			<script src="features/project-core/motifs/border-motifs.js"></script>
+			<script src="features/project-core/motifs/map-art-single-motifs.js"></script>
+			<script src="features/project-core/motifs/map-art-border-motifs.js"></script>
 			<script src="features/project-core/motifs/index.js"></script>
 			<script src="features/project-core/project-core.js"></script>
 			<script src="features/counts-core/count-rules.js"></script>
