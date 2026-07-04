@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v7.2.7
+
+- Reordered the top toolbar so Motifs and Symmetry sit together on the main row.
+- Kept Clear Canvas on the right-hand action rail for a clearer destructive-action separation.
+- Preserved the Map Art-specific zoom and standard-mode size swapping behavior in the toolbar.
+- Kept the updated control arrangement covered by end-to-end and accessibility checks.
+
 ## v7.2.6
 
 - Made zoom controls exclusive to Map Art View and hid them in standard canvas mode.
