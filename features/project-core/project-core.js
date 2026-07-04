@@ -297,8 +297,6 @@ function createProject({
 			const rows = this.rows;
 			const grid = this.grid;
 
-			this.clear();
-
 			if (template.placement === "border-repeat") {
 				const touched = new Set();
 				const horizontalWidthStep = Math.max(1, template.patternWidth || 1);
@@ -388,6 +386,7 @@ function createProject({
 					);
 				}
 			} else {
+				this.clear();
 				for (const cell of template.cells) {
 					grid[cell.y][cell.x] = cell.color;
 				}

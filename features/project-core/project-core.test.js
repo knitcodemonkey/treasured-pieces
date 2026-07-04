@@ -106,6 +106,22 @@ assert.strictEqual(
 	"Map art motifs should be a separate template set"
 );
 
+const mapArtBorderTemplates = project.mapArtTemplates.filter(
+	(template) => template.category === "border"
+);
+assert.ok(mapArtBorderTemplates.length > 0);
+for (const borderTemplate of mapArtBorderTemplates) {
+	assert.ok(
+		borderTemplate.patternWidth >= 12 && borderTemplate.patternWidth <= 20,
+		`Expected ${borderTemplate.id} width to stay within 12-20 cells`
+	);
+	assert.strictEqual(
+		128 % borderTemplate.patternWidth,
+		0,
+		`Expected ${borderTemplate.id} width to divide 128 evenly`
+	);
+}
+
 const baseSun = project.templates.find((template) => template.id === "sun");
 const mapArtSun = project.mapArtTemplates.find(
 	(template) => template.id === "mapart-solar-burst"
@@ -201,6 +217,18 @@ assert.notStrictEqual(
 	project.grid[0][0],
 	defaultColor,
 	"Rope border should include companion corner paint"
+);
+
+const interiorColor = project.palette.colors.find(
+	(color) => color.id === "magenta"
+)?.hex;
+project.grid[7][9] = interiorColor;
+const borderOnlyApplied = project.applyTemplate("border-diamonds");
+assert.strictEqual(borderOnlyApplied, true);
+assert.strictEqual(
+	project.grid[7][9],
+	interiorColor,
+	"Applying a border should preserve interior cells"
 );
 
 const tallProject = createProject({ cols: 19, rows: 26 });

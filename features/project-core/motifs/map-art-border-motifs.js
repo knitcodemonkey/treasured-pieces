@@ -5,9 +5,10 @@ const MAP_ART_BORDER_MOTIFS = [
 		name: "Circuit Frame",
 		category: "border",
 		placement: "border-repeat",
-		description: "A clean, large circuit frame with bold traces and sockets.",
-		patternWidth: 20,
-		patternHeight: 8,
+		description:
+			"A high-contrast circuit frame with large traces and node clusters.",
+		patternWidth: 16,
+		patternHeight: 10,
 		hasCornerCompanions: true,
 		cornerCells: {
 			topLeft: [
@@ -49,33 +50,54 @@ const MAP_ART_BORDER_MOTIFS = [
 		},
 		buildCells() {
 			const cells = [];
+			const addCell = (dx, dy, colorId) => {
+				cells.push({ dx, dy, colorId });
+			};
 
-			for (let x = 0; x < 20; x += 1) {
-				cells.push({ dx: x, dy: 0, colorId: "blue" });
-				cells.push({ dx: x, dy: 1, colorId: "light_blue" });
-				if (x % 5 === 0) {
-					cells.push({ dx: x, dy: 2, colorId: "cyan" });
-					cells.push({ dx: x, dy: 4, colorId: "white" });
-					cells.push({ dx: x, dy: 6, colorId: "cyan" });
+			const addHLine = (y, fromX, toX, colorId) => {
+				for (let x = fromX; x <= toX; x += 1) {
+					addCell(x, y, colorId);
 				}
-			}
+			};
 
-			for (let y = 0; y < 8; y += 1) {
-				cells.push({ dx: 0, dy: y, colorId: "blue" });
-				cells.push({ dx: 19, dy: y, colorId: "blue" });
-			}
-
-			for (let x = 2; x < 18; x += 1) {
-				if (x % 4 === 2) {
-					cells.push({ dx: x, dy: 3, colorId: "cyan" });
-					cells.push({ dx: x + 1, dy: 3, colorId: "cyan" });
-					cells.push({ dx: x, dy: 5, colorId: "light_blue" });
-					cells.push({ dx: x + 1, dy: 5, colorId: "light_blue" });
+			const addVLine = (x, fromY, toY, colorId) => {
+				for (let y = fromY; y <= toY; y += 1) {
+					addCell(x, y, colorId);
 				}
+			};
+
+			addHLine(0, 0, 15, "blue");
+			addHLine(1, 0, 15, "light_blue");
+			addVLine(0, 0, 9, "blue");
+			addVLine(15, 0, 9, "blue");
+
+			addHLine(3, 2, 13, "cyan");
+			addHLine(7, 2, 13, "cyan");
+
+			for (const x of [3, 7, 11, 14]) {
+				addVLine(x, 1, 6, "light_blue");
+				addCell(x, 8, "white");
+				addCell(Math.max(1, x - 1), 8, "cyan");
+				addCell(Math.min(14, x + 1), 8, "cyan");
 			}
 
-			cells.push({ dx: 9, dy: 2, colorId: "white" });
-			cells.push({ dx: 10, dy: 2, colorId: "white" });
+			for (const startX of [2, 6, 10, 13]) {
+				addCell(startX, 5, "blue");
+				addCell(startX + 1, 5, "blue");
+				addCell(startX, 6, "white");
+				addCell(startX + 1, 6, "white");
+			}
+
+			for (const x of [4, 8, 12]) {
+				addCell(x, 2, "white");
+				addCell(x, 4, "white");
+			}
+
+			addCell(7, 2, "cyan");
+			addCell(8, 2, "cyan");
+			addCell(7, 8, "cyan");
+			addCell(8, 8, "cyan");
+
 			return cells;
 		}
 	},
@@ -84,42 +106,50 @@ const MAP_ART_BORDER_MOTIFS = [
 		name: "Botanical Frame",
 		category: "border",
 		placement: "border-repeat",
-		description: "A cleaner botanical frame with larger vine arcs and blooms.",
-		patternWidth: 18,
-		patternHeight: 8,
+		description:
+			"A large botanical frame with readable vine arches and blossoms.",
+		patternWidth: 16,
+		patternHeight: 10,
 		buildCells() {
 			const cells = [];
-			for (let x = 0; x < 18; x += 1) {
-				cells.push({ dx: x, dy: 0, colorId: "green" });
-				if (x % 3 !== 1) {
-					cells.push({ dx: x, dy: 1, colorId: "lime" });
-				}
-				if (x % 6 === 0) {
-					cells.push({ dx: x, dy: 2, colorId: "yellow" });
-					cells.push({ dx: x, dy: 3, colorId: "pink" });
-					cells.push({ dx: x, dy: 4, colorId: "yellow" });
+			const addCell = (dx, dy, colorId) => {
+				cells.push({ dx, dy, colorId });
+			};
+
+			for (let x = 0; x < 16; x += 1) {
+				addCell(x, 0, "green");
+				addCell(x, 1, x % 2 === 0 ? "lime" : "green");
+			}
+
+			for (let y = 0; y < 10; y += 1) {
+				addCell(0, y, "green");
+				addCell(15, y, "green");
+			}
+
+			for (const center of [3, 8, 13]) {
+				addCell(center, 2, "lime");
+				addCell(center - 1, 3, "green");
+				addCell(center + 1, 3, "green");
+				addCell(center - 2, 4, "lime");
+				addCell(center + 2, 4, "lime");
+				addCell(center, 4, "yellow");
+				addCell(center - 1, 5, "pink");
+				addCell(center + 1, 5, "pink");
+				addCell(center, 6, "yellow");
+				addCell(center, 7, "lime");
+			}
+
+			for (let x = 2; x < 14; x += 1) {
+				if (x % 4 === 2) {
+					addCell(x, 8, "lime");
+					addCell(x + 1, 9, "yellow");
 				}
 			}
 
-			for (let y = 0; y < 8; y += 1) {
-				if (y <= 2 || y >= 5) {
-					cells.push({ dx: 0, dy: y, colorId: "green" });
-					cells.push({ dx: 17, dy: y, colorId: "green" });
-				}
-			}
-
-			for (let x = 2; x < 16; x += 1) {
-				if (x % 5 === 2) {
-					cells.push({ dx: x, dy: 5, colorId: "lime" });
-					cells.push({ dx: x + 1, dy: 6, colorId: "yellow" });
-					cells.push({ dx: x, dy: 7, colorId: "lime" });
-				}
-			}
-
-			cells.push({ dx: 8, dy: 3, colorId: "white" });
-			cells.push({ dx: 9, dy: 3, colorId: "white" });
-			cells.push({ dx: 8, dy: 4, colorId: "pink" });
-			cells.push({ dx: 9, dy: 4, colorId: "pink" });
+			addCell(7, 3, "white");
+			addCell(8, 3, "white");
+			addCell(7, 4, "pink");
+			addCell(8, 4, "pink");
 			return cells;
 		}
 	},
@@ -128,9 +158,9 @@ const MAP_ART_BORDER_MOTIFS = [
 		name: "Celtic Knot Frame",
 		category: "border",
 		placement: "border-repeat",
-		description: "A cleaner interlaced knot border with larger readable loops.",
+		description: "An interlaced knot frame with clearer over-under rhythm.",
 		patternWidth: 16,
-		patternHeight: 8,
+		patternHeight: 10,
 		hasCornerCompanions: true,
 		cornerCells: {
 			topLeft: [
@@ -164,31 +194,36 @@ const MAP_ART_BORDER_MOTIFS = [
 		},
 		buildCells() {
 			const cells = [];
+			const addCell = (dx, dy, colorId) => {
+				cells.push({ dx, dy, colorId });
+			};
 
 			for (let x = 0; x < 16; x += 1) {
-				cells.push({ dx: x, dy: 0, colorId: "brown" });
-				if (x % 4 !== 1) {
-					cells.push({ dx: x, dy: 1, colorId: "light_gray" });
-				}
+				addCell(x, 0, "brown");
+				addCell(x, 1, x % 3 === 1 ? "light_gray" : "brown");
 			}
 
-			for (let y = 0; y < 8; y += 1) {
-				cells.push({ dx: 0, dy: y, colorId: "brown" });
-				cells.push({ dx: 15, dy: y, colorId: "brown" });
+			for (let y = 0; y < 10; y += 1) {
+				addCell(0, y, "brown");
+				addCell(15, y, "brown");
 			}
 
-			const loopColumns = [2, 3, 6, 7, 10, 11, 13, 14];
-			for (const x of loopColumns) {
-				const isHighlight = x % 4 === 2;
-				cells.push({ dx: x, dy: 2, colorId: isHighlight ? "yellow" : "brown" });
-				cells.push({ dx: x, dy: 5, colorId: isHighlight ? "yellow" : "brown" });
+			const modules = [1, 6, 11];
+			for (const startX of modules) {
+				addCell(startX, 2, "yellow");
+				addCell(startX + 1, 2, "brown");
+				addCell(startX + 2, 3, "light_gray");
+				addCell(startX + 3, 4, "yellow");
+				addCell(startX + 2, 5, "brown");
+				addCell(startX + 1, 6, "light_gray");
+				addCell(startX, 7, "yellow");
+				addCell(startX + 1, 8, "brown");
 			}
 
-			cells.push({ dx: 4, dy: 3, colorId: "light_gray" });
-			cells.push({ dx: 5, dy: 4, colorId: "white" });
-			cells.push({ dx: 8, dy: 3, colorId: "light_gray" });
-			cells.push({ dx: 9, dy: 4, colorId: "white" });
-			cells.push({ dx: 12, dy: 3, colorId: "light_gray" });
+			for (const x of [3, 8, 13]) {
+				addCell(x, 4, "white");
+				addCell(x - 1, 5, "light_gray");
+			}
 
 			return cells;
 		}
@@ -198,9 +233,10 @@ const MAP_ART_BORDER_MOTIFS = [
 		name: "Kintsugi Frame",
 		category: "border",
 		placement: "border-repeat",
-		description: "A cleaner kintsugi frame with broad fracture seams.",
-		patternWidth: 20,
-		patternHeight: 8,
+		description:
+			"A kintsugi frame with broad crack lines and clear metallic seams.",
+		patternWidth: 16,
+		patternHeight: 10,
 		hasCornerCompanions: true,
 		cornerCells: {
 			topLeft: [
@@ -230,32 +266,39 @@ const MAP_ART_BORDER_MOTIFS = [
 		},
 		buildCells() {
 			const cells = [];
-			for (let x = 0; x < 20; x += 1) {
-				cells.push({ dx: x, dy: 0, colorId: "gray" });
-				cells.push({ dx: x, dy: 1, colorId: "light_gray" });
-				if (x % 3 === 0) {
-					cells.push({ dx: x, dy: 2, colorId: "yellow" });
-				}
-				if (x % 5 === 0) {
-					cells.push({ dx: x, dy: 4, colorId: "orange" });
-				}
-				if (x % 4 === 1) {
-					cells.push({ dx: x, dy: 6, colorId: "yellow" });
-					cells.push({ dx: x + 1 < 20 ? x + 1 : x, dy: 6, colorId: "yellow" });
+			const addCell = (dx, dy, colorId) => {
+				cells.push({ dx, dy, colorId });
+			};
+
+			for (let x = 0; x < 16; x += 1) {
+				addCell(x, 0, "gray");
+				addCell(x, 1, "light_gray");
+			}
+
+			for (let y = 0; y < 10; y += 1) {
+				addCell(0, y, "gray");
+				addCell(15, y, "gray");
+			}
+
+			for (let x = 2; x < 14; x += 1) {
+				if (x % 4 === 2) {
+					addCell(x, 2, "yellow");
+					addCell(x + 1, 3, "orange");
+					addCell(x, 4, "yellow");
 				}
 			}
 
-			for (let y = 0; y < 8; y += 1) {
-				cells.push({ dx: 0, dy: y, colorId: "gray" });
-				cells.push({ dx: 19, dy: y, colorId: "gray" });
+			for (let x = 3; x < 14; x += 1) {
+				if (x % 5 === 3) {
+					addCell(x, 6, "yellow");
+					addCell(x + 1, 7, "orange");
+					addCell(x, 8, "yellow");
+				}
 			}
 
-			for (let x = 2; x < 18; x += 1) {
-				if (x % 6 === 2) {
-					cells.push({ dx: x, dy: 3, colorId: "white" });
-					cells.push({ dx: x + 1, dy: 5, colorId: "orange" });
-					cells.push({ dx: x, dy: 7, colorId: "white" });
-				}
+			for (const x of [4, 8, 12]) {
+				addCell(x, 3, "white");
+				addCell(x, 7, "white");
 			}
 			return cells;
 		}

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v7.2.2
+
+- Changed border motif application to be non-destructive for interior cells, so applying borders updates only edge regions.
+- Added core regression coverage to ensure border application preserves existing interior artwork.
+- Refined map-art border repeat dimensions to stay within 12-20 cells and align to 128-cell map width tiling.
+- Added core guardrails asserting map-art border widths are 12-20 and divide 128 evenly.
+
 ## v7.2.1
 
 - Fixed border-repeat orientation so left/right edges rotate the tile pattern and match top/bottom frame thickness.
