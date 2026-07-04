@@ -232,6 +232,10 @@ h1 {
 	flex-wrap: nowrap;
 }
 
+.zoom-controls[hidden] {
+	display: none !important;
+}
+
 .zoom-label {
 	font-size: 0.9rem;
 	font-weight: 700;

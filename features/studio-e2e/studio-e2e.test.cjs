@@ -163,31 +163,9 @@ async function run() {
 			"Canvas height should resize"
 		);
 		assert.strictEqual(
-			await page.locator("#zoomValue").innerText(),
-			"100%",
-			"Zoom label should start at 100%"
-		);
-		await page.click("#zoomInBtn");
-		const zoomedInDimensions = await getCanvasDimensions(page);
-		assert.ok(
-			zoomedInDimensions.width > dimensions.width,
-			"Zoom in should increase canvas width"
-		);
-		assert.ok(
-			zoomedInDimensions.height > dimensions.height,
-			"Zoom in should increase canvas height"
-		);
-		await page.click("#zoomResetBtn");
-		const resetZoomDimensions = await getCanvasDimensions(page);
-		assert.strictEqual(
-			resetZoomDimensions.width,
-			dimensions.width,
-			"Reset zoom should restore canvas width"
-		);
-		assert.strictEqual(
-			resetZoomDimensions.height,
-			dimensions.height,
-			"Reset zoom should restore canvas height"
+			await page.locator("#zoomControls").isVisible(),
+			false,
+			"Zoom controls should be hidden outside Map Art View"
 		);
 
 		await selectSwatch(page, 7); // yellow swatch
@@ -318,6 +296,38 @@ async function run() {
 			128,
 			"Map Art View should force canvas height to 128"
 		);
+		assert.strictEqual(
+			await page.locator("#zoomControls").isVisible(),
+			true,
+			"Map Art View should show zoom controls"
+		);
+		assert.strictEqual(
+			await page.locator("#zoomValue").innerText(),
+			"100%",
+			"Map Art zoom label should start at 100%"
+		);
+		await page.click("#zoomInBtn");
+		const zoomedMapArtState = await getCanvasState(page);
+		assert.ok(
+			zoomedMapArtState.width > mapArtState.width,
+			"Map Art zoom in should increase canvas width"
+		);
+		assert.ok(
+			zoomedMapArtState.height > mapArtState.height,
+			"Map Art zoom in should increase canvas height"
+		);
+		await page.click("#zoomResetBtn");
+		const resetMapArtState = await getCanvasState(page);
+		assert.strictEqual(
+			resetMapArtState.width,
+			mapArtState.width,
+			"Map Art zoom reset should restore canvas width"
+		);
+		assert.strictEqual(
+			resetMapArtState.height,
+			mapArtState.height,
+			"Map Art zoom reset should restore canvas height"
+		);
 		assert.ok(
 			mapArtState.cellWidth < 30,
 			"Map Art View should reduce cell size for large canvases"
@@ -375,6 +385,11 @@ async function run() {
 			await page.locator("#sizeControls").isVisible(),
 			true,
 			"Disabling Map Art View should restore resize controls"
+		);
+		assert.strictEqual(
+			await page.locator("#zoomControls").isVisible(),
+			false,
+			"Disabling Map Art View should hide zoom controls"
 		);
 		assert.strictEqual(
 			await page.isDisabled("#canvasCols"),

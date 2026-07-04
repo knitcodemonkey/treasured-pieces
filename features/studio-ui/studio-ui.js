@@ -256,6 +256,7 @@ function createToolbarUI({
 	gridToggle,
 	mapArtToggle,
 	sizeControlsContainer,
+	zoomControlsContainer,
 	zoomRange,
 	zoomOutButton,
 	zoomInButton,
@@ -416,6 +417,30 @@ function createToolbarUI({
 			}
 			if (resizeButton) {
 				resizeButton.disabled = isLocked;
+			}
+		},
+		syncMapArtZoomExclusive(enabled) {
+			const showZoom = Boolean(enabled);
+			if (zoomControlsContainer) {
+				zoomControlsContainer.hidden = !showZoom;
+				zoomControlsContainer.style.display = showZoom ? "inline-flex" : "none";
+				zoomControlsContainer.setAttribute(
+					"aria-hidden",
+					showZoom ? "false" : "true"
+				);
+			}
+
+			if (zoomRange) {
+				zoomRange.disabled = !showZoom;
+			}
+			if (zoomOutButton) {
+				zoomOutButton.disabled = !showZoom;
+			}
+			if (zoomInButton) {
+				zoomInButton.disabled = !showZoom;
+			}
+			if (zoomResetButton) {
+				zoomResetButton.disabled = !showZoom;
 			}
 		},
 		syncMapArtToggle(enabled) {
@@ -966,6 +991,7 @@ function bootstrap() {
 	const clearButton = document.getElementById("clearBtn");
 	const mapArtToggle = document.getElementById("mapArtViewToggle");
 	const sizeControlsContainer = document.getElementById("sizeControls");
+	const zoomControlsContainer = document.getElementById("zoomControls");
 	const zoomRange = document.getElementById("zoomRange");
 	const zoomOutButton = document.getElementById("zoomOutBtn");
 	const zoomInButton = document.getElementById("zoomInBtn");
@@ -1034,7 +1060,9 @@ function bootstrap() {
 		const baseCellSize = mapArtViewEnabled
 			? calculateMapArtCellSize(project.cols, project.rows, canvasPanel)
 			: CELL;
-		currentCellSize = Math.max(1, baseCellSize * (zoomPercent / 100));
+		currentCellSize = mapArtViewEnabled
+			? Math.max(1, baseCellSize * (zoomPercent / 100))
+			: CELL;
 		syncCanvasElementSize(canvas, project.cols, project.rows, currentCellSize);
 		if (rerender) {
 			controller.render();
@@ -1181,6 +1209,7 @@ function bootstrap() {
 		gridToggle,
 		mapArtToggle,
 		sizeControlsContainer,
+		zoomControlsContainer,
 		zoomRange,
 		zoomOutButton,
 		zoomInButton,
@@ -1206,12 +1235,16 @@ function bootstrap() {
 			controller.render();
 		},
 		onZoomChange: (nextZoomPercent) => {
+			if (!mapArtViewEnabled) {
+				return;
+			}
 			setZoomPercent(nextZoomPercent, { syncUI: false });
 		},
 		onToggleMapArt: (checked) => {
 			mapArtViewEnabled = checked;
 			saveMapArtView(mapArtViewEnabled);
 			toolbarUI?.syncMapArtResizeLocked(mapArtViewEnabled);
+			toolbarUI?.syncMapArtZoomExclusive(mapArtViewEnabled);
 
 			if (mapArtViewEnabled) {
 				resizeCanvas(MAP_ART_DIMENSION, MAP_ART_DIMENSION, {
@@ -1275,6 +1308,9 @@ function bootstrap() {
 	canvas.addEventListener(
 		"touchstart",
 		(event) => {
+			if (!mapArtViewEnabled) {
+				return;
+			}
 			if (event.touches.length < 2) {
 				return;
 			}
@@ -1295,6 +1331,9 @@ function bootstrap() {
 	canvas.addEventListener(
 		"touchmove",
 		(event) => {
+			if (!mapArtViewEnabled) {
+				return;
+			}
 			if (canvas.dataset.pinching !== "1" || event.touches.length < 2) {
 				return;
 			}
@@ -1330,6 +1369,7 @@ function bootstrap() {
 
 	toolbarUI.syncMapArtToggle(mapArtViewEnabled);
 	toolbarUI.syncMapArtResizeLocked(mapArtViewEnabled);
+	toolbarUI.syncMapArtZoomExclusive(mapArtViewEnabled);
 	toolbarUI.syncZoom(zoomPercent);
 
 	controller.render();

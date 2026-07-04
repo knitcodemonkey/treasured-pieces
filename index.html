@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Treasured Pieces • Version 7.2.5</title>
+		<title>Treasured Pieces • Version 7.2.6</title>
 		<link rel="stylesheet" href="features/studio-ui/studio-ui.css" />
 	</head>
-	<body data-version="v7.2.5">
+	<body data-version="v7.2.6">
 		<a class="skip-link" href="#studioMain">Skip to drawing studio</a>
 		<main id="studioMain" class="app">
 			<header>
@@ -19,26 +19,14 @@
 			<section class="controls-panel" aria-label="Drawing controls">
 				<div class="controls-topbar">
 					<div class="controls-feature-group" aria-label="Feature controls">
-						<button id="openMotifsBtn" type="button" class="feature-tab">
-							Motifs
-						</button>
-						<label class="control-field control-field-inline"
-							><span>Symmetry</span>
-							<select id="mirror">
-								<option value="None">Off</option>
-								<option value="Horizontal">Mirror Horizontal</option>
-								<option value="Vertical">Mirror Vertical</option>
-								<option value="180°">Rotate 180°</option>
-								<option value="Quad">Mirror Both Axes (Quad)</option>
-								<option value="4-Way Radial">Radial 4-Way</option>
-								<option value="8-Way Radial">Radial 8-Way</option>
-								<option value="Diagonal ↘">Mirror Diagonal ↘</option>
-								<option value="Diagonal ↗">Mirror Diagonal ↗</option>
-							</select></label
+						<label class="control-field control-field-inline map-art-toggle"
+							><input id="mapArtViewToggle" type="checkbox" />
+							<span>Map Art View</span></label
 						>
 						<div
 							id="zoomControls"
 							class="zoom-controls"
+							hidden
 							role="group"
 							aria-label="Canvas zoom"
 						>
@@ -61,10 +49,6 @@
 							<span id="zoomValue" class="zoom-value">100%</span>
 							<button id="zoomResetBtn" type="button">Reset</button>
 						</div>
-						<label class="control-field control-field-inline map-art-toggle"
-							><input id="mapArtViewToggle" type="checkbox" />
-							<span>Map Art View</span></label
-						>
 						<div
 							id="sizeControls"
 							class="size-controls"
@@ -99,6 +83,23 @@
 							/></label>
 							<button id="resizeCanvasBtn" type="button">Resize</button>
 						</div>
+						<button id="openMotifsBtn" type="button" class="feature-tab">
+							Motifs
+						</button>
+						<label class="control-field control-field-inline"
+							><span>Symmetry</span>
+							<select id="mirror">
+								<option value="None">Off</option>
+								<option value="Horizontal">Mirror Horizontal</option>
+								<option value="Vertical">Mirror Vertical</option>
+								<option value="180°">Rotate 180°</option>
+								<option value="Quad">Mirror Both Axes (Quad)</option>
+								<option value="4-Way Radial">Radial 4-Way</option>
+								<option value="8-Way Radial">Radial 8-Way</option>
+								<option value="Diagonal ↘">Mirror Diagonal ↘</option>
+								<option value="Diagonal ↗">Mirror Diagonal ↗</option>
+							</select></label
+						>
 					</div>
 					<div class="controls-danger-group" aria-label="Destructive actions">
 						<button id="clearBtn" type="button" class="clear-btn-sticky">

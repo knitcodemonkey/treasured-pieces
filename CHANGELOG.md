@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v7.2.6
+
+- Made zoom controls exclusive to Map Art View and hid them in standard canvas mode.
+- Kept canvas size controls exclusive to standard mode and hidden while Map Art View is enabled.
+- Reordered top controls so Map Art View appears first, followed by the mode-appropriate zoom or size controls.
+- Updated end-to-end coverage for map-art-only zoom visibility and behavior.
+
 ## v7.2.5
 
 - Removed runtime Playwright browser installation from CI by running E2E and accessibility jobs in the official Playwright container image.
