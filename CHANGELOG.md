@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v7.2.5
+
+- Removed runtime Playwright browser installation from CI by running E2E and accessibility jobs in the official Playwright container image.
+- Added deterministic preinstalled browser path usage in CI to avoid stalled Chromium install steps during checks.
+- Preserved existing test and accessibility gates while reducing workflow setup volatility.
+
 ## v7.2.4
 
 - Reworked Build Counts interaction so the palette bar is the accordion title row, with counts expanding below.
