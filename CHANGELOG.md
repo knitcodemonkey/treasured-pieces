@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v6.1.18
+
+- Reduced `light_blue` usage in `XVIII • The Moon` so the background no longer competes with moon-adjacent accents.
+- Darkened the Moon card field by shifting the mid-background and halo ring to `blue`.
+- Swapped small Moon-side highlights from `light_blue` to `cyan` for cleaner separation.
+- Preserved the Moon sigil, asymmetric star scatter, and existing motif ID.
+
 ## v6.1.17
 
 - Reworked the lower field of `XIX • The Sun` into a bottom-centered half-circle progression.

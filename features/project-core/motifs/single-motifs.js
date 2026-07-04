@@ -1197,11 +1197,21 @@ const SINGLE_MOTIFS = [
 
 			for (let y = -13; y <= 12; y += 1) {
 				for (let x = -9; x <= 9; x += 1) {
-					let colorId = "black";
+					let colorId = "yellow";
 					if (Math.abs(x) >= 8 || y <= -12 || y >= 11) {
 						colorId = "light_gray";
 					} else if (Math.abs(x) === 7 || y === -11 || y === 10) {
 						colorId = "gray";
+					} else if (y <= -7) {
+						colorId = "yellow";
+					} else if (y <= -4) {
+						colorId = "orange";
+					} else if (y <= -1) {
+						colorId = "red";
+					} else if (y <= 3) {
+						colorId = "blue";
+					} else {
+						colorId = "light_blue";
 					}
 
 					const d2 = x * x + (y + 2) * (y + 2);
@@ -1261,11 +1271,12 @@ const SINGLE_MOTIFS = [
 
 			[
 				[-5, -8, "orange"],
+				[5, -8, "orange"],
 				[-2, -6, "white"],
+				[2, -6, "white"],
 				[-6, 1, "yellow"],
-				[5, -9, "yellow"],
-				[2, -7, "orange"],
-				[6, -3, "white"],
+				[6, 1, "yellow"],
+				[-4, 4, "orange"],
 				[4, 4, "orange"]
 			].forEach(([dx, dy, colorId]) => {
 				cells.push({ dx, dy, colorId });
@@ -1299,7 +1310,7 @@ const SINGLE_MOTIFS = [
 						} else if (y <= -1) {
 							colorId = "blue";
 						} else if (y <= 4) {
-							colorId = "light_blue";
+							colorId = "blue";
 						} else {
 							colorId = "blue";
 						}
@@ -1317,7 +1328,7 @@ const SINGLE_MOTIFS = [
 				for (let x = -6; x <= 6; x += 1) {
 					const d2 = x * x + (y + 2) * (y + 2);
 					if (d2 >= 22 && d2 <= 32) {
-						cells.push({ dx: x, dy: y, colorId: "light_blue" });
+						cells.push({ dx: x, dy: y, colorId: "blue" });
 					}
 
 					const outer = x * x + (y + 2) * (y + 2) <= 22;
@@ -1343,10 +1354,10 @@ const SINGLE_MOTIFS = [
 			[
 				[-5, -8, "magenta"],
 				[-3, -4, "yellow"],
-				[-6, 1, "light_blue"],
+				[-6, 1, "cyan"],
 				[5, -9, "yellow"],
 				[3, -5, "magenta"],
-				[6, -1, "light_blue"],
+				[6, -1, "cyan"],
 				[4, 3, "yellow"]
 			].forEach(([dx, dy, colorId]) => {
 				cells.push({ dx, dy, colorId });
@@ -1355,8 +1366,8 @@ const SINGLE_MOTIFS = [
 			for (let y = 1; y <= 8; y += 1) {
 				cells.push({ dx: 0, dy: y, colorId: "white" });
 				if (y % 2 === 1) {
-					cells.push({ dx: -1, dy: y, colorId: "light_blue" });
-					cells.push({ dx: 1, dy: y, colorId: "light_blue" });
+					cells.push({ dx: -1, dy: y, colorId: "cyan" });
+					cells.push({ dx: 1, dy: y, colorId: "cyan" });
 				}
 			}
 
