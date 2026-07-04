@@ -11,6 +11,10 @@ Core modules
 
 Rule: each module should have one primary responsibility.
 
+Feature handling standard
+
+- Follow `docs/feature-handling-standard.md` for feature structure, ownership, extraction triggers, and test gates.
+
 Feature-scope guidance
 
 - Large initiatives should be scoped as independent feature streams.

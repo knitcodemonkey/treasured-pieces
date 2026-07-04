@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v7.1.0
+
+- Added a Feature Handling Standard to enforce consistent feature structure, ownership, extraction rules, and validation gates.
+- Extracted Build Counts into dedicated feature modules (`counts-core` and `counts-ui`) and wired studio rendering to consume them.
+- Added focused counts-core unit coverage and included it in the default core test suite.
+- Updated Map Art material-count behavior so default black background is excluded from required color counts.
+- Expanded E2E coverage for Map Art count-exclusion behavior while preserving existing map-mode count visibility.
+
 ## v7.0.1
 
 - Updated Map Art toggle behavior so enabling it forces canvas size to `128x128`.

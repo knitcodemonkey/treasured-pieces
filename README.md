@@ -29,7 +29,7 @@ Guiding symbols in our design language:
 
 Treasured Pieces is currently in active development.
 
-**Current baseline:** `v7.0.1`
+**Current baseline:** `v7.1.0`
 
 Recent improvements include:
 
@@ -85,6 +85,7 @@ Additional documentation is available in the `docs` directory.
 - **Vision** — Why Treasured Pieces exists
 - **Philosophy** — Design principles
 - **Roadmap** — Planned features and milestones
+- **Feature Handling Standard** — Consistent feature structure, ownership, and validation rules
 - **Release Notes** — Long-form release writeups (`docs/releases`)
 - **Architecture** — Project structure
 - **Design Notes** — UI, palettes, symmetry, and surfaces

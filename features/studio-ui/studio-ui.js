@@ -7,6 +7,11 @@ const CANVAS_SIZE_STORAGE_KEY = "treasuredpieces.canvasSize";
 const MAP_ART_VIEW_STORAGE_KEY = "treasuredpieces.mapArtView";
 const MIN_MAP_ART_CELL = 2;
 const MAP_ART_DIMENSION = 128;
+const createColorUsageUI =
+	window.countsUI?.createColorUsageUI ||
+	function () {
+		return { render: () => {} };
+	};
 
 function parseDimension(value, fallback) {
 	const parsed = Number(value);
@@ -792,73 +797,6 @@ function createCanvasController({
 	return { render };
 }
 
-function createColorUsageUI({ container, summary, project }) {
-	if (!container || !project?.palette?.colors) {
-		return { render: () => {} };
-	}
-
-	const normalizeColor = (value) => String(value || "").toUpperCase();
-
-	function render() {
-		const counts = new Map(
-			project.palette.colors.map((entry) => [normalizeColor(entry.hex), 0])
-		);
-
-		for (let y = 0; y < project.rows; y += 1) {
-			for (let x = 0; x < project.cols; x += 1) {
-				const key = normalizeColor(project.grid[y][x]);
-				counts.set(key, (counts.get(key) || 0) + 1);
-			}
-		}
-
-		const entries = project.palette.colors
-			.map((entry) => {
-				const count = counts.get(normalizeColor(entry.hex)) || 0;
-				return {
-					...entry,
-					count
-				};
-			})
-			.filter((entry) => entry.count > 0);
-
-		entries.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
-
-		const defaultColor = normalizeColor(project.palette.colors[0]?.hex);
-		const totalCells = project.cols * project.rows;
-		const defaultCount = counts.get(defaultColor) || 0;
-		const coloredCount = totalCells - defaultCount;
-
-		if (summary) {
-			summary.textContent = `${coloredCount} colored cells • ${totalCells} total`;
-		}
-
-		container.innerHTML = "";
-		for (const entry of entries) {
-			const item = document.createElement("div");
-			item.className = "count-item";
-
-			const swatch = document.createElement("span");
-			swatch.className = "count-swatch";
-			swatch.style.background = entry.hex;
-
-			const name = document.createElement("span");
-			name.className = "count-name";
-			name.textContent = entry.name;
-
-			const value = document.createElement("span");
-			value.className = "count-value";
-			value.textContent = String(entry.count);
-
-			item.appendChild(swatch);
-			item.appendChild(name);
-			item.appendChild(value);
-			container.appendChild(item);
-		}
-	}
-
-	return { render };
-}
-
 function updateVersionLabel(versionLabel) {
 	const pageVersion =
 		document.body.dataset.version ||
@@ -1032,7 +970,9 @@ function bootstrap() {
 	const colorUsageUI = createColorUsageUI({
 		container: colorCountsContainer,
 		summary: countsSummary,
-		project
+		project,
+		isMapArtViewEnabled: () => mapArtViewEnabled,
+		getMapArtBackgroundHex: () => mapArtBackgroundColor
 	});
 
 	const controller = createCanvasController({

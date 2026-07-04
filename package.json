@@ -1,6 +1,6 @@
 {
 	"name": "treasuredpieces",
-	"version": "7.0.1",
+	"version": "7.1.0",
 	"description": "> _I know you've been saving something beautiful. Let's find what it wants to become._",
 	"main": "index.js",
 	"directories": {
@@ -9,7 +9,7 @@
 	},
 	"scripts": {
 		"test": "npm run test:core && npm run test:e2e",
-		"test:core": "node features/project-core/project-core.test.js",
+		"test:core": "node features/project-core/project-core.test.js && node features/counts-core/count-rules.test.js",
 		"test:e2e": "bash features/studio-e2e/run-e2e.sh",
 		"test:a11y:aa": "node scripts/a11y-check.cjs http://127.0.0.1:4173/index.html wcag22aa",
 		"test:a11y:aaa": "node scripts/a11y-check.cjs http://127.0.0.1:4173/index.html wcag22aaa"

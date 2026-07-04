@@ -291,6 +291,20 @@ async function run() {
 			"#1d1d21",
 			"Map Art View default background should be black"
 		);
+		const mapArtCountRows = await page
+			.locator("#colorCounts .count-item")
+			.count();
+		assert.strictEqual(
+			mapArtCountRows,
+			0,
+			"Map Art View should exclude default black background from material counts"
+		);
+		const mapArtSummary = await page.locator("#countsSummary").innerText();
+		assert.strictEqual(
+			mapArtSummary,
+			"0 colored cells • 16384 total",
+			"Map Art summary should not count default black background as needed color"
+		);
 
 		const persistedMapView = await page.evaluate(() => {
 			return window.localStorage.getItem("treasuredpieces.mapArtView");
