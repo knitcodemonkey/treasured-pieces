@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v7.2.9
+
+- Moved Clear Canvas into the secondary toolbar row with Motifs and Symmetry.
+- Kept the primary row focused on Map Art plus mode-specific zoom or size controls.
+- Shortened the Map Art toggle label to reduce visual weight in the left slot.
+- Preserved end-to-end and accessibility coverage for the toolbar regrouping.
+
 ## v7.2.8
 
 - Increased separation between the Map Art View toggle and the rest of the toolbar.

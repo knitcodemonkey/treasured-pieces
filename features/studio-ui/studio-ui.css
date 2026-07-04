@@ -218,6 +218,15 @@ h1 {
 	min-width: 0;
 }
 
+.controls-secondary-group {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-basis: 100%;
+	justify-content: flex-start;
+	margin-top: 4px;
+}
+
 .map-art-toggle {
 	flex: 0 0 160px;
 	justify-content: flex-end;
@@ -281,14 +290,6 @@ h1 {
 	font-weight: 600;
 	line-height: 1.2;
 	box-sizing: border-box;
-}
-
-.controls-danger-group {
-	justify-content: flex-end;
-	margin-left: 12px;
-	padding-left: 12px;
-	border-left: 1px solid rgba(129, 109, 67, 0.45);
-	flex: 0 0 auto;
 }
 
 .control-inline-top {
@@ -734,6 +735,12 @@ button:hover {
 	.controls-feature-group {
 		margin-right: 0;
 		gap: 12px;
+		flex-wrap: wrap;
+	}
+
+	.controls-secondary-group {
+		margin-top: 0;
+		justify-content: flex-start;
 		flex-wrap: wrap;
 	}
 
