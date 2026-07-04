@@ -1200,8 +1200,6 @@ const SINGLE_MOTIFS = [
 					let colorId = "light_blue";
 					if (Math.abs(x) >= 8 || y <= -12 || y >= 11) {
 						colorId = "light_gray";
-					} else if (Math.abs(x) === 7 || y === -11 || y === 10) {
-						colorId = "gray";
 					} else if (y <= -6) {
 						colorId = "blue";
 					} else {
@@ -1290,10 +1288,6 @@ const SINGLE_MOTIFS = [
 					let colorId = "black";
 					if (Math.abs(x) === 9 || y === -13 || y === 12) {
 						colorId = "light_gray";
-					} else if (Math.abs(x) === 8 || y === -12 || y === 11) {
-						colorId = "gray";
-					} else if (Math.abs(x) === 7 || y === -11 || y === 10) {
-						colorId = "gray";
 					}
 
 					if (Math.abs(x) <= 7 && y >= -10 && y <= 8) {

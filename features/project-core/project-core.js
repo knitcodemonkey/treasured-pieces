@@ -35,11 +35,28 @@ function createTemplateLibrary({ cols, rows, palette = DEFAULT_PALETTE }) {
 		palette.colors.map((entry) => [entry.id, entry.hex])
 	);
 	const fallbackColor = palette.colors[0]?.hex || "#000000";
-	const centerX = Math.floor((cols - 1) / 2);
-	const centerY = Math.floor((rows - 1) / 2);
 
 	function resolveSourceCells(definition) {
 		return definition.cells || definition.buildCells();
+	}
+
+	function normalizeSingleCells(sourceCells) {
+		let minDx = Infinity;
+		let minDy = Infinity;
+		for (const cell of sourceCells) {
+			if (cell.dx < minDx) {
+				minDx = cell.dx;
+			}
+			if (cell.dy < minDy) {
+				minDy = cell.dy;
+			}
+		}
+
+		return sourceCells.map((cell) => ({
+			x: cell.dx - minDx,
+			y: cell.dy - minDy,
+			color: colorById.get(cell.colorId) || fallbackColor
+		}));
 	}
 
 	function normalizePatternCells(sourceCells) {
@@ -145,15 +162,13 @@ function createTemplateLibrary({ cols, rows, palette = DEFAULT_PALETTE }) {
 			};
 		}
 
-		const cells = sourceCells
-			.map((cell) => ({
-				x: centerX + cell.dx,
-				y: centerY + cell.dy,
-				color: colorById.get(cell.colorId) || fallbackColor
-			}))
-			.filter((cell) => {
-				return cell.x >= 0 && cell.x < cols && cell.y >= 0 && cell.y < rows;
-			});
+		const normalizedCells = normalizeSingleCells(sourceCells);
+		const bounds = computePatternBounds(normalizedCells);
+		const cells = centerPatternForPreview(
+			normalizedCells,
+			bounds.width,
+			bounds.height
+		);
 
 		return {
 			id: definition.id,

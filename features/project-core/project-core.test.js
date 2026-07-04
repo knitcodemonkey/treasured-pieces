@@ -161,6 +161,36 @@ assert.notStrictEqual(
 	"Rope border should include companion corner paint"
 );
 
+const tallProject = createProject({ cols: 19, rows: 26 });
+const tallApplied = tallProject.applyTemplate("full-window-moon-arcana");
+assert.strictEqual(tallApplied, true);
+const lightGrayHex = tallProject.palette.colors.find(
+	(color) => color.id === "light_gray"
+)?.hex;
+const grayHex = tallProject.palette.colors.find(
+	(color) => color.id === "gray"
+)?.hex;
+assert.strictEqual(
+	tallProject.grid[0][0],
+	lightGrayHex,
+	"Full-window motifs should reach the top-left border on a 19x26 canvas"
+);
+assert.strictEqual(
+	tallProject.grid[tallProject.rows - 1][tallProject.cols - 1],
+	lightGrayHex,
+	"Full-window motifs should reach the bottom-right border on a 19x26 canvas"
+);
+assert.notStrictEqual(
+	tallProject.grid[1][1],
+	lightGrayHex,
+	"Full-window motif border should only be one cell wide"
+);
+assert.notStrictEqual(
+	tallProject.grid[1][1],
+	grayHex,
+	"Full-window motif should not add a second gray border band inside the border"
+);
+
 const notApplied = project.applyTemplate("missing-template");
 assert.strictEqual(notApplied, false);
 

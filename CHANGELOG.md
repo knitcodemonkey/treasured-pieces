@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v6.1.20
+
+- Fixed centered single-template placement so full-window motifs correctly fill even-dimension canvases like 19x26.
+- Added core regression coverage to verify full-window motifs hit all borders on 19x26 and keep a one-cell frame.
+- Refined `XIX • The Sun` and `XVIII • The Moon` frame treatment to remove the extra inner gray border band.
+
 ## v6.1.19
 
 - Refined `XIX • The Sun` so the lower dawn remnant is smaller, lower, and softer against a mostly daylight sky.
