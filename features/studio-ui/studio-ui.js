@@ -2,10 +2,11 @@ const COLS = 19;
 const ROWS = 15;
 const CELL = 30;
 const MIN_DIMENSION = 5;
-const MAX_DIMENSION = 60;
+const MAX_DIMENSION = 128;
 const CANVAS_SIZE_STORAGE_KEY = "treasuredpieces.canvasSize";
 const MAP_ART_VIEW_STORAGE_KEY = "treasuredpieces.mapArtView";
 const MIN_MAP_ART_CELL = 2;
+const MAP_ART_DIMENSION = 128;
 
 function parseDimension(value, fallback) {
 	const parsed = Number(value);
@@ -897,6 +898,22 @@ function calculateMapArtCellSize(cols, rows, canvasPanel) {
 	return Math.max(MIN_MAP_ART_CELL, Math.min(CELL, fitCell));
 }
 
+function getMapArtBackgroundColor(project) {
+	return (
+		project.palette.colors.find((entry) => entry.id === "black")?.hex ||
+		project.colors[3] ||
+		project.colors[0]
+	);
+}
+
+function fillGrid(project, color) {
+	for (let y = 0; y < project.rows; y += 1) {
+		for (let x = 0; x < project.cols; x += 1) {
+			project.grid[y][x] = color;
+		}
+	}
+}
+
 function bootstrap() {
 	const versionLabel = document.getElementById("appVersion");
 	if (versionLabel) {
@@ -925,14 +942,13 @@ function bootstrap() {
 	const canvasPanel = document.querySelector(".canvas-panel");
 
 	const storedSize = loadStoredCanvasSize();
-	const initialCols = parseDimension(
-		storedSize?.cols ?? widthInput?.value,
-		COLS
-	);
-	const initialRows = parseDimension(
-		storedSize?.rows ?? heightInput?.value,
-		ROWS
-	);
+	let mapArtViewEnabled = loadStoredMapArtView();
+	const initialCols = mapArtViewEnabled
+		? MAP_ART_DIMENSION
+		: parseDimension(storedSize?.cols ?? widthInput?.value, COLS);
+	const initialRows = mapArtViewEnabled
+		? MAP_ART_DIMENSION
+		: parseDimension(storedSize?.rows ?? heightInput?.value, ROWS);
 	if (widthInput) {
 		widthInput.value = String(initialCols);
 	}
@@ -944,7 +960,10 @@ function bootstrap() {
 		cols: initialCols,
 		rows: initialRows
 	});
-	let mapArtViewEnabled = loadStoredMapArtView();
+	const mapArtBackgroundColor = getMapArtBackgroundColor(project);
+	if (mapArtViewEnabled) {
+		fillGrid(project, mapArtBackgroundColor);
+	}
 	let currentCellSize = mapArtViewEnabled
 		? calculateMapArtCellSize(project.cols, project.rows, canvasPanel)
 		: CELL;
@@ -981,7 +1000,7 @@ function bootstrap() {
 		}
 	}
 
-	function resizeCanvas(cols, rows) {
+	function resizeCanvas(cols, rows, { savePreference = true } = {}) {
 		if (cols === project.cols && rows === project.rows) {
 			return true;
 		}
@@ -1000,7 +1019,12 @@ function bootstrap() {
 			rows: project.rows
 		});
 		toolbarUI?.syncSizeInputs(project.cols, project.rows);
-		saveCanvasSize(project.cols, project.rows);
+		if (savePreference) {
+			saveCanvasSize(project.cols, project.rows);
+		}
+		if (mapArtViewEnabled) {
+			fillGrid(project, mapArtBackgroundColor);
+		}
 		controller.render();
 		return true;
 	}
@@ -1080,7 +1104,11 @@ function bootstrap() {
 					return false;
 				}
 
-				if (!resizeCanvas(targetCols, targetRows)) {
+				if (
+					!resizeCanvas(targetCols, targetRows, {
+						savePreference: !mapArtViewEnabled
+					})
+				) {
 					return false;
 				}
 			}
@@ -1120,6 +1148,18 @@ function bootstrap() {
 		onToggleMapArt: (checked) => {
 			mapArtViewEnabled = checked;
 			saveMapArtView(mapArtViewEnabled);
+
+			if (mapArtViewEnabled) {
+				resizeCanvas(MAP_ART_DIMENSION, MAP_ART_DIMENSION, {
+					savePreference: false
+				});
+			} else {
+				const preferredSize = loadStoredCanvasSize();
+				const restoreCols = parseDimension(preferredSize?.cols, COLS);
+				const restoreRows = parseDimension(preferredSize?.rows, ROWS);
+				resizeCanvas(restoreCols, restoreRows, { savePreference: false });
+			}
+
 			updateCanvasScale();
 		},
 		onChangeSymmetry: (mode) => {
@@ -1127,10 +1167,21 @@ function bootstrap() {
 			controller.render();
 		},
 		onResize: ({ cols, rows }) => {
+			if (mapArtViewEnabled) {
+				resizeCanvas(MAP_ART_DIMENSION, MAP_ART_DIMENSION, {
+					savePreference: false
+				});
+				return;
+			}
+
 			resizeCanvas(cols, rows);
 		},
 		onClear: () => {
-			project.clear();
+			if (mapArtViewEnabled) {
+				fillGrid(project, mapArtBackgroundColor);
+			} else {
+				project.clear();
+			}
 			motifPickerUI.setActiveMotif(null);
 			controller.render();
 		}

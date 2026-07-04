@@ -232,16 +232,26 @@ async function run() {
 			"Reload should restore saved height input"
 		);
 
-		// Flow 10: Map Art View applies fit sizing with square cells and persists.
-		await page.fill("#canvasCols", "128");
-		await page.fill("#canvasRows", "128");
-		await page.click("#resizeCanvasBtn");
+		// Flow 10: Map Art View forces 128x128 and keeps non-map size preference.
+		const storedBeforeMapArt = await page.evaluate(() => {
+			return window.localStorage.getItem("treasuredpieces.canvasSize");
+		});
+		assert.strictEqual(
+			storedBeforeMapArt,
+			JSON.stringify({ cols: 24, rows: 26 }),
+			"Expected non-map canvas preference before entering Map Art View"
+		);
 
 		const normalMapState = await getCanvasState(page);
 		assert.strictEqual(
-			normalMapState.cellWidth,
-			30,
-			"Normal view should use default 30px square cells"
+			normalMapState.cols,
+			24,
+			"Normal view should start from stored non-map width"
+		);
+		assert.strictEqual(
+			normalMapState.rows,
+			26,
+			"Normal view should start from stored non-map height"
 		);
 		assert.strictEqual(
 			normalMapState.cellWidth,
@@ -251,6 +261,16 @@ async function run() {
 
 		await page.check("#mapArtViewToggle");
 		const mapArtState = await getCanvasState(page);
+		assert.strictEqual(
+			mapArtState.cols,
+			128,
+			"Map Art View should force canvas width to 128"
+		);
+		assert.strictEqual(
+			mapArtState.rows,
+			128,
+			"Map Art View should force canvas height to 128"
+		);
 		assert.ok(
 			mapArtState.cellWidth < 30,
 			"Map Art View should reduce cell size for large canvases"
@@ -259,6 +279,17 @@ async function run() {
 			Math.round(mapArtState.cellWidth * 1000),
 			Math.round(mapArtState.cellHeight * 1000),
 			"Map Art View should keep cells square"
+		);
+		const mapArtCorner = await getCellCenter(page, 0, 0);
+		const mapArtBackground = await colorAt(
+			page,
+			mapArtCorner.x,
+			mapArtCorner.y
+		);
+		assert.strictEqual(
+			mapArtBackground,
+			"#1d1d21",
+			"Map Art View default background should be black"
 		);
 
 		const persistedMapView = await page.evaluate(() => {
@@ -269,19 +300,50 @@ async function run() {
 			"1",
 			"Map Art View toggle should persist enabled state"
 		);
+		const storedDuringMapArt = await page.evaluate(() => {
+			return window.localStorage.getItem("treasuredpieces.canvasSize");
+		});
+		assert.strictEqual(
+			storedDuringMapArt,
+			JSON.stringify({ cols: 24, rows: 26 }),
+			"Map Art View should not overwrite stored non-map canvas size"
+		);
+
+		await page.uncheck("#mapArtViewToggle");
+		const restoredFromStorageState = await getCanvasState(page);
+		assert.strictEqual(
+			restoredFromStorageState.cols,
+			24,
+			"Turning off Map Art View should restore stored canvas width"
+		);
+		assert.strictEqual(
+			restoredFromStorageState.rows,
+			26,
+			"Turning off Map Art View should restore stored canvas height"
+		);
 
 		await page.reload({ waitUntil: "networkidle" });
 		assert.strictEqual(
 			await page.isChecked("#mapArtViewToggle"),
-			true,
-			"Map Art View should restore enabled state after reload"
+			false,
+			"Map Art View should restore disabled state after reload"
 		);
 
 		const reloadedMapState = await getCanvasState(page);
 		assert.strictEqual(
+			reloadedMapState.cols,
+			24,
+			"Reload should restore stored non-map canvas width"
+		);
+		assert.strictEqual(
+			reloadedMapState.rows,
+			26,
+			"Reload should restore stored non-map canvas height"
+		);
+		assert.strictEqual(
 			Math.round(reloadedMapState.cellWidth * 1000),
 			Math.round(reloadedMapState.cellHeight * 1000),
-			"Reloaded Map Art View should keep cells square"
+			"Reloaded normal view should keep cells square"
 		);
 
 		console.log("studio-e2e tests passed");

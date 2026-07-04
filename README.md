@@ -29,7 +29,7 @@ Guiding symbols in our design language:
 
 Treasured Pieces is currently in active development.
 
-**Current baseline:** `v7.0.0`
+**Current baseline:** `v7.0.1`
 
 Recent improvements include:
 

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v7.0.1
+
+- Updated Map Art toggle behavior so enabling it forces canvas size to `128x128`.
+- Restored the user's stored non-map canvas size when Map Art mode is turned off.
+- Kept Map Art's fixed `128x128` mode from overwriting stored non-map canvas size preferences.
+- Set Map Art default/clear background to black.
+- Expanded E2E coverage for Map Art fixed-size toggling, preference restore, and black background defaults.
+
 ## v7.0.0
 
 - Implemented Milestone 1 Map Art foundations with a `Map Art View` toggle in the main controls.

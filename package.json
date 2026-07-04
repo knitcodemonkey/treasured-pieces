@@ -1,6 +1,6 @@
 {
 	"name": "treasuredpieces",
-	"version": "7.0.0",
+	"version": "7.0.1",
 	"description": "> _I know you've been saving something beautiful. Let's find what it wants to become._",
 	"main": "index.js",
 	"directories": {
