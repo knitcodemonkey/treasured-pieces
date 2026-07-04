@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v7.2.1
+
+- Fixed border-repeat orientation so left/right edges rotate the tile pattern and match top/bottom frame thickness.
+- Applied the border orientation fix through the shared renderer, covering both standard and map-art border motifs.
+- Refined map-art border motif designs for cleaner readability and larger-scale visual structure.
+- Improved map-art corner companion continuity so corners transition more cleanly into adjacent edge runs.
+
 ## v7.2.0
 
 - Added dedicated map-art motif libraries so Map Art View no longer reuses small standard motifs.

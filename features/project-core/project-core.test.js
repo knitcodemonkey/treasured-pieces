@@ -93,6 +93,11 @@ assert.ok(
 		(template) => template.id === "mapart-border-circuit"
 	)
 );
+assert.ok(
+	project.mapArtTemplates.some(
+		(template) => template.id === "mapart-border-celtic-knot"
+	)
+);
 assert.strictEqual(
 	project.mapArtTemplates.some((template) =>
 		project.templates.some((baseTemplate) => baseTemplate.id === template.id)
@@ -235,6 +240,21 @@ const mapArtApplied = project.applyTemplate("mapart-solar-burst", {
 	library: "mapArt"
 });
 assert.strictEqual(mapArtApplied, true);
+
+const mapArtCelticApplied = project.applyTemplate("mapart-border-celtic-knot", {
+	library: "mapArt"
+});
+assert.strictEqual(mapArtCelticApplied, true);
+assert.strictEqual(
+	project.grid[0][0],
+	project.grid[0][1],
+	"Top-left corner should continue top edge color for map-art Celtic border"
+);
+assert.strictEqual(
+	project.grid[0][0],
+	project.grid[1][0],
+	"Top-left corner should continue left edge color for map-art Celtic border"
+);
 
 const standardCannotApplyMapArtByDefault =
 	project.applyTemplate("mapart-solar-burst");

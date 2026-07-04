@@ -301,10 +301,22 @@ function createProject({
 
 			if (template.placement === "border-repeat") {
 				const touched = new Set();
-				const widthStep = Math.max(1, template.patternWidth || 1);
-				const heightStep = Math.max(1, template.patternHeight || 1);
-				const startBottom = Math.max(0, rows - heightStep);
-				const startRight = Math.max(0, cols - widthStep);
+				const horizontalWidthStep = Math.max(1, template.patternWidth || 1);
+				const horizontalHeightStep = Math.max(1, template.patternHeight || 1);
+				const horizontalPattern = template.patternCells || [];
+
+				// Rotate the edge tile for left/right passes so border thickness matches
+				// top/bottom thickness on square and rectangular motifs.
+				const verticalPattern = horizontalPattern.map((cell) => ({
+					x: cell.y,
+					y: cell.x,
+					color: cell.color
+				}));
+				const verticalWidthStep = Math.max(1, horizontalHeightStep);
+				const verticalHeightStep = Math.max(1, horizontalWidthStep);
+
+				const startBottom = Math.max(0, rows - horizontalHeightStep);
+				const startRight = Math.max(0, cols - verticalWidthStep);
 
 				const buildCenteredAnchors = (span, step) => {
 					const repeatCount = Math.max(1, Math.ceil(span / step));
@@ -337,14 +349,14 @@ function createProject({
 					}
 				};
 
-				for (const x of buildCenteredAnchors(cols, widthStep)) {
-					paintPattern(template.patternCells, x, 0);
-					paintPattern(template.patternCells, x, startBottom);
+				for (const x of buildCenteredAnchors(cols, horizontalWidthStep)) {
+					paintPattern(horizontalPattern, x, 0);
+					paintPattern(horizontalPattern, x, startBottom);
 				}
 
-				for (const y of buildCenteredAnchors(rows, heightStep)) {
-					paintPattern(template.patternCells, 0, y);
-					paintPattern(template.patternCells, startRight, y);
+				for (const y of buildCenteredAnchors(rows, verticalHeightStep)) {
+					paintPattern(verticalPattern, 0, y);
+					paintPattern(verticalPattern, startRight, y);
 				}
 
 				const corners = template.cornerPatterns || {};
