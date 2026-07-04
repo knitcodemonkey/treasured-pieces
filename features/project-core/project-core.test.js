@@ -9,6 +9,15 @@ const project = createProject({ cols: 19, rows: 15 });
 assert.strictEqual(project.cols, 19);
 assert.strictEqual(project.rows, 15);
 assert.deepStrictEqual(project.grid[0][0], project.palette.colors[0].hex);
+assert.strictEqual(
+	project.palette.colors[0].id,
+	"clear",
+	"Clear should be the default palette option"
+);
+assert.ok(
+	project.palette.colors.some((entry) => entry.id === "white"),
+	"White should still be available as a paint option"
+);
 assert.ok(project.templates.length > 0);
 assert.ok(project.templates.some((template) => template.id === "sun"));
 assert.ok(project.templates.some((template) => template.id === "moon"));

@@ -13,20 +13,13 @@ function colorAt(page, x, y) {
 	);
 }
 
-function centerOfCell(cellX, cellY, cellSize = 30) {
-	return {
-		x: cellX * cellSize + Math.floor(cellSize / 2),
-		y: cellY * cellSize + Math.floor(cellSize / 2)
-	};
-}
-
 async function clickCanvasCell(page, cellX, cellY) {
 	const canvas = page.locator("#canvas");
 	const box = await canvas.boundingBox();
 	if (!box) {
 		throw new Error("Canvas bounding box not found");
 	}
-	const point = centerOfCell(cellX, cellY);
+	const point = await getCellCenter(page, cellX, cellY);
 	await page.mouse.click(box.x + point.x, box.y + point.y);
 }
 
@@ -39,6 +32,40 @@ async function getCanvasDimensions(page) {
 		const canvas = document.getElementById("canvas");
 		return { width: canvas.width, height: canvas.height };
 	});
+}
+
+async function getCanvasState(page) {
+	return page.evaluate(() => {
+		const canvas = document.getElementById("canvas");
+		const cols = Number(document.getElementById("canvasCols")?.value || 0);
+		const rows = Number(document.getElementById("canvasRows")?.value || 0);
+		return {
+			width: canvas.width,
+			height: canvas.height,
+			cols,
+			rows,
+			cellWidth: cols > 0 ? canvas.width / cols : 0,
+			cellHeight: rows > 0 ? canvas.height / rows : 0
+		};
+	});
+}
+
+async function getCellCenter(page, cellX, cellY) {
+	return page.evaluate(
+		({ cellX, cellY }) => {
+			const canvas = document.getElementById("canvas");
+			const cols = Number(document.getElementById("canvasCols")?.value || 1);
+			const rows = Number(document.getElementById("canvasRows")?.value || 1);
+			const cellWidth = canvas.width / cols;
+			const cellHeight = canvas.height / rows;
+			const cellSize = Math.min(cellWidth, cellHeight);
+			return {
+				x: Math.floor(cellX * cellSize + cellSize / 2),
+				y: Math.floor(cellY * cellSize + cellSize / 2)
+			};
+		},
+		{ cellX, cellY }
+	);
 }
 
 async function run() {
@@ -54,7 +81,8 @@ async function run() {
 		// Flow 1: select a color and paint a cell.
 		await selectSwatch(page, 5); // red-ish swatch
 		await clickCanvasCell(page, 1, 1);
-		const painted = await colorAt(page, 45, 45);
+		const paintedPoint = await getCellCenter(page, 1, 1);
+		const painted = await colorAt(page, paintedPoint.x, paintedPoint.y);
 		assert.notStrictEqual(
 			painted,
 			"#f9fffe",
@@ -64,7 +92,7 @@ async function run() {
 		// Flow 2: load a motif and verify center changed from default.
 		await page.click("#openMotifsBtn");
 		await page.click("#motifPicker .motif-option[data-motif-id='sun']");
-		const center = centerOfCell(9, 7);
+		const center = await getCellCenter(page, 9, 7);
 		const centerColor = await colorAt(page, center.x, center.y);
 		assert.notStrictEqual(
 			centerColor,
@@ -76,8 +104,8 @@ async function run() {
 		await page.selectOption("#mirror", "180°");
 		await selectSwatch(page, 6); // orange swatch
 		await clickCanvasCell(page, 2, 3);
-		const source = centerOfCell(2, 3);
-		const mirrored = centerOfCell(16, 11);
+		const source = await getCellCenter(page, 2, 3);
+		const mirrored = await getCellCenter(page, 16, 11);
 		const sourceColor = await colorAt(page, source.x, source.y);
 		const mirrorColor = await colorAt(page, mirrored.x, mirrored.y);
 		assert.strictEqual(
@@ -137,7 +165,7 @@ async function run() {
 
 		await selectSwatch(page, 7); // yellow swatch
 		await clickCanvasCell(page, 23, 11);
-		const resizedCorner = centerOfCell(23, 11);
+		const resizedCorner = await getCellCenter(page, 23, 11);
 		const resizedColor = await colorAt(page, resizedCorner.x, resizedCorner.y);
 		assert.notStrictEqual(
 			resizedColor,
@@ -202,6 +230,58 @@ async function run() {
 			await page.inputValue("#canvasRows"),
 			"26",
 			"Reload should restore saved height input"
+		);
+
+		// Flow 10: Map Art View applies fit sizing with square cells and persists.
+		await page.fill("#canvasCols", "128");
+		await page.fill("#canvasRows", "128");
+		await page.click("#resizeCanvasBtn");
+
+		const normalMapState = await getCanvasState(page);
+		assert.strictEqual(
+			normalMapState.cellWidth,
+			30,
+			"Normal view should use default 30px square cells"
+		);
+		assert.strictEqual(
+			normalMapState.cellWidth,
+			normalMapState.cellHeight,
+			"Normal view cells should stay square"
+		);
+
+		await page.check("#mapArtViewToggle");
+		const mapArtState = await getCanvasState(page);
+		assert.ok(
+			mapArtState.cellWidth < 30,
+			"Map Art View should reduce cell size for large canvases"
+		);
+		assert.strictEqual(
+			Math.round(mapArtState.cellWidth * 1000),
+			Math.round(mapArtState.cellHeight * 1000),
+			"Map Art View should keep cells square"
+		);
+
+		const persistedMapView = await page.evaluate(() => {
+			return window.localStorage.getItem("treasuredpieces.mapArtView");
+		});
+		assert.strictEqual(
+			persistedMapView,
+			"1",
+			"Map Art View toggle should persist enabled state"
+		);
+
+		await page.reload({ waitUntil: "networkidle" });
+		assert.strictEqual(
+			await page.isChecked("#mapArtViewToggle"),
+			true,
+			"Map Art View should restore enabled state after reload"
+		);
+
+		const reloadedMapState = await getCanvasState(page);
+		assert.strictEqual(
+			Math.round(reloadedMapState.cellWidth * 1000),
+			Math.round(reloadedMapState.cellHeight * 1000),
+			"Reloaded Map Art View should keep cells square"
 		);
 
 		console.log("studio-e2e tests passed");

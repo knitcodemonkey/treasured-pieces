@@ -263,6 +263,23 @@ h1 {
 	min-width: 190px;
 }
 
+.map-art-toggle {
+	gap: 8px;
+}
+
+.map-art-toggle input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	accent-color: #d6b261;
+	margin: 0;
+}
+
+.map-art-toggle span {
+	font-size: 0.9rem;
+	font-weight: 700;
+	color: #f0e5cb;
+}
+
 .feature-tabs {
 	display: flex;
 	justify-content: center;

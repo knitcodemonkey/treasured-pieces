@@ -1,7 +1,7 @@
 const DEFAULT_PALETTE = {
 	name: "Minecraft Stained Glass",
 	colors: [
-		{ id: "white", name: "White", hex: "#F9FFFE" },
+		{ id: "clear", name: "Clear", hex: "#F9FFFE" },
 		{ id: "light_gray", name: "Light Gray", hex: "#9D9D97" },
 		{ id: "gray", name: "Gray", hex: "#474F52" },
 		{ id: "black", name: "Black", hex: "#1D1D21" },
@@ -16,7 +16,8 @@ const DEFAULT_PALETTE = {
 		{ id: "blue", name: "Blue", hex: "#3C44AA" },
 		{ id: "purple", name: "Purple", hex: "#8932B8" },
 		{ id: "magenta", name: "Magenta", hex: "#C74EBD" },
-		{ id: "pink", name: "Pink", hex: "#F38BAA" }
+		{ id: "pink", name: "Pink", hex: "#F38BAA" },
+		{ id: "white", name: "White", hex: "#FFFFFF" }
 	]
 };
 

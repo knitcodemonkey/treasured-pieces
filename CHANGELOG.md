@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## v7.0.0
+
+- Implemented Milestone 1 Map Art foundations with a `Map Art View` toggle in the main controls.
+- Added viewport-fit canvas scaling for large grids (including 128x128) while enforcing square cells via a single scalar cell size.
+- Added local persistence for Map Art View state and restored it on reload.
+- Updated canvas interaction/render paths to use runtime cell size, preserving accurate paint targeting in scaled views.
+- Expanded E2E coverage for Map Art toggle behavior, fit behavior, square-cell invariants, and persistence.
+- Added planning documentation for independent Map Art scope, milestones, and folder structure boundaries.
+
 ## v6.1.22
 
 - Added motif source-dimension metadata to support accurate size checks in the motif picker.

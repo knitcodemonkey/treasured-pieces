@@ -4,6 +4,8 @@ const CELL = 30;
 const MIN_DIMENSION = 5;
 const MAX_DIMENSION = 60;
 const CANVAS_SIZE_STORAGE_KEY = "treasuredpieces.canvasSize";
+const MAP_ART_VIEW_STORAGE_KEY = "treasuredpieces.mapArtView";
+const MIN_MAP_ART_CELL = 2;
 
 function parseDimension(value, fallback) {
 	const parsed = Number(value);
@@ -44,6 +46,22 @@ function saveCanvasSize(cols, rows) {
 			CANVAS_SIZE_STORAGE_KEY,
 			JSON.stringify({ cols, rows })
 		);
+	} catch {
+		// Ignore storage failures (for example private browsing restrictions).
+	}
+}
+
+function loadStoredMapArtView() {
+	try {
+		return window.localStorage.getItem(MAP_ART_VIEW_STORAGE_KEY) === "1";
+	} catch {
+		return false;
+	}
+}
+
+function saveMapArtView(enabled) {
+	try {
+		window.localStorage.setItem(MAP_ART_VIEW_STORAGE_KEY, enabled ? "1" : "0");
 	} catch {
 		// Ignore storage failures (for example private browsing restrictions).
 	}
@@ -216,6 +234,7 @@ function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
 
 function createToolbarUI({
 	gridToggle,
+	mapArtToggle,
 	symmetrySelect,
 	widthInput,
 	heightInput,
@@ -228,6 +247,7 @@ function createToolbarUI({
 	onOpenMotifs,
 	onCloseMotifs,
 	onToggleGrid,
+	onToggleMapArt,
 	onChangeSymmetry,
 	onResize,
 	onClear
@@ -276,6 +296,10 @@ function createToolbarUI({
 		onToggleGrid?.(gridToggle.checked);
 	});
 
+	mapArtToggle?.addEventListener("change", () => {
+		onToggleMapArt?.(mapArtToggle.checked);
+	});
+
 	symmetrySelect.addEventListener("change", () => {
 		onChangeSymmetry(symmetrySelect.value);
 	});
@@ -302,6 +326,11 @@ function createToolbarUI({
 	return {
 		openMotifsModal,
 		closeMotifsModal,
+		syncMapArtToggle(enabled) {
+			if (mapArtToggle) {
+				mapArtToggle.checked = Boolean(enabled);
+			}
+		},
 		syncSizeInputs(cols, rows) {
 			if (widthInput) {
 				widthInput.value = String(cols);
@@ -533,7 +562,7 @@ function createCanvasController({
 	context,
 	project,
 	getSymmetryEngine,
-	cellSize,
+	getCellSize,
 	onPenToggleEraser,
 	onRender
 }) {
@@ -546,6 +575,7 @@ function createCanvasController({
 	const PEN_TOGGLE_WINDOW_MS = 320;
 
 	function getCellFromEvent(event) {
+		const cellSize = getCellSize();
 		const rect = canvas.getBoundingClientRect();
 		const x = Math.floor((event.clientX - rect.left) / cellSize);
 		const y = Math.floor((event.clientY - rect.top) / cellSize);
@@ -610,6 +640,7 @@ function createCanvasController({
 	}
 
 	function render() {
+		const cellSize = getCellSize();
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
 		for (let y = 0; y < project.rows; y += 1) {
@@ -648,8 +679,15 @@ function createCanvasController({
 		context.lineTo(project.cols * cellSize, centerY * cellSize);
 		context.stroke();
 		context.fillStyle = "gold";
+		const centerDotRadius = Math.max(1, Math.min(3, cellSize / 3));
 		context.beginPath();
-		context.arc(centerX * cellSize, centerY * cellSize, 3, 0, Math.PI * 2);
+		context.arc(
+			centerX * cellSize,
+			centerY * cellSize,
+			centerDotRadius,
+			0,
+			Math.PI * 2
+		);
 		context.fill();
 
 		onRender?.();
@@ -834,9 +872,29 @@ function updateVersionLabel(versionLabel) {
 	return pageVersion;
 }
 
-function syncCanvasElementSize(canvas, cols, rows) {
-	canvas.width = cols * CELL;
-	canvas.height = rows * CELL;
+function syncCanvasElementSize(canvas, cols, rows, cellSize) {
+	canvas.width = Math.max(1, Math.round(cols * cellSize));
+	canvas.height = Math.max(1, Math.round(rows * cellSize));
+}
+
+function calculateMapArtCellSize(cols, rows, canvasPanel) {
+	if (!cols || !rows) {
+		return CELL;
+	}
+
+	const panelWidth = canvasPanel?.clientWidth || window.innerWidth;
+	const panelTop = canvasPanel?.getBoundingClientRect().top || 240;
+	const availableWidth = Math.max(120, panelWidth - 28);
+	const availableHeight = Math.max(120, window.innerHeight - panelTop - 24);
+	const fitCell = Math.floor(
+		Math.min(availableWidth / cols, availableHeight / rows)
+	);
+
+	if (!Number.isFinite(fitCell)) {
+		return CELL;
+	}
+
+	return Math.max(MIN_MAP_ART_CELL, Math.min(CELL, fitCell));
 }
 
 function bootstrap() {
@@ -861,8 +919,10 @@ function bootstrap() {
 	const motifModalBackdrop = document.getElementById("motifModalBackdrop");
 	const motifPicker = document.getElementById("motifPicker");
 	const clearButton = document.getElementById("clearBtn");
+	const mapArtToggle = document.getElementById("mapArtViewToggle");
 	const colorCountsContainer = document.getElementById("colorCounts");
 	const countsSummary = document.getElementById("countsSummary");
+	const canvasPanel = document.querySelector(".canvas-panel");
 
 	const storedSize = loadStoredCanvasSize();
 	const initialCols = parseDimension(
@@ -884,7 +944,14 @@ function bootstrap() {
 		cols: initialCols,
 		rows: initialRows
 	});
-	syncCanvasElementSize(canvas, project.cols, project.rows);
+	let mapArtViewEnabled = loadStoredMapArtView();
+	let currentCellSize = mapArtViewEnabled
+		? calculateMapArtCellSize(project.cols, project.rows, canvasPanel)
+		: CELL;
+	if (mapArtToggle) {
+		mapArtToggle.checked = mapArtViewEnabled;
+	}
+	syncCanvasElementSize(canvas, project.cols, project.rows, currentCellSize);
 
 	if (gridToggle) {
 		project.showGrid = gridToggle.checked;
@@ -896,12 +963,23 @@ function bootstrap() {
 	});
 
 	const getSymmetryEngine = () => symmetryEngine;
+	const getCellSize = () => currentCellSize;
 	const rebuildSymmetryEngine = () => {
 		symmetryEngine = window.projectCore.createSymmetryEngine({
 			cols: project.cols,
 			rows: project.rows
 		});
 	};
+
+	function updateCanvasScale({ rerender = true } = {}) {
+		currentCellSize = mapArtViewEnabled
+			? calculateMapArtCellSize(project.cols, project.rows, canvasPanel)
+			: CELL;
+		syncCanvasElementSize(canvas, project.cols, project.rows, currentCellSize);
+		if (rerender) {
+			controller.render();
+		}
+	}
 
 	function resizeCanvas(cols, rows) {
 		if (cols === project.cols && rows === project.rows) {
@@ -913,7 +991,7 @@ function bootstrap() {
 			return false;
 		}
 
-		syncCanvasElementSize(canvas, project.cols, project.rows);
+		updateCanvasScale({ rerender: false });
 		rebuildSymmetryEngine();
 		motifPickerUI.setActiveMotif(null);
 		motifPickerUI.setLibrary({
@@ -938,7 +1016,7 @@ function bootstrap() {
 		context,
 		project,
 		getSymmetryEngine,
-		cellSize: CELL,
+		getCellSize,
 		onRender: () => {
 			colorUsageUI.render();
 		},
@@ -1019,6 +1097,7 @@ function bootstrap() {
 
 	const toolbarUI = createToolbarUI({
 		gridToggle,
+		mapArtToggle,
 		symmetrySelect,
 		widthInput,
 		heightInput,
@@ -1038,6 +1117,11 @@ function bootstrap() {
 			project.showGrid = checked;
 			controller.render();
 		},
+		onToggleMapArt: (checked) => {
+			mapArtViewEnabled = checked;
+			saveMapArtView(mapArtViewEnabled);
+			updateCanvasScale();
+		},
 		onChangeSymmetry: (mode) => {
 			project.symmetryMode = mode;
 			controller.render();
@@ -1051,6 +1135,15 @@ function bootstrap() {
 			controller.render();
 		}
 	});
+
+	window.addEventListener("resize", () => {
+		if (!mapArtViewEnabled) {
+			return;
+		}
+		updateCanvasScale();
+	});
+
+	toolbarUI.syncMapArtToggle(mapArtViewEnabled);
 
 	controller.render();
 }
