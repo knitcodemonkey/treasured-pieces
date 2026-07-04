@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v6.1.22
+
+- Added motif source-dimension metadata to support accurate size checks in the motif picker.
+- Added oversized-motif load prompts that offer to expand the canvas before applying the motif.
+- Persisted selected canvas size in local storage and restored it on reload/return.
+- Expanded E2E coverage for counts accordion behavior, zero-count filtering, oversized motif confirm/cancel flows, and canvas-size persistence.
+- Added WCAG 2.2 AA accessibility checks to the default E2E test pipeline.
+
 ## v6.1.21
 
 - Converted Build Counts into a collapsible accordion so makers can hide or reveal it as needed.

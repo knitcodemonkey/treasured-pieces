@@ -149,6 +149,8 @@ function createTemplateLibrary({ cols, rows, palette = DEFAULT_PALETTE }) {
 				description: definition.description,
 				category,
 				placement,
+				sourceWidth: patternWidth,
+				sourceHeight: patternHeight,
 				patternWidth,
 				patternHeight,
 				hasCornerCompanions,
@@ -176,6 +178,8 @@ function createTemplateLibrary({ cols, rows, palette = DEFAULT_PALETTE }) {
 			description: definition.description,
 			category,
 			placement,
+			sourceWidth: bounds.width,
+			sourceHeight: bounds.height,
 			cells
 		};
 	});

@@ -3,6 +3,7 @@ const ROWS = 15;
 const CELL = 30;
 const MIN_DIMENSION = 5;
 const MAX_DIMENSION = 60;
+const CANVAS_SIZE_STORAGE_KEY = "treasuredpieces.canvasSize";
 
 function parseDimension(value, fallback) {
 	const parsed = Number(value);
@@ -15,6 +16,37 @@ function parseDimension(value, fallback) {
 		Math.min(MAX_DIMENSION, Math.trunc(parsed))
 	);
 	return clamped;
+}
+
+function loadStoredCanvasSize() {
+	try {
+		const raw = window.localStorage.getItem(CANVAS_SIZE_STORAGE_KEY);
+		if (!raw) {
+			return null;
+		}
+
+		const parsed = JSON.parse(raw);
+		if (!parsed || typeof parsed !== "object") {
+			return null;
+		}
+
+		const cols = parseDimension(parsed.cols, COLS);
+		const rows = parseDimension(parsed.rows, ROWS);
+		return { cols, rows };
+	} catch {
+		return null;
+	}
+}
+
+function saveCanvasSize(cols, rows) {
+	try {
+		window.localStorage.setItem(
+			CANVAS_SIZE_STORAGE_KEY,
+			JSON.stringify({ cols, rows })
+		);
+	} catch {
+		// Ignore storage failures (for example private browsing restrictions).
+	}
 }
 
 function createPaletteUI({ palette, container, tooltipHost, onSelect }) {
@@ -332,9 +364,17 @@ function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 	function getMotifDimensions(motif) {
 		if (motif?.placement === "border-repeat") {
 			return {
-				width: motif.patternWidth || 0,
-				height: motif.patternHeight || 0,
+				width: motif.sourceWidth || motif.patternWidth || 0,
+				height: motif.sourceHeight || motif.patternHeight || 0,
 				isTile: true
+			};
+		}
+
+		if (motif?.sourceWidth && motif?.sourceHeight) {
+			return {
+				width: motif.sourceWidth,
+				height: motif.sourceHeight,
+				isTile: false
 			};
 		}
 
@@ -448,8 +488,10 @@ function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 					name: motif.name,
 					motif,
 					onClick: () => {
-						onLoadMotif?.(motif.id);
-						setActiveMotif(motif.id);
+						const loaded = onLoadMotif?.(motif.id);
+						if (loaded !== false) {
+							setActiveMotif(motif.id);
+						}
 					}
 				});
 			});
@@ -463,8 +505,10 @@ function createMotifPickerUI({ container, motifs, cols, rows, onLoadMotif }) {
 					name: motif.name,
 					motif,
 					onClick: () => {
-						onLoadMotif?.(motif.id);
-						setActiveMotif(motif.id);
+						const loaded = onLoadMotif?.(motif.id);
+						if (loaded !== false) {
+							setActiveMotif(motif.id);
+						}
 					}
 				});
 			});
@@ -820,8 +864,15 @@ function bootstrap() {
 	const colorCountsContainer = document.getElementById("colorCounts");
 	const countsSummary = document.getElementById("countsSummary");
 
-	const initialCols = parseDimension(widthInput?.value, COLS);
-	const initialRows = parseDimension(heightInput?.value, ROWS);
+	const storedSize = loadStoredCanvasSize();
+	const initialCols = parseDimension(
+		storedSize?.cols ?? widthInput?.value,
+		COLS
+	);
+	const initialRows = parseDimension(
+		storedSize?.rows ?? heightInput?.value,
+		ROWS
+	);
 	if (widthInput) {
 		widthInput.value = String(initialCols);
 	}
@@ -851,6 +902,30 @@ function bootstrap() {
 			rows: project.rows
 		});
 	};
+
+	function resizeCanvas(cols, rows) {
+		if (cols === project.cols && rows === project.rows) {
+			return true;
+		}
+
+		const resized = project.resize(cols, rows, { preserve: false });
+		if (!resized) {
+			return false;
+		}
+
+		syncCanvasElementSize(canvas, project.cols, project.rows);
+		rebuildSymmetryEngine();
+		motifPickerUI.setActiveMotif(null);
+		motifPickerUI.setLibrary({
+			motifs: project.templates,
+			cols: project.cols,
+			rows: project.rows
+		});
+		toolbarUI?.syncSizeInputs(project.cols, project.rows);
+		saveCanvasSize(project.cols, project.rows);
+		controller.render();
+		return true;
+	}
 
 	const colorUsageUI = createColorUsageUI({
 		container: colorCountsContainer,
@@ -906,10 +981,39 @@ function bootstrap() {
 		cols: project.cols,
 		rows: project.rows,
 		onLoadMotif: (motifId) => {
+			const motif = project.templates.find(
+				(template) => template.id === motifId
+			);
+			if (!motif) {
+				return false;
+			}
+
+			const requiredCols =
+				motif.sourceWidth || motif.patternWidth || project.cols;
+			const requiredRows =
+				motif.sourceHeight || motif.patternHeight || project.rows;
+			if (requiredCols > project.cols || requiredRows > project.rows) {
+				const targetCols = Math.max(project.cols, requiredCols);
+				const targetRows = Math.max(project.rows, requiredRows);
+				const confirmed = window.confirm(
+					`\"${motif.name}\" is ${requiredCols} x ${requiredRows} cells, but your canvas is ${project.cols} x ${project.rows}. Expand canvas to ${targetCols} x ${targetRows} and load this motif?`
+				);
+				if (!confirmed) {
+					return false;
+				}
+
+				if (!resizeCanvas(targetCols, targetRows)) {
+					return false;
+				}
+			}
+
 			if (project.applyTemplate(motifId)) {
 				controller.render();
 				toolbarUI?.closeMotifsModal();
+				return true;
 			}
+
+			return false;
 		}
 	});
 
@@ -939,25 +1043,7 @@ function bootstrap() {
 			controller.render();
 		},
 		onResize: ({ cols, rows }) => {
-			if (cols === project.cols && rows === project.rows) {
-				return;
-			}
-
-			const resized = project.resize(cols, rows, { preserve: false });
-			if (!resized) {
-				return;
-			}
-
-			syncCanvasElementSize(canvas, project.cols, project.rows);
-			rebuildSymmetryEngine();
-			motifPickerUI.setActiveMotif(null);
-			motifPickerUI.setLibrary({
-				motifs: project.templates,
-				cols: project.cols,
-				rows: project.rows
-			});
-			toolbarUI?.syncSizeInputs(project.cols, project.rows);
-			controller.render();
+			resizeCanvas(cols, rows);
 		},
 		onClear: () => {
 			project.clear();

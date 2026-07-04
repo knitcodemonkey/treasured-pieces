@@ -13,3 +13,4 @@ trap cleanup EXIT
 
 npx playwright install chromium >/tmp/tp-e2e-playwright.log 2>&1
 node features/studio-e2e/studio-e2e.test.cjs http://127.0.0.1:4173/index.html
+node scripts/a11y-check.cjs http://127.0.0.1:4173/index.html wcag22aa
