@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v6.1.21
+
+- Converted Build Counts into a collapsible accordion so makers can hide or reveal it as needed.
+- Updated color usage rendering to omit zero-count colors from the Build Counts list.
+- Preserved live counts summary updates for colored and total cell counts.
+
 ## v6.1.20
 
 - Fixed centered single-template placement so full-window motifs correctly fill even-dimension canvases like 19x26.

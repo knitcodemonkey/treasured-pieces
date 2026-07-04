@@ -728,13 +728,15 @@ function createColorUsageUI({ container, summary, project }) {
 			}
 		}
 
-		const entries = project.palette.colors.map((entry) => {
-			const count = counts.get(normalizeColor(entry.hex)) || 0;
-			return {
-				...entry,
-				count
-			};
-		});
+		const entries = project.palette.colors
+			.map((entry) => {
+				const count = counts.get(normalizeColor(entry.hex)) || 0;
+				return {
+					...entry,
+					count
+				};
+			})
+			.filter((entry) => entry.count > 0);
 
 		entries.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
@@ -750,7 +752,7 @@ function createColorUsageUI({ container, summary, project }) {
 		container.innerHTML = "";
 		for (const entry of entries) {
 			const item = document.createElement("div");
-			item.className = `count-item${entry.count === 0 ? " is-zero" : ""}`;
+			item.className = "count-item";
 
 			const swatch = document.createElement("span");
 			swatch.className = "count-swatch";

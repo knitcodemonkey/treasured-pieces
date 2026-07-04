@@ -99,6 +99,37 @@ h1 {
 	gap: 10px;
 }
 
+.counts-accordion {
+	padding-bottom: 2px;
+}
+
+.counts-accordion .counts-header {
+	list-style: none;
+	cursor: pointer;
+}
+
+.counts-accordion .counts-header::-webkit-details-marker {
+	display: none;
+}
+
+.counts-accordion .counts-header::after {
+	content: "▾";
+	font-size: 0.85rem;
+	line-height: 1;
+	color: #d8ccb2;
+	margin-left: 8px;
+	transform-origin: 50% 50%;
+	transition: transform 140ms ease;
+}
+
+.counts-accordion:not([open]) .counts-header::after {
+	transform: rotate(-90deg);
+}
+
+.counts-content {
+	display: block;
+}
+
 .counts-header {
 	display: flex;
 	justify-content: space-between;
