@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v6.1.19
+
+- Refined `XIX • The Sun` so the lower dawn remnant is smaller, lower, and softer against a mostly daylight sky.
+- Restored the `light_blue` halo for `XVIII • The Moon` while keeping `light_blue` out of the broader background field.
+- Tightened the Moon frame so `light_gray` is limited to the one-cell outer border.
+- Preserved symbolic card compositions, full-window motif IDs, and test stability.
+
 ## v6.1.18
 
 - Reduced `light_blue` usage in `XVIII • The Moon` so the background no longer competes with moon-adjacent accents.

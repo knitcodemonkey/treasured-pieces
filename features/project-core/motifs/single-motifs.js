@@ -1197,18 +1197,12 @@ const SINGLE_MOTIFS = [
 
 			for (let y = -13; y <= 12; y += 1) {
 				for (let x = -9; x <= 9; x += 1) {
-					let colorId = "yellow";
+					let colorId = "light_blue";
 					if (Math.abs(x) >= 8 || y <= -12 || y >= 11) {
 						colorId = "light_gray";
 					} else if (Math.abs(x) === 7 || y === -11 || y === 10) {
 						colorId = "gray";
-					} else if (y <= -7) {
-						colorId = "yellow";
-					} else if (y <= -4) {
-						colorId = "orange";
-					} else if (y <= -1) {
-						colorId = "red";
-					} else if (y <= 3) {
+					} else if (y <= -6) {
 						colorId = "blue";
 					} else {
 						colorId = "light_blue";
@@ -1230,18 +1224,14 @@ const SINGLE_MOTIFS = [
 						colorId = "yellow";
 					}
 
-					const lowerArcD2 = x * x + (y - 11) * (y - 11);
-					if (y >= 4 && lowerArcD2 <= 56) {
-						if (lowerArcD2 <= 4) {
-							colorId = "magenta";
-						} else if (lowerArcD2 <= 12) {
-							colorId = "purple";
-						} else if (lowerArcD2 <= 24) {
-							colorId = "blue";
-						} else if (lowerArcD2 <= 38) {
-							colorId = "gray";
+					const lowerArcD2 = x * x + (y - 14) * (y - 14);
+					if (y >= 8 && lowerArcD2 <= 18) {
+						if (lowerArcD2 <= 3) {
+							colorId = "yellow";
+						} else if (lowerArcD2 <= 8) {
+							colorId = "pink";
 						} else {
-							colorId = "black";
+							colorId = "magenta";
 						}
 					}
 
@@ -1298,26 +1288,26 @@ const SINGLE_MOTIFS = [
 			for (let y = -13; y <= 12; y += 1) {
 				for (let x = -9; x <= 9; x += 1) {
 					let colorId = "black";
-					if (Math.abs(x) >= 8 || y <= -12 || y >= 11) {
+					if (Math.abs(x) === 9 || y === -13 || y === 12) {
 						colorId = "light_gray";
+					} else if (Math.abs(x) === 8 || y === -12 || y === 11) {
+						colorId = "gray";
 					} else if (Math.abs(x) === 7 || y === -11 || y === 10) {
 						colorId = "gray";
 					}
 
 					if (Math.abs(x) <= 7 && y >= -10 && y <= 8) {
 						if (y <= -6) {
-							colorId = "purple";
+							colorId = "black";
+						} else if (y <= -3) {
+							colorId = "gray";
 						} else if (y <= -1) {
 							colorId = "blue";
 						} else if (y <= 4) {
-							colorId = "blue";
+							colorId = "purple";
 						} else {
-							colorId = "blue";
+							colorId = "magenta";
 						}
-					}
-
-					if (y >= 8 && Math.abs(x) <= 7) {
-						colorId = "black";
 					}
 
 					cells.push({ dx: x, dy: y, colorId });
@@ -1328,7 +1318,7 @@ const SINGLE_MOTIFS = [
 				for (let x = -6; x <= 6; x += 1) {
 					const d2 = x * x + (y + 2) * (y + 2);
 					if (d2 >= 22 && d2 <= 32) {
-						cells.push({ dx: x, dy: y, colorId: "blue" });
+						cells.push({ dx: x, dy: y, colorId: "light_blue" });
 					}
 
 					const outer = x * x + (y + 2) * (y + 2) <= 22;
