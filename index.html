@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Treasured Pieces • Version 7.2.3</title>
+		<title>Treasured Pieces • Version 7.2.4</title>
 		<link rel="stylesheet" href="features/studio-ui/studio-ui.css" />
 	</head>
-	<body data-version="v7.2.3">
+	<body data-version="v7.2.4">
 		<a class="skip-link" href="#studioMain">Skip to drawing studio</a>
 		<main id="studioMain" class="app">
 			<header>
@@ -22,10 +22,6 @@
 						<button id="openMotifsBtn" type="button" class="feature-tab">
 							Motifs
 						</button>
-						<label class="control-field control-field-inline map-art-toggle"
-							><input id="mapArtViewToggle" type="checkbox" />
-							<span>Map Art View</span></label
-						>
 						<label class="control-field control-field-inline"
 							><span>Symmetry</span>
 							<select id="mirror">
@@ -39,6 +35,35 @@
 								<option value="Diagonal ↘">Mirror Diagonal ↘</option>
 								<option value="Diagonal ↗">Mirror Diagonal ↗</option>
 							</select></label
+						>
+						<div
+							id="zoomControls"
+							class="zoom-controls"
+							role="group"
+							aria-label="Canvas zoom"
+						>
+							<span class="zoom-label">Zoom</span>
+							<button id="zoomOutBtn" type="button" aria-label="Zoom out">
+								-
+							</button>
+							<input
+								id="zoomRange"
+								type="range"
+								min="50"
+								max="400"
+								step="25"
+								value="100"
+								aria-label="Canvas zoom percent"
+							/>
+							<button id="zoomInBtn" type="button" aria-label="Zoom in">
+								+
+							</button>
+							<span id="zoomValue" class="zoom-value">100%</span>
+							<button id="zoomResetBtn" type="button">Reset</button>
+						</div>
+						<label class="control-field control-field-inline map-art-toggle"
+							><input id="mapArtViewToggle" type="checkbox" />
+							<span>Map Art View</span></label
 						>
 						<div
 							id="sizeControls"
@@ -74,33 +99,6 @@
 							/></label>
 							<button id="resizeCanvasBtn" type="button">Resize</button>
 						</div>
-						<div
-							id="zoomControls"
-							class="zoom-controls"
-							role="group"
-							aria-label="Canvas zoom"
-						>
-							<button id="zoomOutBtn" type="button" aria-label="Zoom out">
-								-
-							</button>
-							<label class="control-field control-field-inline zoom-field">
-								<span>Zoom</span>
-								<input
-									id="zoomRange"
-									type="range"
-									min="50"
-									max="400"
-									step="25"
-									value="100"
-									aria-label="Canvas zoom percent"
-								/>
-								<span id="zoomValue" class="zoom-value">100%</span>
-							</label>
-							<button id="zoomInBtn" type="button" aria-label="Zoom in">
-								+
-							</button>
-							<button id="zoomResetBtn" type="button">Reset</button>
-						</div>
 					</div>
 					<div class="controls-danger-group" aria-label="Destructive actions">
 						<button id="clearBtn" type="button" class="clear-btn-sticky">
@@ -133,18 +131,19 @@
 				</section>
 			</div>
 
-			<section class="palette-panel" aria-label="Color palette">
-				<div
-					id="palette"
-					role="radiogroup"
-					aria-label="Choose paint color"
-				></div>
-			</section>
-
-			<details class="counts-panel counts-accordion" open>
-				<summary class="counts-header">
-					<h2>Build Counts</h2>
-					<div id="countsSummary" class="counts-summary">0 colored cells</div>
+			<details class="palette-panel palette-accordion" open>
+				<summary class="palette-header">
+					<div class="palette-header-main">
+						<div
+							id="palette"
+							role="radiogroup"
+							aria-label="Choose paint color"
+						></div>
+					</div>
+					<div class="palette-header-meta">
+						<span class="counts-title">Build Counts</span>
+						<div id="countsSummary" class="counts-summary">0 colored cells</div>
+					</div>
 				</summary>
 				<div class="counts-content">
 					<div id="colorCounts" class="color-counts" aria-live="polite"></div>

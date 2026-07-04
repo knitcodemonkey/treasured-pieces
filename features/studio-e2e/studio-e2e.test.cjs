@@ -124,19 +124,19 @@ async function run() {
 		);
 
 		// Flow 5: counts panel can collapse/expand, and zero-count rows are hidden.
-		const countsAccordion = page.locator(".counts-accordion");
+		const countsAccordion = page.locator(".palette-accordion");
 		assert.strictEqual(
 			await countsAccordion.evaluate((el) => el.open),
 			true,
 			"Build Counts accordion should start expanded"
 		);
-		await page.click(".counts-accordion .counts-header");
+		await page.click(".palette-accordion .palette-header-meta");
 		assert.strictEqual(
 			await countsAccordion.evaluate((el) => el.open),
 			false,
 			"Build Counts accordion should collapse when toggled"
 		);
-		await page.click(".counts-accordion .counts-header");
+		await page.click(".palette-accordion .palette-header-meta");
 		assert.strictEqual(
 			await countsAccordion.evaluate((el) => el.open),
 			true,

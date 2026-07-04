@@ -90,59 +90,59 @@ h1 {
 	gap: 12px;
 }
 
-.counts-panel {
-	border-top: 1px solid var(--soft-border);
-	margin-top: 14px;
-	padding-top: 14px;
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-}
-
-.counts-accordion {
+.palette-accordion {
 	padding-bottom: 2px;
 }
 
-.counts-accordion .counts-header {
+.palette-accordion .palette-header {
 	list-style: none;
 	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 12px;
 }
 
-.counts-accordion .counts-header::-webkit-details-marker {
+.palette-accordion .palette-header::-webkit-details-marker {
 	display: none;
 }
 
-.counts-accordion .counts-header::after {
+.palette-accordion .palette-header::after {
 	content: "▾";
 	font-size: 0.85rem;
 	line-height: 1;
 	color: #d8ccb2;
-	margin-left: 8px;
+	margin-left: auto;
 	transform-origin: 50% 50%;
 	transition: transform 140ms ease;
 }
 
-.counts-accordion:not([open]) .counts-header::after {
+.palette-accordion:not([open]) .palette-header::after {
 	transform: rotate(-90deg);
+}
+
+.palette-header-main {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.palette-header-meta {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 8px;
+	margin-left: auto;
+	padding-right: 4px;
+	white-space: nowrap;
+}
+
+.counts-title {
+	font-size: 1rem;
+	font-weight: 800;
+	letter-spacing: 0.02em;
+	color: #ead8a5;
 }
 
 .counts-content {
 	display: block;
-}
-
-.counts-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: baseline;
-	gap: 12px;
-}
-
-.counts-header h2 {
-	margin: 0;
-	font-size: 1rem;
-	font-weight: 800;
-	color: #ead8a5;
-	letter-spacing: 0.02em;
 }
 
 .counts-summary {
@@ -195,10 +195,10 @@ h1 {
 
 .controls-topbar {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: space-between;
 	gap: 10px;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 	width: 100%;
 }
 
@@ -207,13 +207,15 @@ h1 {
 	display: inline-flex;
 	align-items: center;
 	gap: 10px;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 }
 
 .controls-feature-group {
 	justify-content: flex-start;
 	margin-right: auto;
 	gap: 16px;
+	flex: 1 1 640px;
+	min-width: 0;
 }
 
 .size-controls {
@@ -230,11 +232,17 @@ h1 {
 	flex-wrap: nowrap;
 }
 
+.zoom-label {
+	font-size: 0.9rem;
+	font-weight: 700;
+	color: #f0e5cb;
+}
+
 .zoom-field {
 	gap: 8px;
 }
 
-.zoom-field input[type="range"] {
+.zoom-controls input[type="range"] {
 	width: 120px;
 }
 
@@ -269,6 +277,7 @@ h1 {
 	margin-left: 12px;
 	padding-left: 12px;
 	border-left: 1px solid rgba(129, 109, 67, 0.45);
+	flex: 0 0 auto;
 }
 
 .control-inline-top {
@@ -283,7 +292,7 @@ h1 {
 }
 
 .control-field-inline select {
-	min-width: 190px;
+	min-width: 150px;
 }
 
 .map-art-toggle {

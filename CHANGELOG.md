@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v7.2.4
+
+- Reworked Build Counts interaction so the palette bar is the accordion title row, with counts expanding below.
+- Added right-side Build Counts header metadata in the palette summary row for clearer at-a-glance status.
+- Updated studio layout and control wrapping for better top-bar behavior across desktop and iPad portrait widths.
+- Updated end-to-end selectors for the new palette accordion structure and preserved passing WCAG 2.2 AA checks.
+
 ## v7.2.3
 
 - Added canvas zoom controls (zoom out/in, slider, reset, live zoom label) to the studio toolbar.
