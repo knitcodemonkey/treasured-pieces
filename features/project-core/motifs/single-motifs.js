@@ -1220,6 +1220,28 @@ const SINGLE_MOTIFS = [
 						colorId = "yellow";
 					}
 
+					const lowerArcD2 = x * x + (y - 11) * (y - 11);
+					if (y >= 4 && lowerArcD2 <= 56) {
+						if (lowerArcD2 <= 4) {
+							colorId = "magenta";
+						} else if (lowerArcD2 <= 12) {
+							colorId = "purple";
+						} else if (lowerArcD2 <= 24) {
+							colorId = "blue";
+						} else if (lowerArcD2 <= 38) {
+							colorId = "gray";
+						} else {
+							colorId = "black";
+						}
+					}
+
+					if (
+						(x === 0 || y === -2 || Math.abs(x) === Math.abs(y + 2)) &&
+						d2 <= 34
+					) {
+						colorId = "yellow";
+					}
+
 					cells.push({ dx: x, dy: y, colorId });
 				}
 			}

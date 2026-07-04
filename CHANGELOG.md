@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v6.1.17
+
+- Reworked the lower field of `XIX • The Sun` into a bottom-centered half-circle progression.
+- Used the palette flow `magenta → purple → blue → gray → black` to keep `light_blue` visually associated with the Moon.
+- Preserved the existing Sun sigil and asymmetric accent structure.
+- Kept full-window motif IDs and validation stable.
+
 ## v6.1.16
 
 - Added sparse asymmetric dusk-star accents around `XVIII • The Moon`.
